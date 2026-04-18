@@ -1,8 +1,31 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
+/* Inter font-face definitions (using files placed in public/fonts/Inter/static) */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter/static/Inter_24pt-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter/static/Inter_24pt-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter/static/Inter_24pt-Italic.ttf") format("truetype");
+}
+
 :root {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {

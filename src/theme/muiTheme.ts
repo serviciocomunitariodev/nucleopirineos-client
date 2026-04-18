@@ -16,4 +16,7 @@ export const muiTheme = createTheme({
   shape: {
     borderRadius: 12,
   },
+  typography: {
+    fontFamily: ['Inter', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'].join(',')
+  }
 });
