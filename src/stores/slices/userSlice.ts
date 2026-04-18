@@ -14,15 +14,21 @@ const defaultUser: AppUser = {
   lastName: "Nucleo",
   email: "admin@nucleopirineos.local",
   role: UserRole.ADMIN,
+  isActive: true,
 };
 
 export const createUserSlice: StateCreator<AppStore, [], [], UserSlice> = (set) => ({
   user: defaultUser,
   setUser: (user) => set({ user }),
-  logout: () =>
+  logout: () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("auth-token");
+    }
+
     set({
       token: null,
       isAuthenticated: false,
       user: defaultUser,
-    }),
+    });
+  },
 });

@@ -6,19 +6,18 @@ import { z } from 'zod'
 import { AuthApi } from '@/api/AuthApi'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
-import { Logo } from '@/components/Logo'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { useAppStore } from '@/store/useAppStore'
 
 const loginSchema = z.object({
-  correo: z.string().email('Correo invalido.'),
+  email: z.string().email('Correo invalido.'),
   password: z.string().min(6, 'La contrasena debe tener al menos 6 caracteres.'),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
 
-export function LoginPage() {
+export default function LoginPage() {
   usePageTitle('Login')
 
   const navigate = useNavigate()
@@ -33,8 +32,6 @@ export function LoginPage() {
       if (!parsed.success) {
         throw new Error(parsed.error.issues[0]?.message ?? 'Datos invalidos.')
       }
-
-      console.log('Login payload:', parsed.data)
 
       return AuthApi.login(parsed.data)
     },
@@ -64,12 +61,12 @@ export function LoginPage() {
 
   const loginFields: BaseFormField<LoginFormValues>[] = [
     {
-      name: 'correo',
-      label: 'Usuario',
-      placeholder: 'Escribe tu usuario aca...',
+      name: 'email',
+      label: 'Correo',
+      placeholder: 'Escribe tu correo aca...',
       type: 'text' as const,
       rules: {
-        required: 'El usuario es requerido.',
+        required: 'El correo es requerido.',
       },
     },
     {
@@ -91,7 +88,7 @@ export function LoginPage() {
       >
         <header className='flex items-center justify-center'>
           <div className='flex h-[100px] w-[100px] items-center justify-center rounded-[12px] bg-white shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)]'>
-            <Logo alt='Logo de RegalUnet' className='h-20 w-20' />
+            <span className='text-sm font-semibold text-[#065F46]'>LOGO</span>
           </div>
         </header>
 
@@ -99,7 +96,7 @@ export function LoginPage() {
         <BaseForm<LoginFormValues>
           className='space-y-3'
           defaultValues={{
-            correo: '',
+            email: '',
             password: '',
           }}
           fields={loginFields}

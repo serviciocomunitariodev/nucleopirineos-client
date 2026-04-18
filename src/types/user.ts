@@ -9,4 +9,5 @@ export type AppUser = {
   lastName: string;
   email: string;
   role: UserRole;
+  isActive: boolean;
 };

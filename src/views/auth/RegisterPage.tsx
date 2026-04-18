@@ -8,18 +8,16 @@ import type { AuthRole } from '@/api/AuthApi'
 import { AuthApi } from '@/api/AuthApi'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
-import { Logo } from '@/components/Logo'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { usePageTitle } from '@/hooks/usePageTitle'
 
 const registerSchema = z.object({
-  nombre: z.string().min(2, 'Nombres requerido.'),
-  apellido: z.string().min(2, 'Apellidos requerido.'),
-  correo: z.string().email('Correo invalido.'),
+  firstName: z.string().min(2, 'Nombres requerido.'),
+  lastName: z.string().min(2, 'Apellidos requerido.'),
+  email: z.string().email('Correo invalido.'),
   password: z.string().min(6, 'La contrasena debe tener al menos 6 caracteres.'),
   confirmPassword: z.string().min(6, 'Confirmar contrasena es requerido.'),
-  rol: z.string().min(1, 'Rol requerido.'),
-  isActive: z.string().min(1, 'Estado requerido.'),
+  role: z.string().min(1, 'Rol requerido.'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Las contrasenas no coinciden.',
   path: ['confirmPassword'],
@@ -28,11 +26,11 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>
 
 const roleOptions: Array<{ value: AuthRole; label: string }> = [
-  { value: 'PROFESOR', label: 'Profesor' },
-  { value: 'ADMIN', label: 'Admin' },
+  { value: 'PROFESSOR', label: 'Profesor' },
+  { value: 'STUDENT', label: 'Estudiante' },
 ]
 
-export function RegisterPage() {
+export default function RegisterPage() {
   usePageTitle('Registro')
 
   const navigate = useNavigate()
@@ -47,15 +45,12 @@ export function RegisterPage() {
       }
 
       const payload = {
-        nombre: parsed.data.nombre,
-        apellido: parsed.data.apellido,
-        correo: parsed.data.correo,
+        firstName: parsed.data.firstName,
+        lastName: parsed.data.lastName,
+        email: parsed.data.email,
         password: parsed.data.password,
-        rol: parsed.data.rol as AuthRole,
-        isActive: parsed.data.isActive === 'true',
+        role: parsed.data.role as AuthRole,
       }
-
-      console.log('Register payload:', payload)
 
       return AuthApi.register(payload)
     },
@@ -84,21 +79,21 @@ export function RegisterPage() {
   //Nota: user undefined en el ternario es o mismo que no poner el atributo class en el DOM, es como decir que no hay clase extra que aplicar
   const registerFields: BaseFormField<RegisterFormValues>[] = [
     {
-      name: 'nombre',
+      name: 'firstName',
       label: 'Nombres',
       placeholder: 'Nombres',
       className: isMobile ? undefined : 'col-span-1',
       rules: { required: 'Nombres requerido.' },
     },
     {
-      name: 'apellido',
+      name: 'lastName',
       label: 'Apellidos',
       placeholder: 'Apellidos',
       className: isMobile ? undefined : 'col-span-1',
       rules: { required: 'Apellidos requerido.' },
     },
     {
-      name: 'correo',
+      name: 'email',
       label: 'Correo institucional',
       placeholder: 'ejemplo@unet.edu.ve',
       type: 'email' as const,
@@ -106,7 +101,7 @@ export function RegisterPage() {
       rules: { required: 'Correo requerido.' },
     },
     {
-      name: 'rol',
+      name: 'role',
       label: 'Rol',
       placeholder: 'Seleccionar rol - - - ->',
       select: true,
@@ -116,18 +111,6 @@ export function RegisterPage() {
         value: option.value,
       })),
       rules: { required: 'Rol requerido.' },
-    },
-    {
-      name: 'isActive',
-      label: 'Estado',
-      placeholder: 'Seleccionar estado - - - ->',
-      select: true,
-      className: isMobile ? undefined : 'col-span-1',
-      options: [
-        { label: 'Activo', value: 'true' },
-        { label: 'Inactivo', value: 'false' },
-      ],
-      rules: { required: 'Estado requerido.' },
     },
     {
       name: 'password',
@@ -155,20 +138,19 @@ export function RegisterPage() {
       >
         <header className='flex items-center justify-center'>
           <div className='flex h-[100px] w-[100px] items-center justify-center rounded-[12px] bg-white shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)]'>
-            <Logo alt='Logo de RegalUnet' className='h-20 w-20' />
+            <span className='text-sm font-semibold text-[#065F46]'>LOGO</span>
           </div>
         </header>
 
         <BaseForm<RegisterFormValues>
           className={isMobile ? 'space-y-3' : 'grid grid-cols-2 gap-x-3 gap-y-3'}
           defaultValues={{
-            nombre: '',
-            apellido: '',
-            correo: '',
+            firstName: '',
+            lastName: '',
+            email: '',
             password: '',
             confirmPassword: '',
-            rol: '',
-            isActive: '',
+            role: '',
           }}
           fields={registerFields}
           id='register-form'

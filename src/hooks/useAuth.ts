@@ -1,11 +1,11 @@
 import { useAppStore } from "@/store/useAppStore";
 
 export function useAuth() {
-  const { token, isAuthenticated, setToken } = useAppStore();
+  const { token, isAuthenticated, setSession } = useAppStore();
 
   return {
     isAuthenticated,
     token,
-    setToken,
+    setSession,
   };
 }

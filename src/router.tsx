@@ -3,11 +3,15 @@ import type { ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import Layout from "@/layout/Layout";
+import AuthLayout from "./views/auth/AuthLayout";
+import ProtectedRoute from "./views/auth/ProtectedRoute";
 
 const DashboardPage = lazy(() => import("@/views/dashboard/DashboardPage"));
 const EventsPage = lazy(() => import("@/views/events/EventsPage"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
 const SongsPage = lazy(() => import("@/views/songs/SongsPage"));
+const LoginPage = lazy(() => import("@/views/auth/LoginPage"));
+const RegisterPage = lazy(() => import("@/views/auth/RegisterPage"));
 const ProfessorsPage = lazy(() => import("@/views/users/professors/ProfessorsPage"));
 const StudentsPage = lazy(() => import("@/views/users/students/StudentsPage"));
 const CategoriesPage = lazy(() => import("@/views/administration/categories/CategoriesPage"));
@@ -30,18 +34,26 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={withSuspense(<DashboardPage />)} />
-          <Route path="/educational-materials" element={withSuspense(<ResourcesPage />)} />
-          <Route path="/songs" element={withSuspense(<SongsPage />)} />
-          <Route path="/events" element={withSuspense(<EventsPage />)} />
-          <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
-          <Route path="/users/students" element={withSuspense(<StudentsPage />)} />
-          <Route path="/song-categories" element={withSuspense(<CategoriesPage />)} />
-          <Route path="/subjects" element={withSuspense(<SubjectsPage />)} />
-          <Route path="/academic-levels" element={withSuspense(<AcademicLevelsPage />)} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/auth/login" element={withSuspense(<LoginPage />)} />
+          <Route path="/auth/register" element={withSuspense(<RegisterPage />)} />
         </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/" element={withSuspense(<DashboardPage />)} />
+            <Route path="/educational-materials" element={withSuspense(<ResourcesPage />)} />
+            <Route path="/songs" element={withSuspense(<SongsPage />)} />
+            <Route path="/events" element={withSuspense(<EventsPage />)} />
+            <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
+            <Route path="/users/students" element={withSuspense(<StudentsPage />)} />
+            <Route path="/song-categories" element={withSuspense(<CategoriesPage />)} />
+            <Route path="/subjects" element={withSuspense(<SubjectsPage />)} />
+            <Route path="/academic-levels" element={withSuspense(<AcademicLevelsPage />)} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
