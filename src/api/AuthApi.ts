@@ -28,7 +28,7 @@ const meResponseSchema = z.object({
 
 const mapRoleToClient = (role: z.infer<typeof backendRoleSchema>): UserRole => {
   if (role === "PROFESSOR") {
-    return UserRole.ADMIN;
+    return UserRole.PROFESSOR;
   }
 
   return UserRole.STUDENT;
@@ -57,8 +57,19 @@ export type RegisterPayload = {
   lastName: string;
   email: string;
   password: string;
-  role: AuthRole;
-};
+} &
+  (
+    | {
+        role: "STUDENT";
+        age: number;
+        principalSubjectId?: number;
+      }
+    | {
+        role: "PROFESSOR";
+        academicLevelIds?: number[];
+        subjectIds?: number[];
+      }
+  );
 
 export const AuthApi = {
   async login(payload: LoginPayload): Promise<{ token: string; user: AppUser }> {

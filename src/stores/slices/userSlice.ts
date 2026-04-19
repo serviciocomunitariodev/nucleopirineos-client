@@ -13,7 +13,7 @@ const defaultUser: AppUser = {
   firstName: "Admin",
   lastName: "Nucleo",
   email: "admin@nucleopirineos.local",
-  role: UserRole.ADMIN,
+  role: UserRole.PROFESSOR,
   isActive: true,
 };
 

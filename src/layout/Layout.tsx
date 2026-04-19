@@ -83,7 +83,7 @@ export default function Layout() {
   const logout = useAppStore((state) => state.logout);
 
   const navigation = useMemo(() => {
-    return user.role === UserRole.ADMIN ? adminNavigation : studentNavigation;
+    return user.role === UserRole.PROFESSOR ? adminNavigation : studentNavigation;
   }, [user.role]);
 
   const userFullName = `${user.firstName} ${user.lastName}`.trim();
