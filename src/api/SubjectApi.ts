@@ -16,6 +16,13 @@ type GetAllInput = {
   type?: SubjectType;
 };
 
+export type CreateSubjectPayload = {
+  name: string;
+  type: SubjectType;
+};
+
+export type UpdateSubjectPayload = CreateSubjectPayload;
+
 export const SubjectApi = {
   async getAll(input: GetAllInput = {}): Promise<Subject[]> {
     const searchParams = new URLSearchParams();
@@ -32,5 +39,37 @@ export const SubjectApi = {
     });
 
     return subjectsSchema.parse(response);
+  },
+
+  async getById(id: number): Promise<Subject> {
+    const response = await apiClient<unknown>(`/subjects/${id}`, {
+      method: "GET",
+    });
+
+    return subjectSchema.parse(response);
+  },
+
+  async create(payload: CreateSubjectPayload): Promise<Subject> {
+    const response = await apiClient<unknown>("/subjects", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    return subjectSchema.parse(response);
+  },
+
+  async update(id: number, payload: UpdateSubjectPayload): Promise<Subject> {
+    const response = await apiClient<unknown>(`/subjects/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+
+    return subjectSchema.parse(response);
+  },
+
+  async remove(id: number): Promise<void> {
+    await apiClient<unknown>(`/subjects/${id}`, {
+      method: "DELETE",
+    });
   },
 };

@@ -199,7 +199,7 @@ export default function Layout() {
         <div className="fixed inset-y-0 left-0 z-30 w-60 border-r border-black/10">{sidebar}</div>
       )}
 
-      <div style={{ paddingLeft: isMobile ? 0 : 240 }}>
+      <div className="w-full" style={{ paddingLeft: isMobile ? 0 : 240 }}>
         <header
           className="sticky top-0 z-20 flex h-14 items-center justify-between px-4 text-white bg-primary"
         >
@@ -230,8 +230,8 @@ export default function Layout() {
           </button>
         </header>
 
-        <main className="min-h-[calc(100vh-56px)] p-4 md:p-6">
-          <div className="rounded-2xl border border-black/5 p-4 md:p-6 bg-background">
+        <main className="w-full min-h-[calc(100vh-56px)] bg-background p-3 md:p-4">
+          <div className="w-full rounded-2xl border border-black/5 bg-background p-3 md:p-4">
             <Outlet />
           </div>
         </main>

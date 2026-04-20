@@ -14,10 +14,30 @@ const LoginPage = lazy(() => import("@/views/auth/LoginPage"));
 const RegisterPage = lazy(() => import("@/views/auth/RegisterPage"));
 const ProfessorsPage = lazy(() => import("@/views/users/professors/ProfessorsPage"));
 const StudentsPage = lazy(() => import("@/views/users/students/StudentsPage"));
-const CategoriesPage = lazy(() => import("@/views/administration/categories/CategoriesPage"));
+const NewProfessor = lazy(() => import("@/views/users/professors/NewProfessor"));
+const EditProfessor = lazy(() => import("@/views/users/professors/EditProfessor"));
+const NewStudent = lazy(() => import("@/views/users/students/NewStudent"));
+const EditStudent = lazy(() => import("@/views/users/students/EditStudent"));
+const SongCategoryPage = lazy(
+  () => import("@/views/administration/categories/SongCategoryPage")
+);
+const NewSongCategory = lazy(
+  () => import("@/views/administration/categories/NewSongCategory")
+);
+const EditSongCategory = lazy(
+  () => import("@/views/administration/categories/EditSongCategory")
+);
 const SubjectsPage = lazy(() => import("@/views/administration/subjects/SubjectsPage"));
+const NewSubject = lazy(() => import("@/views/administration/subjects/NewSubject"));
+const EditSubject = lazy(() => import("@/views/administration/subjects/EditSubject"));
 const AcademicLevelsPage = lazy(
   () => import("@/views/administration/academicLevels/AcademicLevelsPage")
+);
+const NewAcademicLevel = lazy(
+  () => import("@/views/administration/academicLevels/NewAcademicLevel")
+);
+const EditAcademicLevel = lazy(
+  () => import("@/views/administration/academicLevels/EditAcademicLevel")
 );
 
 const routeFallback = (
@@ -46,10 +66,26 @@ export default function AppRouter() {
             <Route path="/songs" element={withSuspense(<SongsPage />)} />
             <Route path="/events" element={withSuspense(<EventsPage />)} />
             <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
+            <Route path="/users/professors/new" element={withSuspense(<NewProfessor />)} />
+            <Route path="/users/professors/:id/edit" element={withSuspense(<EditProfessor />)} />
             <Route path="/users/students" element={withSuspense(<StudentsPage />)} />
-            <Route path="/song-categories" element={withSuspense(<CategoriesPage />)} />
+            <Route path="/users/students/new" element={withSuspense(<NewStudent />)} />
+            <Route path="/users/students/:id/edit" element={withSuspense(<EditStudent />)} />
+            <Route path="/song-categories" element={withSuspense(<SongCategoryPage />)} />
+            <Route path="/song-categories/new" element={withSuspense(<NewSongCategory />)} />
+            <Route
+              path="/song-categories/:id/edit"
+              element={withSuspense(<EditSongCategory />)}
+            />
             <Route path="/subjects" element={withSuspense(<SubjectsPage />)} />
+            <Route path="/subjects/new" element={withSuspense(<NewSubject />)} />
+            <Route path="/subjects/:id/edit" element={withSuspense(<EditSubject />)} />
             <Route path="/academic-levels" element={withSuspense(<AcademicLevelsPage />)} />
+            <Route path="/academic-levels/new" element={withSuspense(<NewAcademicLevel />)} />
+            <Route
+              path="/academic-levels/:id/edit"
+              element={withSuspense(<EditAcademicLevel />)}
+            />
           </Route>
         </Route>
 

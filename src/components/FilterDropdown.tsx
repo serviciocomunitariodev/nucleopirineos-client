@@ -25,6 +25,7 @@ type FilterDropdownProps = {
   activeFilters: ActiveFilters
   filterGroups: FilterGroup[]
   className?: string
+  fullWidthTrigger?: boolean
 }
 
 export function FilterDropdown({
@@ -33,12 +34,29 @@ export function FilterDropdown({
   activeFilters,
   filterGroups,
   className,
+  fullWidthTrigger = false,
 }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set())
   const [selectedFilters, setSelectedFilters] = useState<ActiveFilters>(activeFilters)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const normalizeFilters = (filters: ActiveFilters) => {
+    const normalizedEntries = Object.keys(filters)
+      .sort()
+      .map((key) => {
+        const value = filters[key]
+
+        if (Array.isArray(value)) {
+          return [key, [...value].sort()]
+        }
+
+        return [key, value]
+      })
+
+    return JSON.stringify(normalizedEntries)
+  }
 
   // Cierrar el dropdown cuando hace click afuera
   useEffect(() => {
@@ -54,6 +72,22 @@ export function FilterDropdown({
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
     }
   }, [isOpen])
 
@@ -211,6 +245,8 @@ export function FilterDropdown({
     }
   )
 
+  const hasPendingChanges = normalizeFilters(selectedFilters) !== normalizeFilters(activeFilters)
+
   const handleApply = () => {
     onApplyFilters(selectedFilters)
     setIsOpen(false)
@@ -234,7 +270,10 @@ export function FilterDropdown({
       {/* Trigger del boton */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-[4px] border border-slate-500 px-4 text-sm font-semibold text-ink transition-colors hover:bg-slate-100"
+        className={[
+          'inline-flex h-10 min-w-[100px] items-center justify-center gap-2 rounded-[4px] border border-slate-500 px-4 text-sm font-semibold text-ink transition-colors hover:bg-slate-100',
+          fullWidthTrigger ? 'w-full' : '',
+        ].join(' ')}
         type="button"
       >
         <span>Filtro</span>
@@ -256,6 +295,9 @@ export function FilterDropdown({
 
           {/* Footer */}
           <div className="border-t border-gray-200 p-2 space-y-2 sticky bottom-0 bg-white">
+            <p className="px-1 text-[11px] text-slate-500">
+              {getActiveFiltersCount()} filtros activos
+            </p>
             <div className="flex gap-2">
               <button
                 onClick={handleClear}
@@ -267,7 +309,8 @@ export function FilterDropdown({
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 px-2 py-1.5 bg-primary text-white rounded text-xs font-medium hover:bg-primary-600 transition-colors"
+                disabled={!hasPendingChanges}
+                className="flex-1 px-2 py-1.5 bg-primary text-white rounded text-xs font-medium hover:bg-primary-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
               >
                 Aplicar
