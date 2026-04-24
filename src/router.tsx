@@ -10,6 +10,9 @@ const DashboardPage = lazy(() => import("@/views/dashboard/DashboardPage"));
 const EventsPage = lazy(() => import("@/views/events/EventsPage"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
 const SongsPage = lazy(() => import("@/views/songs/SongsPage"));
+const NewSong = lazy(() => import("@/views/songs/NewSong"));
+const EditSong = lazy(() => import("@/views/songs/EditSong"));
+const SongDetails = lazy(() => import("@/views/songs/SongDetails"));
 const LoginPage = lazy(() => import("@/views/auth/LoginPage"));
 const RegisterPage = lazy(() => import("@/views/auth/RegisterPage"));
 const ProfessorsPage = lazy(() => import("@/views/users/professors/ProfessorsPage"));
@@ -64,6 +67,9 @@ export default function AppRouter() {
             <Route path="/" element={withSuspense(<DashboardPage />)} />
             <Route path="/educational-materials" element={withSuspense(<ResourcesPage />)} />
             <Route path="/songs" element={withSuspense(<SongsPage />)} />
+            <Route path="/songs/new" element={withSuspense(<NewSong />)} />
+            <Route path="/songs/:id" element={withSuspense(<SongDetails />)} />
+            <Route path="/songs/:id/edit" element={withSuspense(<EditSong />)} />
             <Route path="/events" element={withSuspense(<EventsPage />)} />
             <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
             <Route path="/users/professors/new" element={withSuspense(<NewProfessor />)} />

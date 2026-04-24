@@ -77,6 +77,45 @@ const roleOptions: Array<{ value: AuthRole; label: string }> = [
   { value: 'STUDENT', label: 'Estudiante' },
 ]
 
+const textFieldSx = {
+  '& .MuiInputBase-root': {
+    borderRadius: '8px',
+    backgroundColor: '#ffffff',
+    minHeight: 40,
+  },
+  '& .MuiInputBase-input': {
+    color: '#676464',
+  },
+  '& .MuiInputBase-input.Mui-disabled': {
+    WebkitTextFillColor: '#676464',
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: '#4b5563',
+  },
+  '& .MuiInputBase-input::placeholder': {
+    color: '#9ca3af',
+    opacity: 1,
+    fontSize: '14px',
+  },
+};
+
+const selectFieldSx = {
+  ...textFieldSx,
+  '& .MuiSelect-select.MuiInputBase-input.MuiSelect-select': {
+    display: 'flex',
+    alignItems: 'center',
+    whiteSpace: 'normal',
+    wordBreak: 'break-word',
+    overflow: 'visible',
+    textOverflow: 'clip',
+    lineHeight: 1.35,
+    minHeight: 'unset',
+    boxSizing: 'border-box',
+    paddingTop: '8.5px',
+    paddingBottom: '8.5px',
+  },
+};
+
 export default function RegisterPage() {
   usePageTitle('Registro')
 
@@ -252,45 +291,60 @@ export default function RegisterPage() {
               <div className={isMobile ? 'space-y-3' : 'col-span-2'}>
                 {selectedRole === 'STUDENT' ? (
                   <div className='flex flex-col gap-y-4 mb-3'>
-                    <TextField
-                      fullWidth
-                      label='Edad'
-                      size='small'
-                      type='number'
-                      value={ageValue ?? ''}
-                      onChange={(event) => {
-                        const rawValue = event.target.value
-                        methods.setValue('age', rawValue === '' ? '' : Number(rawValue))
-                      }}
-                    />
-
-                    <TextField
-                      fullWidth
-                      label='Nivel academico asignado'
-                      size='small'
-                      value={detectedAcademicLevel ? detectedAcademicLevel.name : 'Sin nivel asignado'}
-                      disabled
-                    />
-
-                    {ageIsValid && normalizedAge >= 8 ? (
+                    <div>
+                      <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                        Edad
+                      </Typography>
                       <TextField
                         fullWidth
-                        label='Catedra principal'
-                        select
                         size='small'
-                        value={methods.watch('principalSubjectId') ?? ''}
+                        type='number'
+                        placeholder='Edad'
+                        value={ageValue ?? ''}
                         onChange={(event) => {
                           const rawValue = event.target.value
-                          methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
+                          methods.setValue('age', rawValue === '' ? '' : Number(rawValue))
                         }}
-                      >
-                        <MenuItem value=''>Seleccionar catedra principal</MenuItem>
-                        {(principalSubjectsQuery.data ?? []).map((subject) => (
-                          <MenuItem key={subject.id} value={subject.id}>
-                            {subject.name}
-                          </MenuItem>
-                        ))}
-                      </TextField>
+                      />
+                    </div>
+
+                    <div>
+                      <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                        Nivel academico asignado
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        size='small'
+                        value={detectedAcademicLevel ? detectedAcademicLevel.name : 'Sin nivel asignado'}
+                        disabled
+                      />
+                    </div>
+
+
+                    {ageIsValid && normalizedAge >= 8 ? (
+                      <div>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                          Catedra principal
+                        </Typography>
+                        <TextField
+                          fullWidth
+                          select
+                          size='small'
+                          value={methods.watch('principalSubjectId') ?? ''}
+                          onChange={(event) => {
+                            const rawValue = event.target.value
+                            methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
+                          }}
+                        >
+                          <MenuItem value=''>Seleccionar catedra principal</MenuItem>
+                          {(principalSubjectsQuery.data ?? []).map((subject) => (
+                            <MenuItem key={subject.id} value={subject.id}>
+                              {subject.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </div>
+
                     ) : null}
                   </div>
                 ) : null}
@@ -356,25 +410,34 @@ export default function RegisterPage() {
                 ) : null}
 
                 <div className='grid grid-cols-1 gap-3'>
-                  <TextField
-                    fullWidth
-                    label='Contraseña'
-                    placeholder='Contraseña'
-                    size='small'
-                    type='password'
-                    {...methods.register('password', { required: 'Contraseña requerida.' })}
-                  />
+                  <div>
+                    <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                      Contraseña
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      placeholder='Contraseña'
+                      size='small'
+                      type='password'
+                      {...methods.register('password', { required: 'Contraseña requerida.' })}
+                    />
+                  </div>
 
-                  <TextField
-                    fullWidth
-                    label='Confirmar contrasena'
-                    placeholder='Repetir contrasena'
-                    size='small'
-                    type='password'
-                    {...methods.register('confirmPassword', {
-                      required: 'Confirmar contraseña es requerido.',
-                    })}
-                  />
+                  <div>
+                    <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                      Confirmar contraseña
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      placeholder='Repetir contrasena'
+                      size='small'
+                      type='password'
+                      {...methods.register('confirmPassword', {
+                        required: 'Confirmar contraseña es requerido.',
+                      })}
+                    />
+                  </div>
+
                 </div>
               </div>
             )
