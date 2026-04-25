@@ -77,44 +77,44 @@ const roleOptions: Array<{ value: AuthRole; label: string }> = [
   { value: 'STUDENT', label: 'Estudiante' },
 ]
 
-const textFieldSx = {
-  '& .MuiInputBase-root': {
-    borderRadius: '8px',
-    backgroundColor: '#ffffff',
-    minHeight: 40,
-  },
-  '& .MuiInputBase-input': {
-    color: '#676464',
-  },
-  '& .MuiInputBase-input.Mui-disabled': {
-    WebkitTextFillColor: '#676464',
-  },
-  '& .MuiOutlinedInput-notchedOutline': {
-    borderColor: '#4b5563',
-  },
-  '& .MuiInputBase-input::placeholder': {
-    color: '#9ca3af',
-    opacity: 1,
-    fontSize: '14px',
-  },
-};
+// const textFieldSx = {
+//   '& .MuiInputBase-root': {
+//     borderRadius: '8px',
+//     backgroundColor: '#ffffff',
+//     minHeight: 40,
+//   },
+//   '& .MuiInputBase-input': {
+//     color: '#676464',
+//   },
+//   '& .MuiInputBase-input.Mui-disabled': {
+//     WebkitTextFillColor: '#676464',
+//   },
+//   '& .MuiOutlinedInput-notchedOutline': {
+//     borderColor: '#4b5563',
+//   },
+//   '& .MuiInputBase-input::placeholder': {
+//     color: '#9ca3af',
+//     opacity: 1,
+//     fontSize: '14px',
+//   },
+// };
 
-const selectFieldSx = {
-  ...textFieldSx,
-  '& .MuiSelect-select.MuiInputBase-input.MuiSelect-select': {
-    display: 'flex',
-    alignItems: 'center',
-    whiteSpace: 'normal',
-    wordBreak: 'break-word',
-    overflow: 'visible',
-    textOverflow: 'clip',
-    lineHeight: 1.35,
-    minHeight: 'unset',
-    boxSizing: 'border-box',
-    paddingTop: '8.5px',
-    paddingBottom: '8.5px',
-  },
-};
+// const selectFieldSx = {
+//   ...textFieldSx,
+//   '& .MuiSelect-select.MuiInputBase-input.MuiSelect-select': {
+//     display: 'flex',
+//     alignItems: 'center',
+//     whiteSpace: 'normal',
+//     wordBreak: 'break-word',
+//     overflow: 'visible',
+//     textOverflow: 'clip',
+//     lineHeight: 1.35,
+//     minHeight: 'unset',
+//     boxSizing: 'border-box',
+//     paddingTop: '8.5px',
+//     paddingBottom: '8.5px',
+//   },
+// };
 
 export default function RegisterPage() {
   usePageTitle('Registro')

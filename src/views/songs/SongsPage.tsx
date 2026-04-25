@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import Delete from '@mui/icons-material/Delete'
-import Edit from '@mui/icons-material/Edit'
-import { IconButton, Typography } from '@mui/material'
+// import Delete from '@mui/icons-material/Delete'
+// import Edit from '@mui/icons-material/Edit'
+import { Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 import { BaseCardTable } from '@/components/BaseCardTable'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
 import { SongCard } from '@/components/SongCard'
-import useDeleteSongMutation from '@/hooks/useDeleteSongMutation'
+// import useDeleteSongMutation from '@/hooks/useDeleteSongMutation'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
 import useSongsQuery from '@/hooks/useSongsQuery'
 import { usePageTitle } from '@/hooks/usePageTitle'
@@ -22,7 +22,7 @@ export default function SongsPage() {
   const navigate = useNavigate()
   const songsQuery = useSongsQuery()
   const songCategoriesQuery = useSongCategoriesQuery()
-  const deleteSongMutation = useDeleteSongMutation()
+  // const deleteSongMutation = useDeleteSongMutation()
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -76,21 +76,21 @@ export default function SongsPage() {
     return filteredRows.slice(start, start + PAGE_SIZE)
   }, [currentPage, filteredRows])
 
-  const handleDelete = async (song: Song) => {
-    const shouldDelete = window.confirm(`¿Está seguro de eliminar la canción "${song.title}"?`)
+  // const handleDelete = async (song: Song) => {
+  //   const shouldDelete = window.confirm(`¿Está seguro de eliminar la canción "${song.title}"?`)
 
-    if (!shouldDelete) {
-      return
-    }
+  //   if (!shouldDelete) {
+  //     return
+  //   }
 
-    try {
-      await deleteSongMutation.mutateAsync(song.id)
-      toast.success('Canción eliminada correctamente.')
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'No se pudo eliminar la canción.'
-      toast.error(message)
-    }
-  }
+  //   try {
+  //     await deleteSongMutation.mutateAsync(song.id)
+  //     toast.success('Canción eliminada correctamente.')
+  //   } catch (error) {
+  //     const message = error instanceof Error ? error.message : 'No se pudo eliminar la canción.'
+  //     toast.error(message)
+  //   }
+  // }
 
   return (
     <main className='space-y-6'>

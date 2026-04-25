@@ -40,7 +40,7 @@ const adminNavigation: NavItem[] = [
   },
   { key: "resources", label: "Recursos", icon: LibraryBooks, path: "/educational-materials" },
   { key: "songs", label: "Canciones", icon: MusicNote, path: "/songs" },
-  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/events" },
+  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/platform/events" },
   {
     key: "administration",
     label: "Administracion",
@@ -56,7 +56,7 @@ const adminNavigation: NavItem[] = [
 const studentNavigation: NavItem[] = [
   { key: "resources", label: "Recursos", icon: LibraryBooks, path: "/educational-materials" },
   { key: "songs", label: "Canciones", icon: MusicNote, path: "/songs" },
-  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/events" },
+  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/platform/events" },
 ];
 
 function getInitialExpanded(pathname: string) {

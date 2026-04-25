@@ -7,7 +7,8 @@ import AuthLayout from "./views/auth/AuthLayout";
 import ProtectedRoute from "./views/auth/ProtectedRoute";
 
 const DashboardPage = lazy(() => import("@/views/dashboard/DashboardPage"));
-const EventsPage = lazy(() => import("@/views/events/EventsPage"));
+const PublicEventsPage = lazy(() => import("@/views/events/PublicEventsPage"));
+const PlatformEventsPage = lazy(() => import("@/views/events/PlatformEventsPage"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
 const SongsPage = lazy(() => import("@/views/songs/SongsPage"));
 const NewSong = lazy(() => import("@/views/songs/NewSong"));
@@ -42,6 +43,7 @@ const NewAcademicLevel = lazy(
 const EditAcademicLevel = lazy(
   () => import("@/views/administration/academicLevels/EditAcademicLevel")
 );
+const LandingPage = lazy(() => import("@/views/landing/LandingPage"));
 
 const routeFallback = (
   <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", py: 6 }}>
@@ -57,6 +59,11 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={withSuspense(<LandingPage />)} />
+        <Route path="/landing" element={<Navigate to="/" replace />} />
+        <Route path="/calendario" element={<Navigate to="/events" replace />} />
+        <Route path="/events" element={withSuspense(<PublicEventsPage />)} />
+
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={withSuspense(<LoginPage />)} />
           <Route path="/auth/register" element={withSuspense(<RegisterPage />)} />
@@ -64,13 +71,13 @@ export default function AppRouter() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/" element={withSuspense(<DashboardPage />)} />
+            <Route path="/dashboard" element={withSuspense(<DashboardPage />)} />
             <Route path="/educational-materials" element={withSuspense(<ResourcesPage />)} />
             <Route path="/songs" element={withSuspense(<SongsPage />)} />
             <Route path="/songs/new" element={withSuspense(<NewSong />)} />
             <Route path="/songs/:id" element={withSuspense(<SongDetails />)} />
             <Route path="/songs/:id/edit" element={withSuspense(<EditSong />)} />
-            <Route path="/events" element={withSuspense(<EventsPage />)} />
+            <Route path="/platform/events" element={withSuspense(<PlatformEventsPage />)} />
             <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
             <Route path="/users/professors/new" element={withSuspense(<NewProfessor />)} />
             <Route path="/users/professors/:id/edit" element={withSuspense(<EditProfessor />)} />

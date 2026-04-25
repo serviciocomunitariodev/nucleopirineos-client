@@ -16,6 +16,7 @@ const config: Config = {
         background: "#FDFDF9",
         primaryActive: "#BBDF7C",
         primaryHover: "#78A034",
+        superficies: "#F1F1E6",
       },
       borderRadius: {
         xl: "0.9rem",
