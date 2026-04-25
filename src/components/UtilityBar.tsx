@@ -8,6 +8,7 @@ import {
 import { useIsMobile } from '@/hooks/useIsMobile'
 
 type UtilityBarProps = {
+  showCreate?: boolean
   showFilter?: boolean
   filterLabel?: string
   filterCount?: number
@@ -27,6 +28,7 @@ type UtilityBarProps = {
 }
 
 export function UtilityBar({
+  showCreate = true,
   showFilter = true,
   filterLabel = 'Filtro',
   filterCount = 0,
@@ -111,17 +113,21 @@ export function UtilityBar({
           <div className='grid w-full grid-cols-2 gap-3'>
             {filterControl ? <div className='w-full'>{filterControl}</div> : <span aria-hidden='true' />}
 
-            <button
-              aria-label='Crear nuevo registro'
-              className={[
-                'h-10 w-full rounded-[10px] bg-primary px-4 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover',
-                showFilter ? 'min-w-0' : 'col-span-2',
-              ].join(' ')}
-              onClick={onCreateClick}
-              type='button'
-            >
-              {createLabel}
-            </button>
+            {showCreate ? (
+              <button
+                aria-label='Crear nuevo registro'
+                className={[
+                  'h-10 w-full rounded-[10px] bg-primary px-4 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover',
+                  showFilter ? 'min-w-0' : 'col-span-2',
+                ].join(' ')}
+                onClick={onCreateClick}
+                type='button'
+              >
+                {createLabel}
+              </button>
+            ) : (
+              <span aria-hidden='true' />
+            )}
           </div>
 
           {filterDropdown && activeFilterEntries.length > 0 ? (
@@ -165,14 +171,16 @@ export function UtilityBar({
             value={searchValue}
           />
 
-          <button
-            aria-label='Crear nuevo registro'
-            className='h-10 min-w-[110px] shrink-0 rounded-[10px] bg-primary px-5 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover'
-            onClick={onCreateClick}
-            type='button'
-          >
-            {createLabel}
-          </button>
+          {showCreate ? (
+            <button
+              aria-label='Crear nuevo registro'
+              className='h-10 min-w-[110px] shrink-0 rounded-[10px] bg-primary px-5 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover'
+              onClick={onCreateClick}
+              type='button'
+            >
+              {createLabel}
+            </button>
+          ) : null}
         </div>
       )}
     </section>

@@ -29,7 +29,11 @@ type NavItem = {
 // Colors moved to Tailwind config: use classes `bg-primary`, `bg-primaryHover`, `bg-primaryActive`, `bg-background`.
 
 const adminNavigation: NavItem[] = [
-  {
+
+  { key: "resources", label: "Recursos", icon: LibraryBooks, path: "/educational-materials" },
+  { key: "songs", label: "Canciones", icon: MusicNote, path: "/songs" },
+  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/platform/events" },
+    {
     key: "users",
     label: "Usuarios",
     icon: People,
@@ -38,9 +42,6 @@ const adminNavigation: NavItem[] = [
       { key: "students", label: "Estudiantes", path: "/users/students" },
     ],
   },
-  { key: "resources", label: "Recursos", icon: LibraryBooks, path: "/educational-materials" },
-  { key: "songs", label: "Canciones", icon: MusicNote, path: "/songs" },
-  { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/platform/events" },
   {
     key: "administration",
     label: "Administracion",
@@ -83,7 +84,9 @@ export default function Layout() {
   const logout = useAppStore((state) => state.logout);
 
   const navigation = useMemo(() => {
-    return user.role === UserRole.PROFESSOR ? adminNavigation : studentNavigation;
+    return user.role === UserRole.PROFESSOR || user.role === UserRole.ADMIN
+      ? adminNavigation
+      : studentNavigation;
   }, [user.role]);
 
   const userFullName = `${user.firstName} ${user.lastName}`.trim();

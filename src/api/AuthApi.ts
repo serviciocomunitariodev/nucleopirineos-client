@@ -2,7 +2,7 @@ import { z } from "zod";
 import { apiClient } from "@/services/apiClient";
 import { UserRole, type AppUser } from "@/types/user";
 
-const backendRoleSchema = z.enum(["PROFESSOR", "STUDENT"]);
+const backendRoleSchema = z.enum(["ADMIN", "PROFESSOR", "STUDENT"]);
 
 const authUserSchema = z.object({
   id: z.number(),
@@ -27,6 +27,10 @@ const meResponseSchema = z.object({
 });
 
 const mapRoleToClient = (role: z.infer<typeof backendRoleSchema>): UserRole => {
+  if (role === "ADMIN") {
+    return UserRole.ADMIN;
+  }
+
   if (role === "PROFESSOR") {
     return UserRole.PROFESSOR;
   }

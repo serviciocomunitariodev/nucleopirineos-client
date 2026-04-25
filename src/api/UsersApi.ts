@@ -5,7 +5,7 @@ import { SubjectType, type Subject } from "@/types/subject";
 import { UserRole, type AppUser } from "@/types/user";
 import type { ProfessorRecord, StudentRecord } from "@/types/users";
 
-const backendRoleSchema = z.enum(["PROFESSOR", "STUDENT"]);
+const backendRoleSchema = z.enum(["ADMIN", "PROFESSOR", "STUDENT"]);
 
 const userSchema = z.object({
   id: z.number(),
@@ -56,6 +56,10 @@ const professorsSchema = z.array(professorSchema);
 const studentsSchema = z.array(studentSchema);
 
 const mapRoleToClient = (role: z.infer<typeof backendRoleSchema>): UserRole => {
+  if (role === "ADMIN") {
+    return UserRole.ADMIN;
+  }
+
   if (role === "PROFESSOR") {
     return UserRole.PROFESSOR;
   }

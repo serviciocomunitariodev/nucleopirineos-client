@@ -10,6 +10,8 @@ const DashboardPage = lazy(() => import("@/views/dashboard/DashboardPage"));
 const PublicEventsPage = lazy(() => import("@/views/events/PublicEventsPage"));
 const PlatformEventsPage = lazy(() => import("@/views/events/PlatformEventsPage"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
+const NewResource = lazy(() => import("./views/resources/NewResource"));
+const EditResource = lazy(() => import("./views/resources/EditResource"));
 const SongsPage = lazy(() => import("@/views/songs/SongsPage"));
 const NewSong = lazy(() => import("@/views/songs/NewSong"));
 const EditSong = lazy(() => import("@/views/songs/EditSong"));
@@ -73,6 +75,11 @@ export default function AppRouter() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={withSuspense(<DashboardPage />)} />
             <Route path="/educational-materials" element={withSuspense(<ResourcesPage />)} />
+            <Route path="/educational-materials/new" element={withSuspense(<NewResource />)} />
+            <Route
+              path="/educational-materials/:id/edit"
+              element={withSuspense(<EditResource />)}
+            />
             <Route path="/songs" element={withSuspense(<SongsPage />)} />
             <Route path="/songs/new" element={withSuspense(<NewSong />)} />
             <Route path="/songs/:id" element={withSuspense(<SongDetails />)} />
