@@ -13,6 +13,9 @@ import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
 import useSongsQuery from '@/hooks/useSongsQuery'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import type { Song } from '@/types/song'
+import { useIsMobile } from '@/hooks/useIsMobile'
+import { useAppStore } from '@/store/useAppStore'
+import { UserRole } from '@/types/user'
 
 const PAGE_SIZE = 8
 
@@ -27,6 +30,9 @@ export default function SongsPage() {
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({})
+  const { isMobile, isTablet } = useIsMobile()
+  const isCompact = isMobile || isTablet
+  const user = useAppStore((state) => state.user);
 
   const filterGroups = useMemo<FilterGroup[]>(
     () => [
@@ -52,7 +58,7 @@ export default function SongsPage() {
         normalizedSearch.length === 0 ||
         row.title.toLowerCase().includes(normalizedSearch) ||
         row.category?.name.toLowerCase().includes(normalizedSearch)
-      
+
       const matchesCategory = selectedCategory.length === 0 || String(row.categoryId) === selectedCategory
 
       return matchesSearch && matchesCategory
@@ -76,22 +82,6 @@ export default function SongsPage() {
     return filteredRows.slice(start, start + PAGE_SIZE)
   }, [currentPage, filteredRows])
 
-  // const handleDelete = async (song: Song) => {
-  //   const shouldDelete = window.confirm(`¿Está seguro de eliminar la canción "${song.title}"?`)
-
-  //   if (!shouldDelete) {
-  //     return
-  //   }
-
-  //   try {
-  //     await deleteSongMutation.mutateAsync(song.id)
-  //     toast.success('Canción eliminada correctamente.')
-  //   } catch (error) {
-  //     const message = error instanceof Error ? error.message : 'No se pudo eliminar la canción.'
-  //     toast.error(message)
-  //   }
-  // }
-
   return (
     <main className='space-y-6'>
       <div>
@@ -102,7 +92,8 @@ export default function SongsPage() {
       </div>
 
       <UtilityBar
-        createLabel='Nueva Canción'
+        createLabel={isCompact ? 'Nueva' : 'Nueva Canción'}
+        showCreate={user.role === UserRole.PROFESSOR}
         filterDropdown={{
           activeFilters,
           filterGroups,

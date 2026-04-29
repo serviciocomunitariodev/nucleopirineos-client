@@ -227,7 +227,7 @@ export default function RegisterPage() {
   ]
 
   return (
-    <main className='min-h-screen bg-[#F1F5F9] px-4 py-8 relative'>
+    <main className='min-h-screen min-w-screen bg-background px-4 py-8 relative'>
       <div
         className='mx-auto flex w-full flex-col items-center'
         style={{ rowGap: isMobile ? 40 : 80 }}

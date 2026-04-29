@@ -241,23 +241,31 @@ export default function ProfessorForm({
             ) : null}
 
             <div className='grid grid-cols-1 gap-3'>
-              <TextField
-                fullWidth
-                label={mode === 'creation' ? 'Contrasena' : 'Nueva contrasena (opcional)'}
-                placeholder={mode === 'creation' ? 'Contrasena' : 'Dejar en blanco para mantener'}
-                size='small'
-                type='password'
-                {...methods.register('password')}
-              />
+              <div>
+                <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                  {mode === 'creation' ? 'Contraseña' : 'Nueva contraseña (opcional)'}
+                </Typography>
+                <TextField
+                  fullWidth
+                  placeholder={mode === 'creation' ? 'Contraseña' : 'Dejar en blanco para mantener'}
+                  size='small'
+                  type='password'
+                  {...methods.register('password')}
+                />
+              </div>
 
-              <TextField
-                fullWidth
-                label='Confirmar contrasena'
-                placeholder='Repetir contrasena'
-                size='small'
-                type='password'
-                {...methods.register('confirmPassword')}
-              />
+              <div>
+                <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                  Confirmar contraseña
+                </Typography>
+                <TextField
+                  fullWidth
+                  placeholder='Repetir contraseña'
+                  size='small'
+                  type='password'
+                  {...methods.register('confirmPassword')}
+                />
+              </div>
             </div>
 
             <div className='flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end'>

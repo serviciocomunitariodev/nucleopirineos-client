@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import type { SvgIconComponent } from "@mui/icons-material";
 import {
   CalendarMonth,
@@ -33,7 +34,7 @@ const adminNavigation: NavItem[] = [
   { key: "resources", label: "Recursos", icon: LibraryBooks, path: "/educational-materials" },
   { key: "songs", label: "Canciones", icon: MusicNote, path: "/songs" },
   { key: "calendar", label: "Calendario", icon: CalendarMonth, path: "/platform/events" },
-    {
+  {
     key: "users",
     label: "Usuarios",
     icon: People,
@@ -77,6 +78,7 @@ function getInitialExpanded(pathname: string) {
 export default function Layout() {
   const { pathname } = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(getInitialExpanded(pathname));
   const navigate = useNavigate();
   const { isMobile } = useIsMobile();
@@ -93,6 +95,7 @@ export default function Layout() {
   const { initial, backgroundColor } = getUserAvatarStyleFromName(userFullName);
 
   const handleLogout = () => {
+    setIsLogoutModalOpen(false);
     logout();
     navigate("/");
   };
@@ -113,9 +116,8 @@ export default function Layout() {
             return (
               <li key={item.key}>
                 <button
-                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-colors ${
-                    isExpanded ? "bg-primaryHover text-white" : "text-white"
-                  }`}
+                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-colors ${isExpanded ? "bg-primaryHover text-white" : "text-white"
+                    }`}
                   onClick={() => setExpandedGroup(isExpanded ? null : item.key)}
                   type="button"
                 >
@@ -132,8 +134,7 @@ export default function Layout() {
                       <li key={child.key}>
                         <NavLink
                           className={({ isActive }) =>
-                            `block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primaryHover ${
-                              isActive ? "bg-primaryActive text-black" : "text-white"
+                            `block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
                             }`
                           }
                           onClick={() => isMobile && setIsSidebarOpen(false)}
@@ -153,8 +154,7 @@ export default function Layout() {
             <li key={item.key}>
               <NavLink
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-primaryHover ${
-                    isActive ? "bg-primaryActive text-black" : "text-white"
+                  `flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
                   }`
                 }
                 onClick={() => isMobile && setIsSidebarOpen(false)}
@@ -224,8 +224,8 @@ export default function Layout() {
 
           <button
             aria-label="Logout"
-            className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-sm font-semibold"
-            onClick={handleLogout}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-sm font-semibold transition-colors hover:bg-red-600"
+            onClick={() => setIsLogoutModalOpen(true)}
             type="button"
           >
             <span>Cerrar sesion</span>
@@ -264,6 +264,30 @@ export default function Layout() {
           </div>
         </div>
       )}
+
+      <Dialog
+        open={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description"
+      >
+        <DialogTitle id="logout-dialog-title">
+          ¿Cerrar sesión?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="logout-dialog-description">
+            ¿Estás seguro de que deseas salir de tu cuenta?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsLogoutModalOpen(false)} color="inherit">
+            Cancelar
+          </Button>
+          <Button onClick={handleLogout} color="error" variant="contained" autoFocus sx={{ backgroundColor: '#dc2626', '&:hover': { backgroundColor: '#b91c1c' } }}>
+            Cerrar sesión
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

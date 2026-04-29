@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import {
   FilterDropdown,
   type ActiveFilters,
@@ -6,6 +7,7 @@ import {
 } from '@/components/FilterDropdown'
 
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { useDebounce } from '@/hooks/useDebounce'
 
 type UtilityBarProps = {
   showCreate?: boolean
@@ -41,6 +43,18 @@ export function UtilityBar({
   className,
   filterDropdown,
 }: UtilityBarProps) {
+  const [localSearchValue, setLocalSearchValue] = useState(searchValue)
+  const debouncedSearchValue = useDebounce(localSearchValue, 500)
+
+  useEffect(() => {
+    onSearchChange?.(debouncedSearchValue)
+  }, [debouncedSearchValue, onSearchChange])
+
+  // Sync with prop if it changes externally (like clearing filters)
+  useEffect(() => {
+    setLocalSearchValue(searchValue)
+  }, [searchValue])
+
   const { isDesktop } = useIsMobile()
   const isResponsiveLayout = !isDesktop
   const Shadow = isResponsiveLayout
@@ -104,10 +118,10 @@ export function UtilityBar({
           <input
             aria-label='Busqueda'
             className='h-10 w-full rounded-[4px] border border-slate-500 px-3 text-sm text-ownText outline-none transition-colors focus:border-primary'
-            onChange={(event) => onSearchChange?.(event.target.value)}
+            onChange={(event) => setLocalSearchValue(event.target.value)}
             placeholder={searchPlaceholder}
             type='text'
-            value={searchValue}
+            value={localSearchValue}
           />
 
           <div className='grid w-full grid-cols-2 gap-3'>
@@ -117,7 +131,7 @@ export function UtilityBar({
               <button
                 aria-label='Crear nuevo registro'
                 className={[
-                  'h-10 w-full rounded-[10px] bg-primary px-4 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover',
+                  'h-10 w-full rounded-[10px]  bg-primary px-4 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover cursor-pointer',
                   showFilter ? 'min-w-0' : 'col-span-2',
                 ].join(' ')}
                 onClick={onCreateClick}
@@ -165,16 +179,16 @@ export function UtilityBar({
           <input
             aria-label='Busqueda'
             className='h-10 min-w-0 flex-1 rounded-[4px] border border-slate-500 px-3 text-sm text-ownText outline-none transition-colors focus:border-primary'
-            onChange={(event) => onSearchChange?.(event.target.value)}
+            onChange={(event) => setLocalSearchValue(event.target.value)}
             placeholder={searchPlaceholder}
             type='text'
-            value={searchValue}
+            value={localSearchValue}
           />
 
           {showCreate ? (
             <button
               aria-label='Crear nuevo registro'
-              className='h-10 min-w-[110px] shrink-0 rounded-[10px] bg-primary px-5 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover'
+              className='h-10 min-w-[110px] shrink-0 rounded-[10px] bg-primary px-5 text-lg font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-primaryHover cursor-pointer'
               onClick={onCreateClick}
               type='button'
             >
