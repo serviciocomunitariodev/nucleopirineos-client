@@ -17,7 +17,7 @@ export type EducationalMaterial = {
 
 export type EducationalMaterialPayload = {
   title: string;
-  fileUrl: string;
   professorId: number;
   subjectId: number;
+  file?: File;
 };

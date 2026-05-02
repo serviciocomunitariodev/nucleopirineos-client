@@ -1,6 +1,6 @@
+import { useState, useMemo, useRef } from 'react'
 import { Typography } from '@mui/material'
 import { File } from 'lucide-react'
-import { useMemo, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { BaseButton } from '@/components/BaseButton'
@@ -8,6 +8,7 @@ import { BaseForm, type BaseFormField } from '@/components/BaseForm'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useProfessorsQuery from '@/hooks/useProfessorsQuery'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
+import { validateFileSize } from '@/utils/sizeLimitUtil'
 
 export type ResourceFormMode = 'creation' | 'edit'
 
@@ -15,14 +16,13 @@ export type ResourceFormSubmitValues = {
   title: string
   professorId: number
   subjectId: number
-  fileUrl: string
+  file?: File
 }
 
 type ResourceFormValues = {
   title: string
   professorId: string | ''
   subjectId: string | ''
-  fileUrl: string
 }
 
 type ResourceFormProps = {
@@ -42,17 +42,7 @@ const resourceSchema = z.object({
   title: z.string().min(2, 'Nombre requerido.'),
   professorId: z.coerce.number().int().positive('Profesor requerido.'),
   subjectId: z.coerce.number().int().positive('Catedra requerida.'),
-  fileUrl: z.string().min(1, 'Archivo requerido.'),
 })
-
-const getFileNameFromUrl = (fileUrl: string) => {
-  if (!fileUrl) {
-    return ''
-  }
-
-  const pathname = fileUrl.split('?')[0] ?? ''
-  return pathname.split('/').pop() ?? fileUrl
-}
 
 export default function ResourceForm({
   mode,
@@ -63,6 +53,7 @@ export default function ResourceForm({
 }: ResourceFormProps) {
   const { isMobile } = useIsMobile()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [file, setFile] = useState<File | null>(null)
 
   const professorsQuery = useProfessorsQuery()
   const subjectsQuery = useSubjectsQuery()
@@ -119,7 +110,6 @@ export default function ResourceForm({
         title: initialValues?.title ?? '',
         professorId: initialValues?.professorId ? String(initialValues.professorId) : '',
         subjectId: initialValues?.subjectId ? String(initialValues.subjectId) : '',
-        fileUrl: initialValues?.fileUrl ?? '',
       }}
       fields={fields}
       onSubmit={async (values, methods) => {
@@ -138,14 +128,17 @@ export default function ResourceForm({
           return
         }
 
-        await onSubmit(parsed.data)
+        if (mode === 'creation' && !file) {
+          toast.error('Debes adjuntar un archivo.')
+          return
+        }
+
+        await onSubmit({ ...parsed.data, file: file || undefined })
       }}
       width={isMobile ? '100%' : 640}
     >
-      {({ methods }) => {
-        const fileUrlValue = methods.watch('fileUrl')
-        const fileName = getFileNameFromUrl(fileUrlValue)
-        const fileError = methods.formState.errors.fileUrl?.message
+      {() => {
+        const fileName = file ? file.name : (initialValues?.title ? `Archivo de ${initialValues.title}` : '')
 
         return (
           <div className='space-y-3 pt-2'>
@@ -158,6 +151,9 @@ export default function ResourceForm({
                 <Typography className='text-ownText text-center text-base'>
                   {fileName || 'Nombre del archivo'}
                 </Typography>
+                <Typography className='text-gray-500 text-center text-sm mt-[-4px] mb-2'>
+                  (Máx. 5MB)
+                </Typography>
 
                 <input
                   accept='*/*'
@@ -169,25 +165,37 @@ export default function ResourceForm({
                       return
                     }
 
-                    methods.setValue('fileUrl', `uploads/${selectedFile.name}`, {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    })
-                    methods.clearErrors('fileUrl')
+                    if (!validateFileSize(selectedFile, 5, fileInputRef)) {
+                      return
+                    }
+
+                    setFile(selectedFile)
                   }}
                   ref={fileInputRef}
                   type='file'
                 />
 
-                <button
-                  className='h-11 w-full max-w-[260px] rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#854339]'
-                  onClick={() => fileInputRef.current?.click()}
-                  type='button'
-                >
-                  Subir archivo
-                </button>
+                <div className="flex flex-col gap-2 w-full max-w-[260px]">
+                  <button
+                    className='h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#854339]'
+                    onClick={() => fileInputRef.current?.click()}
+                    type='button'
+                  >
+                    {file ? 'Cambiar archivo' : 'Subir archivo'}
+                  </button>
 
-                {fileError ? <Typography color='error'>{String(fileError)}</Typography> : null}
+                  {mode === 'edit' && !file && initialValues?.fileUrl ? (
+                    <a
+                      href={initialValues.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className='flex items-center justify-center h-11 w-full rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-white'
+                    >
+                      Ver archivo actual
+                    </a>
+                  ) : null}
+                </div>
+
               </div>
             </section>
 

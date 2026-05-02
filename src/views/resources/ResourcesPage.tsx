@@ -14,6 +14,14 @@ import { UserRole } from '@/types/user'
 const PAGE_SIZE = 8
 
 const getFileExtension = (fileUrl: string) => {
+  try {
+    const urlObj = new URL(fileUrl, 'http://localhost')
+    const extParam = urlObj.searchParams.get('ext')
+    if (extParam) return extParam.toUpperCase()
+  } catch (error) {
+    // ignorar error de parseo de URL
+  }
+
   const pathname = fileUrl.split('?')[0] ?? ''
   const filename = pathname.split('/').pop() ?? ''
   const extension = filename.split('.').pop() ?? ''

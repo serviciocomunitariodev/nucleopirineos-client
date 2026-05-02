@@ -37,15 +37,15 @@ const mapEducationalMaterial = (material: z.infer<typeof educationalMaterialSche
   uploadDate: material.uploadDate,
   professor: material.professor
     ? {
-        id: material.professor.id,
-        fullName: `${material.professor.user.firstName} ${material.professor.user.lastName}`,
-      }
+      id: material.professor.id,
+      fullName: `${material.professor.user.firstName} ${material.professor.user.lastName}`,
+    }
     : undefined,
   subject: material.subject
     ? {
-        id: material.subject.id,
-        name: material.subject.name,
-      }
+      id: material.subject.id,
+      name: material.subject.name,
+    }
     : undefined,
 });
 
@@ -67,20 +67,42 @@ export const EducationalMaterialApi = {
   },
 
   async create(payload: EducationalMaterialPayload): Promise<EducationalMaterial> {
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("professorId", payload.professorId.toString());
+    formData.append("subjectId", payload.subjectId.toString());
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
+
     const response = await apiClient<unknown>("/educational-materials", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     return mapEducationalMaterial(educationalMaterialSchema.parse(response));
   },
 
   async update(id: number, payload: EducationalMaterialPayload): Promise<EducationalMaterial> {
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("professorId", payload.professorId.toString());
+    formData.append("subjectId", payload.subjectId.toString());
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
+
     const response = await apiClient<unknown>(`/educational-materials/${id}`, {
       method: "PUT",
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     return mapEducationalMaterial(educationalMaterialSchema.parse(response));
+  },
+
+  async remove(id: number): Promise<void> {
+    await apiClient<unknown>(`/educational-materials/${id}`, {
+      method: "DELETE",
+    });
   },
 };

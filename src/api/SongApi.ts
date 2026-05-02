@@ -6,6 +6,7 @@ const songSchema = z.object({
   id: z.number(),
   title: z.string(),
   url: z.string(),
+  fileId: z.string().nullable().optional(),
   categoryId: z.number(),
   category: z.object({
     id: z.number(),
@@ -17,8 +18,9 @@ const songsSchema = z.array(songSchema);
 
 export type CreateSongPayload = {
   title: string;
-  url: string;
   categoryId: number;
+  file?: File;
+  url?: string;
 };
 
 export type UpdateSongPayload = CreateSongPayload;
@@ -41,18 +43,38 @@ export const SongApi = {
   },
 
   async create(payload: CreateSongPayload): Promise<Song> {
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("categoryId", payload.categoryId.toString());
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
+    if (payload.url) {
+      formData.append("url", payload.url);
+    }
+
     const response = await apiClient<unknown>("/songs", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     return songSchema.parse(response);
   },
 
   async update(id: number, payload: UpdateSongPayload): Promise<Song> {
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("categoryId", payload.categoryId.toString());
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
+    if (payload.url) {
+      formData.append("url", payload.url);
+    }
+
     const response = await apiClient<unknown>(`/songs/${id}`, {
       method: "PUT",
-      body: JSON.stringify(payload),
+      body: formData,
     });
 
     return songSchema.parse(response);

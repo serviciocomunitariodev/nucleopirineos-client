@@ -8,7 +8,7 @@ type ResourceCardProps = {
 
 export function ResourceCard({ fileName, sizeMb, format }: ResourceCardProps) {
   return (
-    <article className='flex h-[340px] w-64 overflow-hidden rounded-[28px] bg-white shadow-[0_2px_2px_4px_rgba(0,0,0,0.25)]'>
+    <article className='flex h-[340px] w-64 overflow-hidden rounded-[28px] bg-white shadow-[0_2px_2px_4px_rgba(0,0,0,0.25)] transition-all duration-300 active:duration-75 cursor-pointer hover:scale-105 active:scale-90 active:rotate-[3deg] hover:brightness-95'>
       <div className='flex w-full flex-col'>
         <div className='flex flex-1 items-center justify-center bg-[#f0f0ea]'>
           <FileArchive size={140} strokeWidth={1.75} />

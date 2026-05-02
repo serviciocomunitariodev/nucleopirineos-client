@@ -4,12 +4,19 @@ export async function apiClient<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const isFormData = options.body instanceof FormData;
+
+  const headers: HeadersInit = {
+    ...(options.headers || {}),
+  };
+
+  if (!isFormData && !('Content-Type' in headers)) {
+    (headers as Record<string, string>)["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {

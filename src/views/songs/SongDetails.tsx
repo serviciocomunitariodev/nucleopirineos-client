@@ -65,12 +65,16 @@ export default function SongDetails() {
             <Typography variant='body1' className='font-medium'>{song.category?.name ?? 'Sin categoría'}</Typography>
           </div>
           <div className='md:col-span-2'>
-            <Typography variant='subtitle2' color='text.secondary'>Enlace / URL</Typography>
-            <Typography variant='body1' className='break-all text-primary-600'>
-              <a href={song.url} target='_blank' rel='noopener noreferrer' className='hover:underline'>
-                {song.url}
+            <div className='mt-2'>
+              <a
+                href={song.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className='inline-flex items-center justify-center h-11 px-6 rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#854339]'
+              >
+                Escuchar
               </a>
-            </Typography>
+            </div>
           </div>
         </div>
 

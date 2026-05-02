@@ -49,8 +49,9 @@ export default function EditSong() {
         mode='edit'
         initialValues={{
           title: song.title,
-          url: song.url,
           categoryId: song.categoryId,
+          url: song.url,
+          isExternalUrl: !song.fileId,
         }}
         onCancel={() => navigate('/songs')}
         onSubmit={handleSubmit}
