@@ -1,4 +1,15 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItemButton, ListItemText, Typography } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from '@mui/material'
+import { useMemo, useState } from 'react'
 import type { Event } from '@/types/event'
 import EventInfo from '@/views/events/components/EventInfo'
 
@@ -39,7 +50,10 @@ export default function EventListModal({
   onDeleteEvent,
   canManage,
 }: EventListModalProps) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const selectedEvent = events.find((item) => item.id === selectedEventId) ?? null
+
+  const selectedEventTitle = useMemo(() => selectedEvent?.title ?? '', [selectedEvent])
 
   return (
     <Dialog fullWidth maxWidth='md' onClose={onClose} open={open}>
@@ -53,10 +67,33 @@ export default function EventListModal({
                 key={event.id}
                 onClick={() => onSelectEvent(event.id)}
                 selected={event.id === selectedEventId}
+                sx={{
+                  borderRadius: '10px',
+                  '&.Mui-selected': {
+                    backgroundColor: '#BBDF7C',
+                    color: '#1f2937',
+                  },
+                  '&.Mui-selected:hover': {
+                    backgroundColor: '#A9D76A',
+                  },
+                }}
               >
                 <ListItemText
                   primary={event.title}
                   secondary={`Hora: ${to12Hour(event.time)}`}
+                  slotProps={{
+                    primary: {
+                      sx: {
+                        fontWeight: event.id === selectedEventId ? 700 : 500,
+                        color: event.id === selectedEventId ? '#1f2937' : '#111827',
+                      },
+                    },
+                    secondary: {
+                      sx: {
+                        color: event.id === selectedEventId ? '#1f2937' : '#4b5563',
+                      },
+                    },
+                  }}
                 />
               </ListItemButton>
             ))}
@@ -75,19 +112,89 @@ export default function EventListModal({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cerrar</Button>
+        <Button
+          onClick={onClose}
+          sx={{
+            color: '#556B2F',
+            '&:hover': {
+              backgroundColor: 'rgba(85,107,47,0.1)',
+            },
+          }}
+        >
+          Cerrar
+        </Button>
 
         {canManage && selectedEvent ? (
           <>
-            <Button color='primary' onClick={() => onEditEvent(selectedEvent.id)} variant='contained'>
+            <Button
+              onClick={() => onEditEvent(selectedEvent.id)}
+              sx={{
+                backgroundColor: '#556B2F',
+                color: '#fff',
+                '&:hover': {
+                  backgroundColor: '#78A034',
+                },
+              }}
+              variant='contained'
+            >
               Editar
             </Button>
-            <Button color='error' onClick={() => onDeleteEvent(selectedEvent.id)} variant='contained'>
+            <Button
+              onClick={() => setIsDeleteDialogOpen(true)}
+              sx={{
+                backgroundColor: '#974F43',
+                color: '#fff',
+                '&:hover': {
+                  backgroundColor: '#7E4137',
+                },
+              }}
+              variant='contained'
+            >
               Eliminar
             </Button>
           </>
         ) : null}
       </DialogActions>
+
+      <Dialog onClose={() => setIsDeleteDialogOpen(false)} open={isDeleteDialogOpen}>
+        <DialogTitle>Confirmar eliminacion</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Esta seguro de eliminar el evento "{selectedEventTitle}"?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setIsDeleteDialogOpen(false)}
+            sx={{
+              color: '#556B2F',
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={() => {
+              if (!selectedEvent) {
+                setIsDeleteDialogOpen(false)
+                return
+              }
+
+              onDeleteEvent(selectedEvent.id)
+              setIsDeleteDialogOpen(false)
+            }}
+            sx={{
+              backgroundColor: '#974F43',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: '#7E4137',
+              },
+            }}
+            variant='contained'
+          >
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   )
 }

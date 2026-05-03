@@ -21,12 +21,45 @@ type EventCalendarCoreProps = {
 }
 
 const getDateKey = (value: string) => value.slice(0, 10)
-
 const buildLocalDateTime = (date: string, time: string) => `${getDateKey(date)}T${time}:00`
-
 const toUtcDate = (dateKey: string) => new Date(`${dateKey}T00:00:00Z`)
-
 const toDateKey = (value: Date) => value.toISOString().slice(0, 10)
+
+const closeFullCalendarPopovers = () => {
+  if (typeof document === 'undefined') {
+    return
+  }
+
+  const closeButton = document.querySelector<HTMLElement>('.fc-popover .fc-popover-close')
+
+  if (closeButton) {
+    closeButton.click()
+    return
+  }
+
+  document.querySelectorAll('.fc-popover').forEach((popover) => {
+    popover.remove()
+  })
+}
+
+const to12Hour = (value: string) => {
+  const [hoursRaw, minutesRaw] = value.split(':')
+  const hours = Number(hoursRaw)
+  const minutes = Number(minutesRaw ?? '0')
+
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) {
+    return value
+  }
+
+  const period = hours >= 12 ? 'pm' : 'am'
+  const normalizedHour = hours % 12 === 0 ? 12 : hours % 12
+
+  if (minutes === 0) {
+    return `${normalizedHour}${period}`
+  }
+
+  return `${normalizedHour}:${String(minutes).padStart(2, '0')}${period}`
+}
 
 export default function EventCalendarCore({
   title = 'Calendario de eventos',
@@ -90,6 +123,9 @@ export default function EventCalendarCore({
         start: buildLocalDateTime(event.startDate, event.time),
         end: event.endDate ? buildLocalDateTime(event.endDate, event.time) : undefined,
         allDay: false,
+        extendedProps: {
+          time: event.time,
+        },
       })),
     [eventsQuery.data],
   )
@@ -154,11 +190,15 @@ export default function EventCalendarCore({
 
             openModalForDate(info.event.startStr.slice(0, 10), eventId)
           }}
-          eventTimeFormat={{
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-            meridiem: 'lowercase',
+          eventContent={(info) => {
+            const rawTime = String(info.event.extendedProps.time ?? '')
+
+            return (
+              <div className='flex items-center gap-1 text-xs font-semibold text-white'>
+                <span>{to12Hour(rawTime)}</span>
+                <span>{info.event.title}</span>
+              </div>
+            )
           }}
           events={calendarEvents}
           headerToolbar={{
@@ -169,10 +209,36 @@ export default function EventCalendarCore({
           height='100%'
           initialView='dayGridMonth'
           locale={esLocale}
+          moreLinkClick={(argumentsData) => {
+            argumentsData.jsEvent?.preventDefault()
+            argumentsData.jsEvent?.stopPropagation()
+
+            const dateKey =
+              argumentsData.date instanceof Date
+                ? argumentsData.date.toISOString().slice(0, 10)
+                : String(argumentsData.date).slice(0, 10)
+
+            if (dateKey.length === 10) {
+              openModalForDate(dateKey)
+              window.requestAnimationFrame(() => {
+                closeFullCalendarPopovers()
+                window.requestAnimationFrame(() => {
+                  closeFullCalendarPopovers()
+                })
+              })
+            }
+          }}
           moreLinkContent={(argumentsData) =>
             `+${argumentsData.num} evento${argumentsData.num === 1 ? '' : 's'} mas...`
           }
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          slotLabelContent={(info) => {
+            const hours = info.date.getHours()
+            const period = hours >= 12 ? 'pm' : 'am'
+            const normalizedHour = hours % 12 === 0 ? 12 : hours % 12
+
+            return `${normalizedHour}${period}`
+          }}
         />
       </div>
 
@@ -185,15 +251,6 @@ export default function EventCalendarCore({
         }}
         onDeleteEvent={async (id) => {
           if (!canManage) {
-            return
-          }
-
-          const selectedEvent = selectedDayEvents.find((item) => item.id === id)
-          const shouldDelete = window.confirm(
-            `Esta seguro de eliminar el evento "${selectedEvent?.title ?? ''}"?`,
-          )
-
-          if (!shouldDelete) {
             return
           }
 

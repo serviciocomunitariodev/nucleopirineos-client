@@ -45,7 +45,7 @@ export default function EventInfo({ event }: EventInfoProps) {
 
       <div className='space-y-1'>
         <Typography variant='body2'>
-          <span className='font-semibold'>Fecha inicio:</span> {startDateLabel}
+          <span className='font-semibold'>{endDateLabel ? 'Fecha inicio:' : 'Fecha:'}</span> {startDateLabel}
         </Typography>
 
         {endDateLabel ? (

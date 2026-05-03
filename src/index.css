@@ -114,6 +114,18 @@ body {
 
 .event-calendar-shell .fc .fc-event-title {
   font-weight: 600;
+  color: #ffffff;
+}
+
+.event-calendar-shell .fc .fc-event-time,
+.event-calendar-shell .fc .fc-event-main {
+  color: #ffffff;
+}
+
+.event-calendar-shell .fc .fc-daygrid-event .fc-event-title,
+.event-calendar-shell .fc .fc-daygrid-event .fc-event-time,
+.event-calendar-shell .fc .fc-daygrid-event .fc-event-main {
+  color: #ffffff !important;
 }
 
 @media (max-width: 1023px) {
