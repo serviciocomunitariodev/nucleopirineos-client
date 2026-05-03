@@ -58,6 +58,18 @@ export default function EventInfo({ event }: EventInfoProps) {
           <span className='font-semibold'>Hora:</span> {to12Hour(event.time)}
         </Typography>
 
+        {event.endTime ? (
+          <Typography variant='body2'>
+            <span className='font-semibold'>Hora fin:</span> {to12Hour(event.endTime)}
+          </Typography>
+        ) : null}
+
+        {event.responsible ? (
+          <Typography variant='body2'>
+            <span className='font-semibold'>Responsable:</span> {event.responsible}
+          </Typography>
+        ) : null}
+
         <Typography variant='body2'>
           <span className='font-semibold'>Ubicacion:</span> {event.location}
         </Typography>

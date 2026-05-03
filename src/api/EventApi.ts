@@ -8,11 +8,27 @@ const eventSchema = z.object({
   description: z.string(),
   startDate: z.string(),
   endDate: z.string().nullable().optional(),
+  endTime: z.string().nullable().optional(),
   location: z.string(),
+  responsible: z.string().nullable().optional(),
   time: z.string(),
+  subjectId: z.number().nullable().optional(),
+  academicLevelId: z.number().nullable().optional(),
 })
 
 const eventsSchema = z.array(eventSchema)
+
+const getAuthHeaders = () => {
+  const token = typeof window !== 'undefined' ? window.localStorage.getItem('auth-token') : null
+
+  if (!token) {
+    return undefined
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  }
+}
 
 export const EventApi = {
   async getAll(): Promise<Event[]> {
@@ -31,9 +47,19 @@ export const EventApi = {
     return eventSchema.parse(response)
   },
 
+  async getVisible(): Promise<Event[]> {
+    const response = await apiClient<unknown>('/events/visible', {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    })
+
+    return eventsSchema.parse(response)
+  },
+
   async create(payload: EventPayload): Promise<Event> {
     const response = await apiClient<unknown>('/events', {
       method: 'POST',
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     })
 
@@ -43,6 +69,7 @@ export const EventApi = {
   async update(id: number, payload: EventPayload): Promise<Event> {
     const response = await apiClient<unknown>(`/events/${id}`, {
       method: 'PUT',
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     })
 
@@ -52,6 +79,7 @@ export const EventApi = {
   async remove(id: number): Promise<void> {
     await apiClient<unknown>(`/events/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeaders(),
     })
   },
 }

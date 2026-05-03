@@ -16,6 +16,7 @@ export default function PlatformEventsPage() {
       onCreateClick={() => navigate('/platform/events/new')}
       onEditEvent={(id) => navigate(`/platform/events/${id}/edit`)}
       title='Calendario de la plataforma'
+      visibility='platform'
     />
   )
 }

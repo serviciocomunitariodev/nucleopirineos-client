@@ -62,8 +62,12 @@ export default function EditEvent() {
           description: eventQuery.data.description,
           startDate: toDateInputValue(eventQuery.data.startDate),
           endDate: toDateInputValue(eventQuery.data.endDate),
+          endTime: eventQuery.data.endTime ?? '',
           location: eventQuery.data.location,
+          responsible: eventQuery.data.responsible ?? '',
           time: eventQuery.data.time,
+          subjectId: eventQuery.data.subjectId ? String(eventQuery.data.subjectId) : '',
+          academicLevelId: eventQuery.data.academicLevelId ? String(eventQuery.data.academicLevelId) : '',
         }}
         isSubmitting={updateEventMutation.isPending}
         mode='edit'

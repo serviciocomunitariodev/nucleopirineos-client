@@ -1,9 +1,12 @@
 import { Typography } from '@mui/material'
+import { useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
+import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import useSubjectsQuery from '@/hooks/useSubjectsQuery'
 
 export type EventFormMode = 'creation' | 'edit'
 
@@ -12,8 +15,12 @@ export type EventFormSubmitValues = {
   description: string
   startDate: string
   endDate?: string
+  endTime?: string
   location: string
+  responsible?: string
   time: string
+  subjectId?: number
+  academicLevelId?: number
 }
 
 type EventFormValues = {
@@ -21,8 +28,12 @@ type EventFormValues = {
   description: string
   startDate: string
   endDate: string
+  endTime: string
   location: string
+  responsible: string
   time: string
+  subjectId: string
+  academicLevelId: string
 }
 
 type EventFormProps = {
@@ -39,8 +50,12 @@ const eventSchema = z
     description: z.string().min(2, 'Descripcion requerida.'),
     startDate: z.string().min(1, 'Fecha de inicio requerida.'),
     endDate: z.string().optional(),
+    endTime: z.string().optional(),
     location: z.string().min(2, 'Ubicacion requerida.'),
+    responsible: z.string().optional(),
     time: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Hora invalida.'),
+    subjectId: z.string().optional(),
+    academicLevelId: z.string().optional(),
   })
   .superRefine((data, context) => {
     if (data.endDate && data.endDate < data.startDate) {
@@ -48,6 +63,14 @@ const eventSchema = z
         code: z.ZodIssueCode.custom,
         path: ['endDate'],
         message: 'La fecha de fin no puede ser menor a la fecha de inicio.',
+      })
+    }
+
+    if (data.endTime && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(data.endTime)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['endTime'],
+        message: 'Hora de fin invalida.',
       })
     }
   })
@@ -60,6 +83,26 @@ export default function EventForm({
   onCancel,
 }: EventFormProps) {
   const { isMobile } = useIsMobile()
+  const subjectsQuery = useSubjectsQuery()
+  const academicLevelsQuery = useAcademicLevelsQuery()
+
+  const subjectOptions = useMemo(
+    () =>
+      (subjectsQuery.data ?? []).map((subject) => ({
+        value: String(subject.id),
+        label: `${subject.name} (${subject.type})`,
+      })),
+    [subjectsQuery.data],
+  )
+
+  const academicLevelOptions = useMemo(
+    () =>
+      (academicLevelsQuery.data ?? []).map((level) => ({
+        value: String(level.id),
+        label: level.name,
+      })),
+    [academicLevelsQuery.data],
+  )
 
   const fields: BaseFormField<EventFormValues>[] = [
     {
@@ -84,8 +127,14 @@ export default function EventForm({
     },
     {
       name: 'endDate',
-      label: 'Fecha fin',
+      label: 'Fecha fin (opcional)',
       type: 'date',
+      placeholder: 'Opcional',
+    },
+    {
+      name: 'endTime',
+      label: 'Hora fin (opcional)',
+      type: 'time',
       placeholder: 'Opcional',
     },
     {
@@ -100,6 +149,25 @@ export default function EventForm({
       type: 'time',
       rules: { required: 'Hora requerida.' },
     },
+    {
+      name: 'responsible',
+      label: 'Responsable (opcional)',
+      placeholder: 'Nombre del responsable',
+    },
+    {
+      name: 'subjectId',
+      label: 'Catedra (opcional)',
+      placeholder: 'Selecciona una catedra',
+      select: true,
+      options: subjectOptions,
+    },
+    {
+      name: 'academicLevelId',
+      label: 'Nivel academico (opcional)',
+      placeholder: 'Selecciona un nivel academico',
+      select: true,
+      options: academicLevelOptions,
+    },
   ]
 
   return (
@@ -110,8 +178,12 @@ export default function EventForm({
         description: initialValues?.description ?? '',
         startDate: initialValues?.startDate ?? '',
         endDate: initialValues?.endDate ?? '',
+        endTime: initialValues?.endTime ?? '',
         location: initialValues?.location ?? '',
+        responsible: initialValues?.responsible ?? '',
         time: initialValues?.time ?? '',
+        subjectId: initialValues?.subjectId ? String(initialValues.subjectId) : '',
+        academicLevelId: initialValues?.academicLevelId ? String(initialValues.academicLevelId) : '',
       }}
       fields={fields}
       onSubmit={async (values, methods) => {
@@ -133,6 +205,12 @@ export default function EventForm({
         await onSubmit({
           ...parsed.data,
           endDate: parsed.data.endDate?.trim() ? parsed.data.endDate : undefined,
+          endTime: parsed.data.endTime?.trim() ? parsed.data.endTime : undefined,
+          responsible: parsed.data.responsible?.trim() ? parsed.data.responsible.trim() : undefined,
+          subjectId: parsed.data.subjectId?.trim() ? Number(parsed.data.subjectId) : undefined,
+          academicLevelId: parsed.data.academicLevelId?.trim()
+            ? Number(parsed.data.academicLevelId)
+            : undefined,
         })
       }}
       width={isMobile ? '100%' : 680}

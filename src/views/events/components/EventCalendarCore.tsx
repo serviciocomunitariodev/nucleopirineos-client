@@ -16,6 +16,7 @@ import EventListModal from '@/views/events/components/EventListModal'
 type EventCalendarCoreProps = {
   title?: string
   canManage?: boolean
+  visibility?: 'public' | 'platform'
   onCreateClick?: () => void
   onEditEvent?: (id: number) => void
 }
@@ -64,10 +65,11 @@ const to12Hour = (value: string) => {
 export default function EventCalendarCore({
   title = 'Calendario de eventos',
   canManage = false,
+  visibility = 'public',
   onCreateClick,
   onEditEvent,
 }: EventCalendarCoreProps) {
-  const eventsQuery = useEventsQuery()
+  const eventsQuery = useEventsQuery({ visibility })
   const deleteEventMutation = useDeleteEventMutation()
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null)
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
