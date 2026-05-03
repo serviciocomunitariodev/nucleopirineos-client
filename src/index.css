@@ -28,6 +28,14 @@
   font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.landing-section {
+  scroll-margin-top: 84px;
+}
+
 body {
   margin: 0;
   background: #f4f7fb;

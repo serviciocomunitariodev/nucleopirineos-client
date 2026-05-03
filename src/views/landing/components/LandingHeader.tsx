@@ -5,8 +5,11 @@ import { useIsMobile } from '@/hooks/useIsMobile'
 import type { LandingHeaderVariant } from '@/views/landing/layout/LandingLayout'
 
 const menuItems = [
-  { label: 'Mision y Vision', href: '#mision-vision' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Inicio', sectionId: 'hero' },
+  { label: 'Mision y Vision', sectionId: 'mision-vision' },
+  { label: 'Galeria', sectionId: 'galeria' },
+  { label: 'Contacto', sectionId: 'contacto' },
+  { label: 'Frases', sectionId: 'frases' },
 ]
 
 type LandingHeaderProps = {
@@ -18,13 +21,23 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const closeSidebar = () => setIsSidebarOpen(false)
+  const scrollToSection = (sectionId: string) => {
+    const target = document.getElementById(sectionId)
+
+    if (!target) {
+      return
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    closeSidebar()
+  }
 
   if (variant === 'back-only') {
     return (
-      <header className='relative z-40 bg-primary'>
+      <header className='sticky top-0 z-40 bg-primary'>
         <div className='mx-auto flex h-19 w-full items-center px-4 lg:px-5'>
           <Link
-            className='inline-flex items-center gap-2 rounded-md border border-white/70 px-4 py-2 text-lg font-semibold text-white transition-colors hover:bg-white/10'
+            className='inline-flex cursor-pointer items-center gap-2 rounded-md border border-white/70 px-4 py-2 text-lg font-semibold text-white transition-colors hover:bg-white/10'
             to='/'
           >
             <Undo2 size={18} />
@@ -36,7 +49,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
   }
 
   return (
-    <header className='relative z-40 bg-primary'>
+    <header className='sticky top-0 z-40 bg-primary'>
       <div className='mx-auto flex h-19 w-full items-center gap-4 px-4 lg:px-5'>
         <div>
           <div className='h-9 w-28 rounded-xl bg-white shadow-[0px_2px_5px_rgba(0,0,0,0.35)]' />
@@ -45,7 +58,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
         {isMobile ? (
           <button
             aria-label='Abrir menu'
-            className='ml-auto inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/70 text-white transition-colors hover:bg-white/10'
+            className='ml-auto inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-white/70 text-white transition-colors hover:bg-white/10'
             onClick={() => setIsSidebarOpen(true)}
             type='button'
           >
@@ -56,25 +69,26 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
         <div className='ml-auto hidden items-center gap-8 md:flex'>
           <nav aria-label='Navegacion principal' className='hidden items-center gap-8 md:flex'>
             {menuItems.map((item) => (
-              <a
+              <button
                 key={item.label}
-                className='text-xl font-semibold text-white transition-opacity hover:opacity-85'
-                href={item.href}
+                className='cursor-pointer text-xl font-semibold text-white transition-opacity hover:opacity-85'
+                onClick={() => scrollToSection(item.sectionId)}
+                type='button'
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </nav>
 
           <Link
-            className='rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
+            className='cursor-pointer rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
             to='/events'
           >
             Ver calendario
           </Link>
 
           <Link
-            className='rounded-2xl bg-white px-6 py-3 text-xl font-semibold text-ink shadow-[0px_3px_8px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5'
+            className='cursor-pointer rounded-2xl bg-white px-6 py-3 text-xl font-semibold text-ink shadow-[0px_3px_8px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5'
             to='/auth/login'
           >
             Iniciar sesion
@@ -106,7 +120,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
               <span className='text-lg font-semibold'>Menu</span>
               <button
                 aria-label='Cerrar panel lateral'
-                className='inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/70 hover:bg-white/10'
+                className='inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-white/70 hover:bg-white/10'
                 onClick={closeSidebar}
                 type='button'
               >
@@ -116,7 +130,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
 
             <nav aria-label='Menu de secciones landing' className='flex flex-col gap-3 text-lg font-semibold'>
               <Link
-                className='flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
                 onClick={closeSidebar}
                 to='/auth/login'
               >
@@ -124,31 +138,47 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 Iniciar Sesion
               </Link>
               <Link
-                className='flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
                 onClick={closeSidebar}
                 to='/events'
               >
                 <CalendarRange size={25} />
                 Ver Calendario
               </Link>
-              <a
-                className='flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
-                href='/#mision-vision'
-                onClick={closeSidebar}
+              <button
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                onClick={() => scrollToSection('mision-vision')}
+                type='button'
               >
                 <Eye size={25} />
                 Mision y Vision
-              </a>
-              <a
-                className='flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
-                href='/#contacto'
-                onClick={closeSidebar}
+              </button>
+              <button
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                onClick={() => scrollToSection('galeria')}
+                type='button'
+              >
+                <Boxes size={25} />
+                Galeria
+              </button>
+              <button
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                onClick={() => scrollToSection('contacto')}
+                type='button'
               >
                 <BookUser size={25} />
                 Contacto
-              </a>
+              </button>
+              <button
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                onClick={() => scrollToSection('frases')}
+                type='button'
+              >
+                <Eye size={25} />
+                Frases
+              </button>
               <Link
-                className='flex items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
                 onClick={closeSidebar}
                 to='/'
               >

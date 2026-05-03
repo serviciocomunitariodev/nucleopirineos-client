@@ -20,7 +20,7 @@ const phrases: PhraseItem[] = [
 
 export default function PhrasesSection() {
   return (
-    <section className='w-full bg-superficies py-20'>
+    <section className='w-full bg-superficies py-20 landing-section' id='frases'>
       <div className='mx-auto w-full max-w-[1500px] px-4 lg:px-5'>
         <div className='grid items-stretch gap-6 md:grid-cols-3'>
           {phrases.map((item) => (

@@ -16,7 +16,7 @@ export default function ImagesSection() {
   }
 
   return (
-    <section className='bg-superficies py-8 md:py-10'>
+    <section className='bg-superficies py-8 md:py-10 landing-section' id='galeria'>
       <div className='mx-auto grid w-full max-w-[1400px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 lg:px-5'>
         <button
           aria-label='Imagen anterior'

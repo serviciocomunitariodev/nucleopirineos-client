@@ -31,7 +31,7 @@ const socialItems = [
 
 export default function SocialMedia() {
   return (
-    <section className='bg-white py-14' id='contacto'>
+    <section className='bg-white py-14 landing-section' id='contacto'>
       <div className='mx-auto w-full max-w-[1400px] px-4 text-center lg:px-5'>
         <h2 className='text-[28px] lg:text-[56px] font-bold leading-tight text-ink'>Redes sociales y contacto</h2>
 
