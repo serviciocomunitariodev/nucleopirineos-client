@@ -1,19 +1,225 @@
 import FullCalendar from '@fullcalendar/react'
+import esLocale from '@fullcalendar/core/locales/es'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { Paper, Typography } from '@mui/material'
+import { Alert, CircularProgress, Paper, Typography } from '@mui/material'
+import { useMemo, useState } from 'react'
+import { Plus } from 'lucide-react'
+import { toast } from 'react-toastify'
+import { BaseButton } from '@/components/BaseButton'
+import useDeleteEventMutation from '@/hooks/useDeleteEventMutation'
+import useEventsQuery from '@/hooks/useEventsQuery'
+import type { Event } from '@/types/event'
+import EventListModal from '@/views/events/components/EventListModal'
 
 type EventCalendarCoreProps = {
   title?: string
+  canManage?: boolean
+  onCreateClick?: () => void
+  onEditEvent?: (id: number) => void
 }
 
-export default function EventCalendarCore({ title = 'Calendario de eventos' }: EventCalendarCoreProps) {
+const getDateKey = (value: string) => value.slice(0, 10)
+
+const buildLocalDateTime = (date: string, time: string) => `${getDateKey(date)}T${time}:00`
+
+const toUtcDate = (dateKey: string) => new Date(`${dateKey}T00:00:00Z`)
+
+const toDateKey = (value: Date) => value.toISOString().slice(0, 10)
+
+export default function EventCalendarCore({
+  title = 'Calendario de eventos',
+  canManage = false,
+  onCreateClick,
+  onEditEvent,
+}: EventCalendarCoreProps) {
+  const eventsQuery = useEventsQuery()
+  const deleteEventMutation = useDeleteEventMutation()
+  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null)
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
+
+  const eventsByDate = useMemo(() => {
+    const map = new Map<string, Event[]>()
+
+    for (const event of eventsQuery.data ?? []) {
+      const startDateKey = getDateKey(event.startDate)
+      const endDateKey = event.endDate ? getDateKey(event.endDate) : startDateKey
+      let cursor = toUtcDate(startDateKey)
+      const endDate = toUtcDate(endDateKey)
+
+      while (cursor <= endDate) {
+        const key = toDateKey(cursor)
+        const list = map.get(key) ?? []
+        list.push(event)
+        map.set(key, list)
+        cursor = new Date(cursor.getTime() + 24 * 60 * 60 * 1000)
+      }
+    }
+
+    for (const [key, value] of map.entries()) {
+      map.set(
+        key,
+        [...value].sort(
+          (left, right) => left.time.localeCompare(right.time) || left.title.localeCompare(right.title),
+        ),
+      )
+    }
+
+    return map
+  }, [eventsQuery.data])
+
+  const selectedDayEvents = selectedDateKey ? eventsByDate.get(selectedDateKey) ?? [] : []
+
+  const openModalForDate = (dateKey: string, eventId?: number) => {
+    const dayEvents = eventsByDate.get(dateKey) ?? []
+
+    if (dayEvents.length === 0) {
+      return
+    }
+
+    setSelectedDateKey(dateKey)
+    setSelectedEventId(eventId ?? dayEvents[0]?.id ?? null)
+  }
+
+  const calendarEvents = useMemo(
+    () =>
+      (eventsQuery.data ?? []).map((event) => ({
+        id: String(event.id),
+        title: event.title,
+        start: buildLocalDateTime(event.startDate, event.time),
+        end: event.endDate ? buildLocalDateTime(event.endDate, event.time) : undefined,
+        allDay: false,
+      })),
+    [eventsQuery.data],
+  )
+
+  if (eventsQuery.isLoading) {
+    return (
+      <div className='flex h-50 items-center justify-center'>
+        <CircularProgress />
+      </div>
+    )
+  }
+
+  if (eventsQuery.isError) {
+    return <Alert severity='error'>No se pudo cargar el calendario de eventos.</Alert>
+  }
+
   return (
-    <Paper sx={{ p: 2 }}>
-      <Typography gutterBottom variant='h5'>
-        {title}
-      </Typography>
-      <FullCalendar plugins={[dayGridPlugin, timeGridPlugin]} initialView='dayGridMonth' />
+    <Paper className='rounded-3xl border border-primary/10 bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.12)]' sx={{ p: 3 }}>
+      <div className='mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
+        <div>
+          <Typography className='text-primary' gutterBottom variant='h5'>
+            {title}
+          </Typography>
+          <Typography color='text.secondary' variant='body2'>
+            Consulta los eventos programados del núcleo
+          </Typography>
+        </div>
+
+        {canManage ? (
+          <div className='w-full md:w-auto'>
+            <BaseButton
+              fullWidth
+              onClick={onCreateClick}
+              startIcon={<Plus size={18} />}
+              sx={{
+                minHeight: 44,
+                px: 3,
+                fontSize: '16px',
+                backgroundColor: '#556B2F',
+                '&:hover': { backgroundColor: '#78A034' },
+              }}
+              text='Nuevo evento'
+              type='button'
+            />
+          </div>
+        ) : null}
+      </div>
+
+      <div className='event-calendar-shell lg:h-[calc(100vh-300px)]'>
+        <FullCalendar
+          buttonText={{ today: 'Hoy', month: 'Mes', week: 'Semana', day: 'Dia' }}
+          dateClick={(info) => {
+            openModalForDate(info.dateStr)
+          }}
+          dayMaxEvents={1}
+          eventClick={(info) => {
+            const eventId = Number(info.event.id)
+
+            if (!Number.isFinite(eventId)) {
+              return
+            }
+
+            openModalForDate(info.event.startStr.slice(0, 10), eventId)
+          }}
+          eventTimeFormat={{
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            meridiem: 'lowercase',
+          }}
+          events={calendarEvents}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek',
+          }}
+          height='100%'
+          initialView='dayGridMonth'
+          locale={esLocale}
+          moreLinkContent={(argumentsData) =>
+            `+${argumentsData.num} evento${argumentsData.num === 1 ? '' : 's'} mas...`
+          }
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        />
+      </div>
+
+      <EventListModal
+        canManage={canManage}
+        events={selectedDayEvents}
+        onClose={() => {
+          setSelectedDateKey(null)
+          setSelectedEventId(null)
+        }}
+        onDeleteEvent={async (id) => {
+          if (!canManage) {
+            return
+          }
+
+          const selectedEvent = selectedDayEvents.find((item) => item.id === id)
+          const shouldDelete = window.confirm(
+            `Esta seguro de eliminar el evento "${selectedEvent?.title ?? ''}"?`,
+          )
+
+          if (!shouldDelete) {
+            return
+          }
+
+          try {
+            await deleteEventMutation.mutateAsync(id)
+            toast.success('Evento eliminado correctamente.')
+            setSelectedDateKey(null)
+            setSelectedEventId(null)
+          } catch (error) {
+            const message = error instanceof Error ? error.message : 'No se pudo eliminar el evento.'
+            toast.error(message)
+          }
+        }}
+        onEditEvent={(id) => {
+          if (!canManage || !onEditEvent) {
+            return
+          }
+
+          onEditEvent(id)
+          setSelectedDateKey(null)
+          setSelectedEventId(null)
+        }}
+        onSelectEvent={(id) => setSelectedEventId(id)}
+        open={Boolean(selectedDateKey) && selectedDayEvents.length > 0}
+        selectedEventId={selectedEventId}
+      />
     </Paper>
   )
 }

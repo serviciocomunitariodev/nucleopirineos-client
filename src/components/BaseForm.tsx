@@ -21,8 +21,10 @@ export type BaseFormField<TFormValues extends FieldValues> = {
   name: Path<TFormValues>
   label: string
   placeholder?: string
-  type?: 'text' | 'email' | 'password' | 'date' | 'number'
+  type?: 'text' | 'email' | 'password' | 'date' | 'number' | 'time'
   select?: boolean
+  multiline?: boolean
+  rows?: number
   options?: SelectOption[]
   disabled?: boolean
   onValueChange?: (value: string, methods: UseFormReturn<TFormValues>) => void
@@ -255,6 +257,8 @@ export function BaseForm<TFormValues extends FieldValues>({
                 error={Boolean(fieldError)}
                 fullWidth
                 helperText={helperText}
+                multiline={field.multiline}
+                rows={field.multiline ? (field.rows ?? 4) : undefined}
                 slotProps={{
                   formHelperText: { id: `${fieldId}-helper` },
                   htmlInput: { 'aria-describedby': `${fieldId}-helper` },

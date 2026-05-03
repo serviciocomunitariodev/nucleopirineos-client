@@ -9,6 +9,8 @@ import ProtectedRoute from "./views/auth/ProtectedRoute";
 const DashboardPage = lazy(() => import("@/views/dashboard/DashboardPage"));
 const PublicEventsPage = lazy(() => import("@/views/events/PublicEventsPage"));
 const PlatformEventsPage = lazy(() => import("@/views/events/PlatformEventsPage"));
+const NewEvent = lazy(() => import("@/views/events/NewEvent"));
+const EditEvent = lazy(() => import("@/views/events/EditEvent"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
 const NewResource = lazy(() => import("./views/resources/NewResource"));
 const EditResource = lazy(() => import("./views/resources/EditResource"));
@@ -85,6 +87,8 @@ export default function AppRouter() {
             <Route path="/songs/:id" element={withSuspense(<SongDetails />)} />
             <Route path="/songs/:id/edit" element={withSuspense(<EditSong />)} />
             <Route path="/platform/events" element={withSuspense(<PlatformEventsPage />)} />
+            <Route path="/platform/events/new" element={withSuspense(<NewEvent />)} />
+            <Route path="/platform/events/:id/edit" element={withSuspense(<EditEvent />)} />
             <Route path="/users/professors" element={withSuspense(<ProfessorsPage />)} />
             <Route path="/users/professors/new" element={withSuspense(<NewProfessor />)} />
             <Route path="/users/professors/:id/edit" element={withSuspense(<EditProfessor />)} />

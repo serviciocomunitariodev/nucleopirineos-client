@@ -34,6 +34,106 @@ body {
   color: #172b4d;
 }
 
+.event-calendar-shell {
+  min-height: 620px;
+}
+
+.event-calendar-shell .fc {
+  height: 100%;
+}
+
+.event-calendar-shell .fc-theme-standard td,
+.event-calendar-shell .fc-theme-standard th,
+.event-calendar-shell .fc-theme-standard .fc-scrollgrid {
+  border-color: rgba(85, 107, 47, 0.14);
+}
+
+.event-calendar-shell .fc .fc-toolbar {
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.event-calendar-shell .fc .fc-toolbar-title {
+  color: #556b2f;
+  font-size: 1.45rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.event-calendar-shell .fc .fc-button {
+  background: #556b2f;
+  border-color: #556b2f;
+  box-shadow: none;
+  text-transform: capitalize;
+}
+
+.event-calendar-shell .fc .fc-button:hover,
+.event-calendar-shell .fc .fc-button:focus {
+  background: #78a034;
+  border-color: #78a034;
+}
+
+.event-calendar-shell .fc .fc-button-primary:not(:disabled).fc-button-active,
+.event-calendar-shell .fc .fc-button-primary:not(:disabled):active {
+  background: #bbdf7c;
+  border-color: #bbdf7c;
+  color: #1f2937;
+}
+
+.event-calendar-shell .fc .fc-col-header-cell {
+  background: #f1f1e6;
+}
+
+.event-calendar-shell .fc .fc-col-header-cell-cushion {
+  color: #556b2f;
+  font-weight: 700;
+  padding: 0.85rem 0.25rem;
+  text-transform: capitalize;
+}
+
+.event-calendar-shell .fc .fc-daygrid-day-number {
+  color: #556b2f;
+  font-weight: 600;
+}
+
+.event-calendar-shell .fc .fc-day-today {
+  background: rgba(187, 223, 124, 0.18) !important;
+}
+
+.event-calendar-shell .fc .fc-event {
+  background: #974f43;
+  border-color: #974f43;
+  border-radius: 10px;
+  padding: 2px 4px;
+}
+
+.event-calendar-shell .fc .fc-event:hover {
+  background: #7e4137;
+  border-color: #7e4137;
+}
+
+.event-calendar-shell .fc .fc-event-title {
+  font-weight: 600;
+}
+
+@media (max-width: 1023px) {
+  .event-calendar-shell {
+    min-height: auto;
+  }
+
+  .event-calendar-shell .fc .fc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .event-calendar-shell .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
 main {
   max-width: 1200px;
   margin: 0 auto;
