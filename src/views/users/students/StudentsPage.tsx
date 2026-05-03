@@ -8,6 +8,7 @@ import { UtilityBar } from '@/components/UtilityBar'
 import useStudentsQuery from '@/hooks/useStudentsQuery'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import type { StudentRecord } from '@/types/users'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const PAGE_SIZE = 5
 
@@ -16,6 +17,7 @@ export default function StudentsPage() {
 
   const navigate = useNavigate()
   const studentsQuery = useStudentsQuery()
+  const isMobile = useIsMobile()
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -119,7 +121,7 @@ export default function StudentsPage() {
   const columns: BaseTableColumn<StudentRecord>[] = [
     {
       key: 'fullName',
-      header: 'Nombre completo',
+      header: isMobile ? 'Nombre' : 'Nombre completo',
       render: (row) => `${row.user.firstName} ${row.user.lastName}`,
     },
     {
@@ -136,12 +138,12 @@ export default function StudentsPage() {
     },
     {
       key: 'academicLevel',
-      header: 'Nivel academico',
+      header: isMobile ? 'Nivel' : 'Nivel academico',
       render: (row) => row.academicLevel.name,
     },
     {
       key: 'principalSubject',
-      header: 'Catedra principal',
+      header: isMobile ? 'Catedra' : 'Catedra principal',
       render: (row) => row.principalSubject?.name ?? 'No asignada',
     },
     {

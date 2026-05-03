@@ -10,6 +10,7 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 import { useAppStore } from '@/store/useAppStore'
 import type { EducationalMaterial } from '@/types/educationalMaterial'
 import { UserRole } from '@/types/user'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const PAGE_SIZE = 8
 
@@ -42,6 +43,8 @@ export default function ResourcesPage() {
   const navigate = useNavigate()
   const educationalMaterialsQuery = useEducationalMaterialsQuery()
   const userRole = useAppStore((state) => state.user.role)
+  const { isMobile, isTablet } = useIsMobile()
+  const isCompact = isMobile || isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -107,7 +110,7 @@ export default function ResourcesPage() {
       </div>
 
       <UtilityBar
-        createLabel='Nuevo Recurso'
+        createLabel={isCompact ? 'Nuevo' : 'Nuevo Recurso'}
         filterDropdown={{
           activeFilters,
           filterGroups,

@@ -8,6 +8,7 @@ import { UtilityBar } from '@/components/UtilityBar'
 import useProfessorsQuery from '@/hooks/useProfessorsQuery'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import type { ProfessorRecord } from '@/types/users'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const PAGE_SIZE = 5
 
@@ -16,6 +17,7 @@ export default function ProfessorsPage() {
 
   const navigate = useNavigate()
   const professorsQuery = useProfessorsQuery()
+  const isMobile = useIsMobile()
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -105,7 +107,7 @@ export default function ProfessorsPage() {
   const columns: BaseTableColumn<ProfessorRecord>[] = [
     {
       key: 'fullName',
-      header: 'Nombre completo',
+      header: isMobile ? 'Nombre' : 'Nombre completo',
       render: (row) => `${row.user.firstName} ${row.user.lastName}`,
     },
     {
