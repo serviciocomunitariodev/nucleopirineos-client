@@ -96,6 +96,10 @@ body {
   font-weight: 600;
 }
 
+.event-calendar-shell .fc .fc-daygrid-day-frame {
+  min-height: 92px;
+}
+
 .event-calendar-shell .fc .fc-day-today {
   background: rgba(187, 223, 124, 0.18) !important;
 }
@@ -133,9 +137,15 @@ body {
     min-height: auto;
   }
 
+  .event-calendar-shell .fc {
+    min-height: 520px;
+  }
+
   .event-calendar-shell .fc .fc-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .event-calendar-shell .fc .fc-toolbar-chunk {
@@ -143,6 +153,55 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .event-calendar-shell .fc .fc-toolbar-title {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .event-calendar-shell .fc .fc-button {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .event-calendar-shell .fc .fc-col-header-cell-cushion {
+    font-size: 0.85rem;
+    padding: 0.55rem 0.1rem;
+  }
+
+  .event-calendar-shell .fc .fc-daygrid-day-number {
+    font-size: 0.85rem;
+  }
+
+  .event-calendar-shell .fc .fc-daygrid-day-frame {
+    min-height: 60px;
+    height: 60px;
+  }
+
+  .event-calendar-shell .fc .fc-daygrid-day-frame.fc-mobile-has-events {
+    position: relative;
+  }
+
+  .event-calendar-shell .fc .fc-daygrid-day-frame.fc-mobile-has-events::after {
+    content: attr(data-event-count);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 9999px;
+    background: #974f43;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    position: absolute;
+    left: 50%;
+    top: 56%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
   }
 }
 

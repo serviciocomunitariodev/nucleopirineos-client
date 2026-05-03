@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { BaseButton } from '@/components/BaseButton'
 import useDeleteEventMutation from '@/hooks/useDeleteEventMutation'
 import useEventsQuery from '@/hooks/useEventsQuery'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import type { Event } from '@/types/event'
 import EventListModal from '@/views/events/components/EventListModal'
 
@@ -25,6 +26,14 @@ const getDateKey = (value: string) => value.slice(0, 10)
 const buildLocalDateTime = (date: string, time: string) => `${getDateKey(date)}T${time}:00`
 const toUtcDate = (dateKey: string) => new Date(`${dateKey}T00:00:00Z`)
 const toDateKey = (value: Date) => value.toISOString().slice(0, 10)
+const toLocalDateKey = (value: Date) => {
+  const year = value.getFullYear()
+  const month = String(value.getMonth() + 1).padStart(2, '0')
+  const day = String(value.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+const toMobileEventsCountLabel = (count: number) => (count > 9 ? '+9' : String(count))
 
 const closeFullCalendarPopovers = () => {
   if (typeof document === 'undefined') {
@@ -69,6 +78,7 @@ export default function EventCalendarCore({
   onCreateClick,
   onEditEvent,
 }: EventCalendarCoreProps) {
+  const { isMobile, isTablet } = useIsMobile()
   const eventsQuery = useEventsQuery({ visibility })
   const deleteEventMutation = useDeleteEventMutation()
   const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null)
@@ -148,10 +158,10 @@ export default function EventCalendarCore({
     <Paper className='rounded-3xl border border-primary/10 bg-white shadow-[0px_10px_28px_rgba(0,0,0,0.12)]' sx={{ p: 3 }}>
       <div className='mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
         <div>
-          <Typography className='text-primary' gutterBottom variant='h5'>
+          <Typography className='text-primary' gutterBottom sx={{ fontSize: { xs: '20px', md: '30px' }, fontWeight: 600 }}>
             {title}
           </Typography>
-          <Typography color='text.secondary' variant='body2'>
+          <Typography color='text.secondary' sx={{ fontSize: { xs: '12px', md: '16px' } }}>
             Consulta los eventos programados del núcleo
           </Typography>
         </div>
@@ -178,11 +188,34 @@ export default function EventCalendarCore({
 
       <div className='event-calendar-shell lg:h-[calc(100vh-300px)]'>
         <FullCalendar
-          buttonText={{ today: 'Hoy', month: 'Mes', week: 'Semana', day: 'Dia' }}
+          buttonText={{
+            today: 'Hoy',
+            month: 'Mes',
+            week: isMobile ? 'Sem.' : 'Semana',
+            day: 'Dia',
+          }}
+          dayHeaderFormat={isMobile ? { weekday: 'narrow' } : { weekday: 'short' }}
           dateClick={(info) => {
             openModalForDate(info.dateStr)
           }}
           dayMaxEvents={1}
+          dayCellDidMount={(info) => {
+            const eventsCount = eventsByDate.get(toLocalDateKey(info.date))?.length ?? 0
+            const dayFrame = info.el.querySelector<HTMLElement>('.fc-daygrid-day-frame')
+
+            if (!dayFrame) {
+              return
+            }
+
+            if (!isMobile || eventsCount === 0) {
+              dayFrame.classList.remove('fc-mobile-has-events')
+              dayFrame.removeAttribute('data-event-count')
+              return
+            }
+
+            dayFrame.classList.add('fc-mobile-has-events')
+            dayFrame.setAttribute('data-event-count', toMobileEventsCountLabel(eventsCount))
+          }}
           eventClick={(info) => {
             const eventId = Number(info.event.id)
 
@@ -202,15 +235,16 @@ export default function EventCalendarCore({
               </div>
             )
           }}
-          events={calendarEvents}
+          events={isMobile ? [] : calendarEvents}
           headerToolbar={{
-            left: 'prev,next today',
+            left: isMobile ? 'prev,next' : 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek',
+            right: isMobile ? 'today dayGridMonth' : 'dayGridMonth,timeGridWeek',
           }}
-          height='100%'
+          height={isMobile || isTablet ? 'auto' : '100%'}
           initialView='dayGridMonth'
-          locale={esLocale}
+          locale='es'
+          locales={[esLocale]}
           moreLinkClick={(argumentsData) => {
             argumentsData.jsEvent?.preventDefault()
             argumentsData.jsEvent?.stopPropagation()
@@ -234,6 +268,7 @@ export default function EventCalendarCore({
             `+${argumentsData.num} evento${argumentsData.num === 1 ? '' : 's'} mas...`
           }
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          titleFormat={isMobile ? { month: 'long', year: 'numeric' } : undefined}
           slotLabelContent={(info) => {
             const hours = info.date.getHours()
             const period = hours >= 12 ? 'pm' : 'am'

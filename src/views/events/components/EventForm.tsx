@@ -132,12 +132,6 @@ export default function EventForm({
       placeholder: 'Opcional',
     },
     {
-      name: 'endTime',
-      label: 'Hora fin (opcional)',
-      type: 'time',
-      placeholder: 'Opcional',
-    },
-    {
       name: 'location',
       label: 'Ubicacion',
       placeholder: 'Ubicacion',
@@ -148,6 +142,12 @@ export default function EventForm({
       label: 'Hora',
       type: 'time',
       rules: { required: 'Hora requerida.' },
+    },
+    {
+      name: 'endTime',
+      label: 'Hora fin (opcional)',
+      type: 'time',
+      placeholder: 'Opcional',
     },
     {
       name: 'responsible',
