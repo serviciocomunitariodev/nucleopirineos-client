@@ -132,6 +132,21 @@ body {
   color: #ffffff !important;
 }
 
+.event-calendar-shell .fc .fc-timegrid .fc-scroller,
+.event-calendar-shell .fc .fc-timegrid .fc-scroller-harness,
+.event-calendar-shell .fc .fc-timegrid .fc-scroller-liquid-absolute {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.event-calendar-shell .fc .fc-timegrid .fc-scroller::-webkit-scrollbar,
+.event-calendar-shell .fc .fc-timegrid .fc-scroller-harness::-webkit-scrollbar,
+.event-calendar-shell .fc .fc-timegrid .fc-scroller-liquid-absolute::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 @media (max-width: 1023px) {
   .event-calendar-shell {
     min-height: auto;
