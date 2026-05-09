@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BookUser, Boxes, CalendarRange, Eye, Menu, Undo2, X } from 'lucide-react'
+import { BookUser, Boxes, CalendarRange, CircleUserRound, Contact, Eye, Images, Menu, Rocket, TextQuote, Undo2, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import type { LandingHeaderVariant } from '@/views/landing/layout/LandingLayout'
@@ -134,7 +134,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 onClick={closeSidebar}
                 to='/auth/login'
               >
-                <Boxes size={25} />
+                <CircleUserRound size={25} />
                 Iniciar Sesion
               </Link>
               <Link
@@ -150,7 +150,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 onClick={() => scrollToSection('mision-vision')}
                 type='button'
               >
-                <Eye size={25} />
+                <Rocket size={25} />
                 Mision y Vision
               </button>
               <button
@@ -158,7 +158,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 onClick={() => scrollToSection('galeria')}
                 type='button'
               >
-                <Boxes size={25} />
+                <Images size={25} />
                 Galeria
               </button>
               <button
@@ -166,7 +166,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 onClick={() => scrollToSection('contacto')}
                 type='button'
               >
-                <BookUser size={25} />
+                <Contact size={25} />
                 Contacto
               </button>
               <button
@@ -174,7 +174,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 onClick={() => scrollToSection('frases')}
                 type='button'
               >
-                <Eye size={25} />
+                <TextQuote size={25} />
                 Frases
               </button>
               <Link
