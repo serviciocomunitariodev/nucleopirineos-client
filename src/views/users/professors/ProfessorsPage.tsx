@@ -18,6 +18,7 @@ export default function ProfessorsPage() {
   const navigate = useNavigate()
   const professorsQuery = useProfessorsQuery()
   const isMobile = useIsMobile()
+  const isCompact = isMobile.isMobile || isMobile.isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -135,7 +136,7 @@ export default function ProfessorsPage() {
       key: 'actions',
       header: 'Acciones',
       align: 'center',
-      width: '90px',
+      width: isCompact ? '64px' : '90px',
       render: (row) => (
         <div className='flex justify-center'>
           <IconButton
@@ -180,6 +181,10 @@ export default function ProfessorsPage() {
       <BaseTable
         columns={columns}
         emptyMessage={professorsQuery.isLoading ? 'Cargando profesores...' : 'No hay profesores para mostrar.'}
+        marqueeCols={['fullName', 'email', 'academicLevels', 'subjects']}
+        marqueeDirection='rtl'
+        marqueeEffect={isCompact}
+        marqueeSpeed={8}
         pagination={{
           enabled: true,
           currentPage,

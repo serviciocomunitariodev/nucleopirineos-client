@@ -10,6 +10,7 @@ import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSubjectMutation from '@/hooks/useDeleteSubjectMutation'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import type { Subject } from '@/types/subject'
 import { SubjectType } from '@/types/subject'
 
@@ -27,6 +28,8 @@ export default function SubjectsPage() {
   const navigate = useNavigate()
   const subjectsQuery = useSubjectsQuery()
   const deleteSubjectMutation = useDeleteSubjectMutation()
+  const { isMobile, isTablet } = useIsMobile()
+  const isCompact = isMobile || isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -93,7 +96,7 @@ export default function SubjectsPage() {
       key: 'actions',
       header: 'Acciones',
       align: 'center',
-      width: '110px',
+      width: isCompact ? '86px' : '110px',
       render: (row) => (
         <div className='flex justify-center gap-1'>
           <IconButton
@@ -160,6 +163,10 @@ export default function SubjectsPage() {
       <BaseTable
         columns={columns}
         emptyMessage={subjectsQuery.isLoading ? 'Cargando catedras...' : 'No hay catedras para mostrar.'}
+        marqueeCols={['name']}
+        marqueeDirection='rtl'
+        marqueeEffect={isCompact}
+        marqueeSpeed={8}
         pagination={{
           enabled: true,
           currentPage,

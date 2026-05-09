@@ -18,6 +18,7 @@ export default function StudentsPage() {
   const navigate = useNavigate()
   const studentsQuery = useStudentsQuery()
   const isMobile = useIsMobile()
+  const isCompact = isMobile.isMobile || isMobile.isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -150,7 +151,7 @@ export default function StudentsPage() {
       key: 'actions',
       header: 'Acciones',
       align: 'center',
-      width: '90px',
+      width: isCompact ? '64px' : '90px',
       render: (row) => (
         <div className='flex justify-center'>
           <IconButton
@@ -195,6 +196,10 @@ export default function StudentsPage() {
       <BaseTable
         columns={columns}
         emptyMessage={studentsQuery.isLoading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
+        marqueeCols={['fullName', 'email', 'academicLevel', 'principalSubject']}
+        marqueeDirection='rtl'
+        marqueeEffect={isCompact}
+        marqueeSpeed={8}
         pagination={{
           enabled: true,
           currentPage,

@@ -9,6 +9,7 @@ import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSongCategoryMutation from '@/hooks/useDeleteSongCategoryMutation'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import type { SongCategory } from '@/types/songCategory'
 
 const PAGE_SIZE = 5
@@ -19,6 +20,8 @@ export default function SongCategoryPage() {
   const navigate = useNavigate()
   const songCategoriesQuery = useSongCategoriesQuery()
   const deleteSongCategoryMutation = useDeleteSongCategoryMutation()
+  const { isMobile, isTablet } = useIsMobile()
+  const isCompact = isMobile || isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -62,7 +65,7 @@ export default function SongCategoryPage() {
       key: 'actions',
       header: 'Acciones',
       align: 'center',
-      width: '110px',
+      width: isCompact ? '86px' : '110px',
       render: (row) => (
         <div className='flex justify-center gap-1'>
           <IconButton
@@ -132,6 +135,10 @@ export default function SongCategoryPage() {
             ? 'Cargando categorias...'
             : 'No hay categorias para mostrar.'
         }
+        marqueeCols={['name']}
+        marqueeDirection='rtl'
+        marqueeEffect={isCompact}
+        marqueeSpeed={8}
         pagination={{
           enabled: true,
           currentPage,

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useIsMobile } from '@/hooks/useIsMobile'
 
@@ -31,6 +32,10 @@ type BaseTableProps<TData> = {
   className?: string
   tableAriaLabel?: string
   pagination?: BaseTablePagination
+  marqueeEffect?: boolean
+  marqueeCols?: Array<keyof TData | string>
+  marqueeDirection?: 'rtl' | 'ltr'
+  marqueeSpeed?: number
 }
 
 const getAlignClass = (align: Align = 'left') => {
@@ -49,6 +54,56 @@ const getCellValue = <TData,>(row: TData, key: keyof TData | string): ReactNode 
   return value == null ? '' : String(value)
 }
 
+type BaseTableMarqueeCellProps = {
+  value: ReactNode
+  direction: 'rtl' | 'ltr'
+  speed: number
+}
+
+function BaseTableMarqueeCell({ value, direction, speed }: BaseTableMarqueeCellProps) {
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+  const [shouldMarquee, setShouldMarquee] = useState(false)
+
+  useEffect(() => {
+    const wrapperElement = wrapperRef.current
+
+    if (!wrapperElement) {
+      return undefined
+    }
+
+    const updateOverflowState = () => {
+      setShouldMarquee(wrapperElement.scrollWidth > wrapperElement.clientWidth + 1)
+    }
+
+    updateOverflowState()
+
+    const resizeObserver = new ResizeObserver(updateOverflowState)
+    resizeObserver.observe(wrapperElement)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [value])
+
+  if (!shouldMarquee) {
+    return <div ref={wrapperRef} className='base-table-marquee-wrapper'>{value}</div>
+  }
+
+  return (
+    <div ref={wrapperRef} className='base-table-marquee-wrapper'>
+      <div
+        className={['base-table-marquee-track', direction === 'rtl' ? 'marquee-rtl' : 'marquee-ltr'].join(' ')}
+        style={{ animationDuration: `${speed}s` }}
+      >
+        <span className='base-table-marquee-text'>{value}</span>
+        <span aria-hidden='true' className='base-table-marquee-text'>
+          {value}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export function BaseTable<TData>({
   columns,
   rows,
@@ -57,7 +112,12 @@ export function BaseTable<TData>({
   className,
   tableAriaLabel = 'Tabla de datos',
   pagination,
+  marqueeEffect = false,
+  marqueeCols = [],
+  marqueeDirection = 'rtl',
+  marqueeSpeed = 8,
 }: BaseTableProps<TData>) {
+  const [activeMarqueeCell, setActiveMarqueeCell] = useState<string | null>(null)
   const isPaginationEnabled = Boolean(pagination?.enabled)
   const currentPage = pagination?.currentPage ?? 1
   const totalPages = Math.max(1, pagination?.totalPages ?? 1)
@@ -66,17 +126,21 @@ export function BaseTable<TData>({
   const { isMobile, isTablet } = useIsMobile()
   const isCompact = isMobile || isTablet
 
+  const marqueeColSet = useMemo(() => new Set(marqueeCols.map((col) => String(col))), [marqueeCols])
+
   const containerSpacingClass = isCompact ? 'mb-4 pb-1' : 'mb-2'
   const containerPaddingClass = isCompact ? 'p-3' : 'p-5'
   const Shadow = isCompact
     ? '0px 8px 14px -2px rgba(0,0,0,0.22)'
     : '0px 4px 6px 4px rgba(0,0,0,0.16)'
-  const headerCellClass = isCompact ? 'px-2 py-2 text-[12px]' : 'px-4 py-3 text-sm'
-  const bodyCellClass = isCompact ? 'px-2 py-2 text-[10px]' : 'px-4 py-3 text-base'
+  const headerCellClass = isCompact ? 'px-2 py-2 text-[10px]' : 'px-4 py-3 text-sm'
+  const bodyCellClass = isCompact ? 'px-2 py-2 text-[12px]' : 'px-4 py-3 text-base'
   const paginationTextClass = isCompact ? 'text-[10px]' : 'text-base'
   const paginationButtonPaddingClass = isCompact ? 'px-2 py-1.5' : 'px-4 py-2'
   const pageButtonPaddingClass = isCompact ? 'px-2 py-1.5' : 'px-3 py-2'
   const tableMinWidthClass = isCompact ? 'min-w-full' : 'min-w-[640px]'
+  const tableLayoutClass = marqueeEffect && isCompact ? 'table-fixed' : ''
+  const containerOverflowClass = marqueeEffect && isCompact ? 'overflow-x-hidden' : 'overflow-x-auto'
 
   const handlePageChange = (page: number) => {
     if (!pagination?.onPageChange) return
@@ -96,8 +160,11 @@ export function BaseTable<TData>({
       ].join(' ')}
       style={{ boxShadow: Shadow }}
     >
-      <div className='w-full overflow-x-auto'>
-        <table aria-label={tableAriaLabel} className={['w-full border-collapse', tableMinWidthClass].join(' ')}>
+      <div className={['w-full', containerOverflowClass].join(' ')}>
+        <table
+          aria-label={tableAriaLabel}
+          className={['w-full border-collapse', tableMinWidthClass, tableLayoutClass].join(' ')}
+        >
           <thead>
             <tr className='bg-primary text-white'>
               {columns.map((column) => (
@@ -127,20 +194,42 @@ export function BaseTable<TData>({
             ) : (
               rows.map((row, rowIndex) => (
                 <tr key={rowKey ? rowKey(row, rowIndex) : `row-${rowIndex}`} className='border-b border-slate-500/70'>
-                  {columns.map((column) => (
-                    <td
-                      key={`${String(column.key)}-${rowIndex}`}
-                      className={[
-                        'text-ownText',
-                        bodyCellClass,
-                        getAlignClass(column.align),
-                      ].join(' ')}
-                    >
-                      {column.render
-                        ? column.render(row, rowIndex)
-                        : getCellValue(row, column.key)}
-                    </td>
-                  ))}
+                  {columns.map((column) => {
+                    const marqueeKey = `${String(column.key)}-${rowIndex}`
+                    const isMarqueeCol = marqueeEffect && marqueeColSet.has(String(column.key))
+                    const isActiveMarquee = activeMarqueeCell === marqueeKey
+                    const cellValue = column.render
+                      ? column.render(row, rowIndex)
+                      : getCellValue(row, column.key)
+
+                    return (
+                      <td
+                        key={marqueeKey}
+                        className={[
+                          'text-ownText',
+                          bodyCellClass,
+                          getAlignClass(column.align),
+                          isMarqueeCol ? 'base-table-marquee-cell' : '',
+                          isActiveMarquee ? 'is-active' : '',
+                        ].join(' ')}
+                        onTouchStart={
+                          isMarqueeCol ? () => setActiveMarqueeCell(marqueeKey) : undefined
+                        }
+                        onTouchEnd={isMarqueeCol ? () => setActiveMarqueeCell(null) : undefined}
+                        onTouchCancel={isMarqueeCol ? () => setActiveMarqueeCell(null) : undefined}
+                      >
+                        {isMarqueeCol ? (
+                          <BaseTableMarqueeCell
+                            direction={marqueeDirection}
+                            speed={marqueeSpeed}
+                            value={cellValue}
+                          />
+                        ) : (
+                          cellValue
+                        )}
+                      </td>
+                    )
+                  })}
                 </tr>
               ))
             )}

@@ -42,6 +42,66 @@ body {
   color: #172b4d;
 }
 
+.base-table-marquee-cell {
+  position: relative;
+}
+
+.base-table-marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.base-table-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.base-table-marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-right: 1rem;
+}
+
+.base-table-marquee-cell:hover .base-table-marquee-track.marquee-rtl,
+.base-table-marquee-cell.is-active .base-table-marquee-track.marquee-rtl {
+  animation-name: base-table-marquee-rtl;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.base-table-marquee-cell:hover .base-table-marquee-track.marquee-ltr,
+.base-table-marquee-cell.is-active .base-table-marquee-track.marquee-ltr {
+  animation-name: base-table-marquee-ltr;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes base-table-marquee-rtl {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes base-table-marquee-ltr {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base-table-marquee-track {
+    animation-name: none !important;
+  }
+}
+
 .event-calendar-shell {
   min-height: 620px;
 }

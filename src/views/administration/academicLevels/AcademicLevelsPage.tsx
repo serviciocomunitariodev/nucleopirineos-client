@@ -10,6 +10,7 @@ import { UtilityBar } from '@/components/UtilityBar'
 import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import useDeleteAcademicLevelMutation from '@/hooks/useDeleteAcademicLevelMutation'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { useIsMobile } from '@/hooks/useIsMobile'
 import type { AcademicLevel } from '@/types/academicLevel'
 
 const PAGE_SIZE = 5
@@ -25,6 +26,8 @@ export default function AcademicLevelsPage() {
   const navigate = useNavigate()
   const academicLevelsQuery = useAcademicLevelsQuery()
   const deleteAcademicLevelMutation = useDeleteAcademicLevelMutation()
+  const { isMobile, isTablet } = useIsMobile()
+  const isCompact = isMobile || isTablet
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -93,7 +96,7 @@ export default function AcademicLevelsPage() {
       key: 'actions',
       header: 'Acciones',
       align: 'center',
-      width: '110px',
+      width: isCompact ? '86px' : '110px',
       render: (row) => (
         <div className='flex justify-center gap-1'>
           <IconButton
@@ -168,6 +171,10 @@ export default function AcademicLevelsPage() {
             ? 'Cargando niveles academicos...'
             : 'No hay niveles academicos para mostrar.'
         }
+        marqueeCols={['name', 'ageRange']}
+        marqueeDirection='rtl'
+        marqueeEffect={isCompact}
+        marqueeSpeed={8}
         pagination={{
           enabled: true,
           currentPage,
