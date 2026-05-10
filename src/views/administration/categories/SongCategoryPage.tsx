@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
 import BaseModal from '@/components/BaseModal'
+import { BaseButton } from '@/components/BaseButton'
 import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSongCategoryMutation from '@/hooks/useDeleteSongCategoryMutation'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
@@ -145,35 +146,28 @@ export default function SongCategoryPage() {
         }
         actions={(
           <>
-            <button
-              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+            <BaseButton
+              fullWidth={false}
               onClick={() => setCategoryToDelete(null)}
-              type='button'
-            >
-              Cancelar
-            </button>
-            <button
-              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
-              disabled={deleteSongCategoryMutation.isPending}
+              text='Cancelar'
+              tone='secondary'
+            />
+            <BaseButton
+              fullWidth={false}
+              loading={deleteSongCategoryMutation.isPending}
               onClick={async () => {
-                if (!categoryToDelete) {
-                  return
-                }
-
+                if (!categoryToDelete) return
                 try {
                   await deleteSongCategoryMutation.mutateAsync(categoryToDelete.id)
                   toast.success('Categoria eliminada correctamente. Las canciones fueron reasignadas.')
                   setCategoryToDelete(null)
                 } catch (error) {
-                  const message =
-                    error instanceof Error ? error.message : 'No se pudo eliminar la categoria.'
+                  const message = error instanceof Error ? error.message : 'No se pudo eliminar la categoria.'
                   toast.error(message)
                 }
               }}
-              type='button'
-            >
-              Eliminar
-            </button>
+              text='Eliminar'
+            />
           </>
         )}
       />

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
 import BaseModal from '@/components/BaseModal'
+import { BaseButton } from '@/components/BaseButton'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
 import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
@@ -181,37 +182,28 @@ export default function AcademicLevelsPage() {
         }
         actions={(
           <>
-            <button
-              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+            <BaseButton
+              fullWidth={false}
               onClick={() => setAcademicLevelToDelete(null)}
-              type='button'
-            >
-              Cancelar
-            </button>
-            <button
-              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
-              disabled={deleteAcademicLevelMutation.isPending}
+              text='Cancelar'
+              tone='secondary'
+            />
+            <BaseButton
+              fullWidth={false}
+              loading={deleteAcademicLevelMutation.isPending}
               onClick={async () => {
-                if (!academicLevelToDelete) {
-                  return
-                }
-
+                if (!academicLevelToDelete) return
                 try {
                   await deleteAcademicLevelMutation.mutateAsync(academicLevelToDelete.id)
                   toast.success('Nivel academico eliminado correctamente.')
                   setAcademicLevelToDelete(null)
                 } catch (error) {
-                  const message =
-                    error instanceof Error
-                      ? error.message
-                      : 'No se pudo eliminar el nivel academico.'
+                  const message = error instanceof Error ? error.message : 'No se pudo eliminar el nivel academico.'
                   toast.error(message)
                 }
               }}
-              type='button'
-            >
-              Eliminar
-            </button>
+              text='Eliminar'
+            />
           </>
         )}
       />

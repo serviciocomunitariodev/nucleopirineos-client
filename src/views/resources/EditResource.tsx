@@ -1,13 +1,8 @@
-import { Alert, CircularProgress, Typography, IconButton } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Alert, CircularProgress, Typography } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useState } from 'react'
-import BaseModal from '@/components/BaseModal'
-import { BaseButton } from '@/components/BaseButton'
 import useEducationalMaterialQuery from '@/hooks/useEducationalMaterialQuery'
 import useUpdateEducationalMaterialMutation from '@/hooks/useUpdateEducationalMaterialMutation'
-import useDeleteEducationalMaterialMutation from '@/hooks/useDeleteEducationalMaterialMutation'
 import ResourceForm, { type ResourceFormSubmitValues } from './components/ResourceForm'
 
 export default function EditResource() {
@@ -17,8 +12,7 @@ export default function EditResource() {
 
   const educationalMaterialQuery = useEducationalMaterialQuery(educationalMaterialId)
   const updateEducationalMaterialMutation = useUpdateEducationalMaterialMutation()
-  const deleteEducationalMaterialMutation = useDeleteEducationalMaterialMutation()
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
 
   const handleSubmit = async (values: ResourceFormSubmitValues) => {
     try {
@@ -48,20 +42,11 @@ export default function EditResource() {
 
   return (
     <main className='space-y-6'>
-      <div className='flex items-start justify-between'>
-        <div>
-          <Typography variant='h5'>Editar Recurso</Typography>
-          <Typography color='text.secondary' variant='body2'>
-            Modifica los detalles del recurso educativo.
-          </Typography>
-        </div>
-        <IconButton
-          color='error'
-          disabled={deleteEducationalMaterialMutation.isPending}
-          onClick={() => setIsDeleteModalOpen(true)}
-        >
-          <DeleteIcon />
-        </IconButton>
+      <div>
+        <Typography variant='h5'>Editar Recurso</Typography>
+        <Typography color='text.secondary' variant='body2'>
+          Modifica los detalles del recurso educativo.
+        </Typography>
       </div>
 
       <ResourceForm
@@ -77,38 +62,6 @@ export default function EditResource() {
         onSubmit={handleSubmit}
       />
 
-      <BaseModal
-        open={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title={`Eliminar recurso ${educationalMaterialQuery.data.title}`}
-        description='¿Estás seguro de que deseas eliminar este recurso? Esta acción no se puede deshacer.'
-        actions={(
-          <>
-            <BaseButton
-              fullWidth={false}
-              onClick={() => setIsDeleteModalOpen(false)}
-              text='Cancelar'
-              tone='secondary'
-            />
-            <BaseButton
-              fullWidth={false}
-              loading={deleteEducationalMaterialMutation.isPending}
-              onClick={async () => {
-                try {
-                  await deleteEducationalMaterialMutation.mutateAsync(educationalMaterialId)
-                  toast.success('Recurso eliminado correctamente.')
-                  setIsDeleteModalOpen(false)
-                  navigate('/educational-materials')
-                } catch (error) {
-                  const message = error instanceof Error ? error.message : 'No se pudo eliminar el recurso.'
-                  toast.error(message)
-                }
-              }}
-              text='Eliminar'
-            />
-          </>
-        )}
-      />
     </main>
   )
 }

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 
@@ -105,49 +105,70 @@ export default function LoginPage() {
         />
 
 
-        <div className='mx-auto w-[220px]'>
-          <BaseButton
-            className='min-h-[50px] text-[28px]'
-            form='login-form'
-            loading={loginMutation.isPending}
-            text='Iniciar Sesion'
-            type='submit'
-            tone='primary'
-            sx={{
-              backgroundColor: '#065F46',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '10px',
-              boxShadow: '0px 4px 6px 4px rgba(0,0,0,0.25)',
-              fontWeight: 700,
-              letterSpacing: '0.2px',
-              fontSize: '20px',
-              minHeight: 50,
-              py: 1.5,
-              textTransform: 'none',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden',
-              '&:hover': {
-                backgroundColor: '#064E3B',
-                boxShadow: '0 0 10px rgba(6, 95, 70, 0.6), 0 0 20px rgba(6, 95, 70, 0.4), 0 0 30px rgba(6, 95, 70, 0.2)',
-                transform: 'translateY(-2px)',
-              },
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: '-100%',
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                transition: 'left 0.5s',
-              },
-              '&:hover::before': {
-                left: '100%',
-              }
-            }}
-          />
+        <div className='mx-auto w-full flex flex-col items-center gap-8'>
+          <div className='w-[220px]'>
+            <BaseButton
+              className='min-h-[50px] text-[28px]'
+              form='login-form'
+              loading={loginMutation.isPending}
+              text='Iniciar Sesion'
+              type='submit'
+              tone='primary'
+              sx={{
+                backgroundColor: '#065F46',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '10px',
+                boxShadow: '0px 4px 6px 4px rgba(0,0,0,0.25)',
+                fontWeight: 700,
+                letterSpacing: '0.2px',
+                fontSize: '20px',
+                minHeight: 50,
+                py: 1.5,
+                textTransform: 'none',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                '&:hover': {
+                  backgroundColor: '#064E3B',
+                  boxShadow: '0 0 10px rgba(6, 95, 70, 0.6), 0 0 20px rgba(6, 95, 70, 0.4), 0 0 30px rgba(6, 95, 70, 0.2)',
+                  transform: 'translateY(-2px)',
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                  transition: 'left 0.5s',
+                },
+                '&:hover::before': {
+                  left: '100%',
+                }
+              }}
+            />
+          </div>
+
+          <div className='flex flex-col items-center justify-center gap-5 w-full'>
+            <p className='text-[15px] text-gray-600 font-medium'>
+              ¿No tienes cuenta?{' '}
+              <Link
+                to='/auth/register'
+                className='text-[#065F46] font-bold hover:underline transition-colors duration-300'
+              >
+                Regístrate aquí
+              </Link>
+            </p>
+
+            <Link
+              to='/'
+              className='text-[#065F46] font-bold hover:underline transition-colors duration-300'
+            >
+              Volver a la página principal
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -15,6 +15,7 @@ import {
   Logout,
 } from "@mui/icons-material";
 import BaseModal from "@/components/BaseModal";
+import { BaseButton } from "@/components/BaseButton";
 import { getUserAvatarStyleFromName } from "@/utils/avatar";
 import { useAppStore } from "@/store/useAppStore";
 import { UserRole } from "@/types/user";
@@ -274,18 +275,17 @@ export default function Layout() {
         description="¿Estás seguro de que deseas salir de tu cuenta?"
         actions={(
           <>
-            <Button onClick={() => setIsLogoutModalOpen(false)} color="inherit">
-              Cancelar
-            </Button>
-            <Button
-              autoFocus
+            <BaseButton
+              fullWidth={false}
+              onClick={() => setIsLogoutModalOpen(false)}
+              text="Cancelar"
+              tone="secondary"
+            />
+            <BaseButton
+              fullWidth={false}
               onClick={handleLogout}
-              color="error"
-              variant="contained"
-              sx={{ backgroundColor: '#dc2626', '&:hover': { backgroundColor: '#b91c1c' } }}
-            >
-              Cerrar sesión
-            </Button>
+              text="Cerrar sesión"
+            />
           </>
         )}
       />

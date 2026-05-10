@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
 import BaseModal from '@/components/BaseModal'
+import { BaseButton } from '@/components/BaseButton'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSubjectMutation from '@/hooks/useDeleteSubjectMutation'
@@ -175,35 +176,28 @@ export default function SubjectsPage() {
         }
         actions={(
           <>
-            <button
-              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+            <BaseButton
+              fullWidth={false}
               onClick={() => setSubjectToDelete(null)}
-              type='button'
-            >
-              Cancelar
-            </button>
-            <button
-              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
-              disabled={deleteSubjectMutation.isPending}
+              text='Cancelar'
+              tone='secondary'
+            />
+            <BaseButton
+              fullWidth={false}
+              loading={deleteSubjectMutation.isPending}
               onClick={async () => {
-                if (!subjectToDelete) {
-                  return
-                }
-
+                if (!subjectToDelete) return
                 try {
                   await deleteSubjectMutation.mutateAsync(subjectToDelete.id)
                   toast.success('Catedra eliminada correctamente.')
                   setSubjectToDelete(null)
                 } catch (error) {
-                  const message =
-                    error instanceof Error ? error.message : 'No se pudo eliminar la catedra.'
+                  const message = error instanceof Error ? error.message : 'No se pudo eliminar la catedra.'
                   toast.error(message)
                 }
               }}
-              type='button'
-            >
-              Eliminar
-            </button>
+              text='Eliminar'
+            />
           </>
         )}
       />

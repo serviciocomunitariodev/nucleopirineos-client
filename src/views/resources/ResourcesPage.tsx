@@ -134,34 +134,16 @@ export default function ResourcesPage() {
           totalPages,
           onPageChange: setCurrentPage,
         }}
-        renderCard={(resource) => {
-          const card = (
+        onCardClick={(resource) => navigate(`/educational-materials/${resource.id}`)}
+        renderCard={(resource) => (
+          <div key={resource.id} className='relative group flex flex-col items-center'>
             <ResourceCard
               fileName={resource.title}
               format={getFileExtension(resource.fileUrl) || 'FILE'}
               sizeMb={estimateFileSize(resource.fileUrl)}
             />
-          )
-
-          if (!canCreateResources) {
-            return (
-              <div key={resource.id} className='relative group flex flex-col items-center'>
-                {card}
-              </div>
-            )
-          }
-
-          return (
-            <button
-              key={resource.id}
-              className='relative group flex flex-col items-center'
-              onClick={() => navigate(`/educational-materials/${resource.id}/edit`)}
-              type='button'
-            >
-              {card}
-            </button>
-          )
-        }}
+          </div>
+        )}
         rows={pagedRows}
       />
     </main>

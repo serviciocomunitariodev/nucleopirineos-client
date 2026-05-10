@@ -14,6 +14,7 @@ const EditEvent = lazy(() => import("@/views/events/EditEvent"));
 const ResourcesPage = lazy(() => import("@/views/resources/ResourcesPage"));
 const NewResource = lazy(() => import("./views/resources/NewResource"));
 const EditResource = lazy(() => import("./views/resources/EditResource"));
+const ResourceDetails = lazy(() => import("@/views/resources/ResourceDetails"));
 const SongsPage = lazy(() => import("@/views/songs/SongsPage"));
 const NewSong = lazy(() => import("@/views/songs/NewSong"));
 const EditSong = lazy(() => import("@/views/songs/EditSong"));
@@ -82,6 +83,7 @@ export default function AppRouter() {
               path="/educational-materials/:id/edit"
               element={withSuspense(<EditResource />)}
             />
+            <Route path="/educational-materials/:id" element={withSuspense(<ResourceDetails />)} />
             <Route path="/songs" element={withSuspense(<SongsPage />)} />
             <Route path="/songs/new" element={withSuspense(<NewSong />)} />
             <Route path="/songs/:id" element={withSuspense(<SongDetails />)} />

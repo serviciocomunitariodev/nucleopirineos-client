@@ -5,6 +5,7 @@ import Delete from '@mui/icons-material/Delete'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import BaseModal from '@/components/BaseModal'
+import { BaseButton } from '@/components/BaseButton'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
@@ -220,16 +221,15 @@ export default function ProfessorsPage() {
         }
         actions={(
           <>
-            <button
-              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+            <BaseButton
+              fullWidth={false}
               onClick={() => setProfessorToDelete(null)}
-              type='button'
-            >
-              Cancelar
-            </button>
-            <button
-              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
-              disabled={deleteProfessorMutation.isPending}
+              text='Cancelar'
+              tone='secondary'
+            />
+            <BaseButton
+              fullWidth={false}
+              loading={deleteProfessorMutation.isPending}
               onClick={async () => {
                 if (!professorToDelete) return
                 try {
@@ -241,10 +241,8 @@ export default function ProfessorsPage() {
                   toast.error(message)
                 }
               }}
-              type='button'
-            >
-              Eliminar
-            </button>
+              text='Eliminar'
+            />
           </>
         )}
       />
