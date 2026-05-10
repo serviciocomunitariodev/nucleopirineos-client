@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Alert, IconButton, Typography } from '@mui/material'
 import Edit from '@mui/icons-material/Edit'
+import Delete from '@mui/icons-material/Delete'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import BaseModal from '@/components/BaseModal'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
 import useProfessorsQuery from '@/hooks/useProfessorsQuery'
+import useDeleteProfessorMutation from '@/hooks/useDeleteProfessorMutation'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import type { ProfessorRecord } from '@/types/users'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -23,6 +27,8 @@ export default function ProfessorsPage() {
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({})
+  const [professorToDelete, setProfessorToDelete] = useState<ProfessorRecord | null>(null)
+  const deleteProfessorMutation = useDeleteProfessorMutation()
 
   const filterGroups = useMemo<FilterGroup[]>(() => {
     const rows = professorsQuery.data ?? []
@@ -138,13 +144,21 @@ export default function ProfessorsPage() {
       align: 'center',
       width: isCompact ? '64px' : '90px',
       render: (row) => (
-        <div className='flex justify-center'>
+        <div className='flex justify-center gap-1'>
           <IconButton
             aria-label='Editar profesor'
             onClick={() => navigate(`/users/professors/${row.userId}/edit`)}
             size='small'
           >
             <Edit fontSize='small' />
+          </IconButton>
+          <IconButton
+            aria-label='Eliminar profesor'
+            disabled={deleteProfessorMutation.isPending}
+            onClick={() => setProfessorToDelete(row)}
+            size='small'
+          >
+            <Delete fontSize='small' />
           </IconButton>
         </div>
       ),
@@ -193,6 +207,46 @@ export default function ProfessorsPage() {
         }}
         rowKey={(row) => String(row.id)}
         rows={pagedRows}
+      />
+
+      <BaseModal
+        open={professorToDelete !== null}
+        onClose={() => setProfessorToDelete(null)}
+        title='Eliminar profesor'
+        description={
+          professorToDelete
+            ? `¿Estás seguro de eliminar al profesor "${professorToDelete.user.firstName} ${professorToDelete.user.lastName}"?`
+            : '¿Estás seguro de eliminar este profesor?'
+        }
+        actions={(
+          <>
+            <button
+              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+              onClick={() => setProfessorToDelete(null)}
+              type='button'
+            >
+              Cancelar
+            </button>
+            <button
+              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
+              disabled={deleteProfessorMutation.isPending}
+              onClick={async () => {
+                if (!professorToDelete) return
+                try {
+                  await deleteProfessorMutation.mutateAsync(professorToDelete.id)
+                  toast.success('Profesor eliminado correctamente.')
+                  setProfessorToDelete(null)
+                } catch (error) {
+                  const message = error instanceof Error ? error.message : 'No se pudo eliminar el profesor.'
+                  toast.error(message)
+                }
+              }}
+              type='button'
+            >
+              Eliminar
+            </button>
+          </>
+        )}
       />
     </main>
   )
