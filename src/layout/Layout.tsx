@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 import type { SvgIconComponent } from "@mui/icons-material";
 import {
   CalendarMonth,

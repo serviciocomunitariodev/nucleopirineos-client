@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BookUser, Boxes, CalendarRange, CircleUserRound, Contact, Eye, Images, Menu, Rocket, TextQuote, Undo2, X } from 'lucide-react'
+import { CalendarRange, CircleUserRound, Contact, Images, Menu, Rocket, TextQuote, Undo2, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import type { LandingHeaderVariant } from '@/views/landing/layout/LandingLayout'

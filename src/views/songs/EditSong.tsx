@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 import { Alert, CircularProgress, Typography } from '@mui/material'
 import useSongQuery from '@/hooks/useSongQuery'
 import useUpdateSongMutation from '@/hooks/useUpdateSongMutation'
-import SongForm from './components/SongForm'
+import SongForm, { type SongFormSubmitValues } from './components/SongForm'
 
 export default function EditSong() {
   const { id } = useParams()
@@ -13,7 +13,7 @@ export default function EditSong() {
   const { data: song, isLoading, isError } = useSongQuery(songId)
   const updateSongMutation = useUpdateSongMutation()
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: SongFormSubmitValues) => {
     try {
       await updateSongMutation.mutateAsync({ id: songId, payload: values })
       toast.success('Cancion actualizada correctamente.')

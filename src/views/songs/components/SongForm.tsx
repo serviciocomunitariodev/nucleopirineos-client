@@ -55,12 +55,20 @@ export default function SongForm({
   const [url, setUrl] = useState<string>(initialValues?.isExternalUrl && initialValues?.url ? initialValues.url : '')
   const [activeTab, setActiveTab] = useState<'file' | 'url'>(initialValues?.isExternalUrl ? 'url' : 'file')
 
+  const clearSelectedFile = () => {
+    setFile(null)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   const handleTabChange = (tab: 'file' | 'url') => {
     setActiveTab(tab)
     if (tab === 'file') {
       setUrl('')
     } else {
-      setFile(null)
+      clearSelectedFile()
     }
   }
 
@@ -121,7 +129,10 @@ export default function SongForm({
       width={isMobile ? '100%' : 640}
     >
       {() => {
-        const fileName = file ? file.name : (initialValues?.title ? `Archivo de ${initialValues.title}` : '')
+        const hasCurrentUploadedFile = Boolean(mode === 'edit' && initialValues?.url && !initialValues.isExternalUrl)
+        const fileName = file
+          ? file.name
+          : (hasCurrentUploadedFile ? 'Archivo actual (sin cambios)' : '')
 
         return (
           <div className='flex flex-col gap-3 pt-2'>
@@ -182,8 +193,18 @@ export default function SongForm({
                       onClick={() => fileInputRef.current?.click()}
                       type='button'
                     >
-                      {file ? 'Cambiar archivo' : 'Subir archivo'}
+                      {file || hasCurrentUploadedFile ? 'Reemplazar archivo' : 'Subir archivo'}
                     </button>
+
+                    {file ? (
+                      <button
+                        className='h-11 w-full rounded-[10px] border border-slate-300 bg-white text-base font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+                        onClick={clearSelectedFile}
+                        type='button'
+                      >
+                        Quitar seleccion
+                      </button>
+                    ) : null}
 
                     {mode === 'edit' && !file && initialValues?.url && !initialValues.isExternalUrl ? (
                       <a

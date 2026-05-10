@@ -55,6 +55,14 @@ export default function ResourceForm({
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [file, setFile] = useState<File | null>(null)
 
+  const clearSelectedFile = () => {
+    setFile(null)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   const professorsQuery = useProfessorsQuery()
   const subjectsQuery = useSubjectsQuery()
 
@@ -138,7 +146,10 @@ export default function ResourceForm({
       width={isMobile ? '100%' : 640}
     >
       {() => {
-        const fileName = file ? file.name : (initialValues?.title ? `Archivo de ${initialValues.title}` : '')
+        const hasCurrentUploadedFile = Boolean(mode === 'edit' && initialValues?.fileUrl)
+        const fileName = file
+          ? file.name
+          : (hasCurrentUploadedFile ? 'Archivo actual (sin cambios)' : '')
 
         return (
           <div className='space-y-3 pt-2'>
@@ -177,12 +188,22 @@ export default function ResourceForm({
 
                 <div className="flex flex-col gap-2 w-full max-w-[260px]">
                   <button
-                    className='h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#854339]'
+                    className='h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#994339] cursor-pointer hover:drop-shadow-md'
                     onClick={() => fileInputRef.current?.click()}
                     type='button'
                   >
-                    {file ? 'Cambiar archivo' : 'Subir archivo'}
+                    {file || hasCurrentUploadedFile ? 'Reemplazar archivo' : 'Subir archivo'}
                   </button>
+
+                  {file ? (
+                    <button
+                      className='h-11 w-full rounded-[10px] border border-slate-300 bg-white text-base font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+                      onClick={clearSelectedFile}
+                      type='button'
+                    >
+                      Quitar seleccion
+                    </button>
+                  ) : null}
 
                   {mode === 'edit' && !file && initialValues?.fileUrl ? (
                     <a

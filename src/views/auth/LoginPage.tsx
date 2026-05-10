@@ -18,7 +18,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  usePageTitle('Login')
+  usePageTitle('Iniciar sesion')
 
   const navigate = useNavigate()
   const { isMobile } = useIsMobile()
@@ -63,7 +63,7 @@ export default function LoginPage() {
     {
       name: 'email',
       label: 'Correo',
-      placeholder: 'Escribe tu correo aca...',
+      placeholder: 'Escribe tu correo aqui...',
       type: 'text' as const,
       rules: {
         required: 'El correo es requerido.',
@@ -72,7 +72,7 @@ export default function LoginPage() {
     {
       name: 'password',
       label: 'Contraseña',
-      placeholder: 'Escribe tu contraseña aca...',
+      placeholder: 'Escribe tu contraseña aqui...',
       type: 'password' as const,
       rules: {
         required: 'La contraseña es requerida.',
