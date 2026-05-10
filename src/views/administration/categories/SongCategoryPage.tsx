@@ -5,6 +5,7 @@ import { Alert, IconButton, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
+import BaseModal from '@/components/BaseModal'
 import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSongCategoryMutation from '@/hooks/useDeleteSongCategoryMutation'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
@@ -25,6 +26,7 @@ export default function SongCategoryPage() {
 
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [categoryToDelete, setCategoryToDelete] = useState<SongCategory | null>(null)
 
   const filteredRows = useMemo(() => {
     const normalizedSearch = searchValue.trim().toLowerCase()
@@ -79,24 +81,7 @@ export default function SongCategoryPage() {
           <IconButton
             aria-label='Eliminar categoria'
             disabled={deleteSongCategoryMutation.isPending}
-            onClick={async () => {
-              const shouldDelete = window.confirm(
-                'Esta seguro de eliminar esta categoria? Las canciones asociadas seran reasignadas automaticamente.',
-              )
-
-              if (!shouldDelete) {
-                return
-              }
-
-              try {
-                await deleteSongCategoryMutation.mutateAsync(row.id)
-                toast.success('Categoria eliminada correctamente. Las canciones fueron reasignadas.')
-              } catch (error) {
-                const message =
-                  error instanceof Error ? error.message : 'No se pudo eliminar la categoria.'
-                toast.error(message)
-              }
-            }}
+            onClick={() => setCategoryToDelete(row)}
             size='small'
           >
             <Delete fontSize='small' />
@@ -147,6 +132,50 @@ export default function SongCategoryPage() {
         }}
         rowKey={(row) => String(row.id)}
         rows={pagedRows}
+      />
+
+      <BaseModal
+        open={categoryToDelete !== null}
+        onClose={() => setCategoryToDelete(null)}
+        title='Eliminar categoria'
+        description={
+          categoryToDelete
+            ? `¿Estás seguro de eliminar la categoria "${categoryToDelete.name}"? Las canciones asociadas seran reasignadas automaticamente.`
+            : '¿Estás seguro de eliminar esta categoria?'
+        }
+        actions={(
+          <>
+            <button
+              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+              onClick={() => setCategoryToDelete(null)}
+              type='button'
+            >
+              Cancelar
+            </button>
+            <button
+              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
+              disabled={deleteSongCategoryMutation.isPending}
+              onClick={async () => {
+                if (!categoryToDelete) {
+                  return
+                }
+
+                try {
+                  await deleteSongCategoryMutation.mutateAsync(categoryToDelete.id)
+                  toast.success('Categoria eliminada correctamente. Las canciones fueron reasignadas.')
+                  setCategoryToDelete(null)
+                } catch (error) {
+                  const message =
+                    error instanceof Error ? error.message : 'No se pudo eliminar la categoria.'
+                  toast.error(message)
+                }
+              }}
+              type='button'
+            >
+              Eliminar
+            </button>
+          </>
+        )}
       />
     </main>
   )

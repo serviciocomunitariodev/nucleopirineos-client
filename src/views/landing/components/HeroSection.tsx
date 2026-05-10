@@ -9,7 +9,7 @@ export default function HeroSection() {
   return (
     <section className='bg-superficies landing-section' id='hero'>
       <div className='mx-auto grid min-h-[calc(100dvh-76px)] w-full max-w-[1400px] items-center gap-10 px-4 py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-24 lg:px-5'>
-        <div className='max-w-[600px] text-center lg:justify-self-start'>
+        <div className='max-w-[600px] max-lg:justify-self-center text-center lg:justify-self-start'>
           <h1 className='text-[40px] lg:text-[56px] font-bold leading-tight text-ink'>Nucleo Pirineos</h1>
           <p className='mt-4 text-[28px] leading-[1.34] text-[#3f4042]'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget justo congue,

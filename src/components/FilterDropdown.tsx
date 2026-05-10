@@ -287,7 +287,7 @@ export function FilterDropdown({
 
       {/* Contenido del dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 w-64 max-[850px]:w-full bg-white border border-gray-200 rounded shadow-lg z-50 max-h-80 overflow-y-auto">
           {/* Grupos del filtro */}
           <div className="p-2">
             {filterGroups.map(renderFilterGroup)}
@@ -298,7 +298,7 @@ export function FilterDropdown({
             <p className="px-1 text-[11px] text-slate-500">
               {getActiveFiltersCount()} filtros activos
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 max-sm:flex-col">
               <button
                 onClick={handleClear}
                 disabled={!hasActiveFilters}

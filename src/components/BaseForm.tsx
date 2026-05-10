@@ -215,10 +215,13 @@ export function BaseForm<TFormValues extends FieldValues>({
       style={{
         boxShadow: '0px 4px 6px 4px rgba(0,0,0,0.16)',
         borderRadius: isCompact ? 14 : 12,
-        padding: 30,
+        padding: isCompact ? 16 : 30,
         backgroundColor: '#ffffff',
         overflow: 'hidden',
-        width,
+        boxSizing: 'border-box',
+        margin: '0 auto',
+        width: '100%',
+        maxWidth: width,
       }}
     >
       {fields.map((field) => {
@@ -227,7 +230,13 @@ export function BaseForm<TFormValues extends FieldValues>({
         const fieldId = `field-${String(field.name)}`
 
         return (
-          <div key={field.name} className={field.className} role='group' aria-labelledby={`${fieldId}-label`}>
+          <div
+            key={field.name}
+            className={field.className}
+            role='group'
+            aria-labelledby={`${fieldId}-label`}
+            style={{ width: '100%', minWidth: 0 }}
+          >
             <label htmlFor={fieldId} id={`${fieldId}-label`} style={{ display: 'block' }}>
               <Typography
                 component='span'

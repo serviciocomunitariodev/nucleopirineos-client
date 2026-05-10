@@ -5,21 +5,23 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { BaseButton } from '@/components/BaseButton'
+import BaseModal from '@/components/BaseModal'
 import useSongQuery from '@/hooks/useSongQuery'
 import useDeleteSongMutation from '@/hooks/useDeleteSongMutation'
+import { useState } from 'react'
 
 export default function SongDetails() {
   const { id } = useParams()
   const navigate = useNavigate()
   const songId = Number(id)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const { data: song, isLoading, isError } = useSongQuery(songId)
   const deleteSongMutation = useDeleteSongMutation()
 
   const handleDelete = async () => {
-    const shouldDelete = window.confirm(`¿Está seguro de eliminar la canción "${song?.title}"?`)
-
-    if (!shouldDelete) {
+    if (!song) {
+      setIsDeleteModalOpen(false)
       return
     }
 
@@ -102,7 +104,7 @@ export default function SongDetails() {
             <div className='w-full min-[816px]:w-[150px]'>
               <BaseButton
                 fullWidth
-                onClick={handleDelete}
+                onClick={() => setIsDeleteModalOpen(true)}
                 text='Eliminar'
                 loading={deleteSongMutation.isPending}
                 startIcon={<DeleteIcon />}
@@ -112,6 +114,30 @@ export default function SongDetails() {
 
         </div>
       </Paper>
+      <BaseModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title={`Eliminar canción ${song.title}`}
+        description='¿Estás seguro de que deseas eliminar esta canción? Esta acción no se puede deshacer.'
+        actions={(
+          <>
+            <BaseButton
+              fullWidth={false}
+              onClick={() => setIsDeleteModalOpen(false)}
+              text='Cancelar'
+              tone='secondary'
+            />
+            <BaseButton
+              fullWidth={false}
+              loading={deleteSongMutation.isPending}
+              onClick={handleDelete}
+              text='Eliminar'
+            />
+          </>
+        )}
+      />
     </main>
   )
 }
+
+

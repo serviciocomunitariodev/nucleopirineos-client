@@ -124,7 +124,7 @@ export function UtilityBar({
             value={localSearchValue}
           />
 
-          <div className='grid w-full grid-cols-2 gap-3'>
+          <div className='grid w-full max-sm:grid-cols-1 grid-cols-2 gap-3'>
             {filterControl ? <div className='w-full'>{filterControl}</div> : <span aria-hidden='true' />}
 
             {showCreate ? (

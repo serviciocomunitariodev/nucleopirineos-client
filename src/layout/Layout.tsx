@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import type { SvgIconComponent } from "@mui/icons-material";
 import {
   CalendarMonth,
@@ -14,6 +14,7 @@ import {
   Settings,
   Logout,
 } from "@mui/icons-material";
+import BaseModal from "@/components/BaseModal";
 import { getUserAvatarStyleFromName } from "@/utils/avatar";
 import { useAppStore } from "@/store/useAppStore";
 import { UserRole } from "@/types/user";
@@ -81,9 +82,10 @@ export default function Layout() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(getInitialExpanded(pathname));
   const navigate = useNavigate();
-  const { isMobile } = useIsMobile();
+  const { isMobile, isTablet } = useIsMobile();
   const user = useAppStore((state) => state.user);
   const logout = useAppStore((state) => state.logout);
+  const isCompact = isMobile || isTablet;
 
   const navigation = useMemo(() => {
     return user.role === UserRole.PROFESSOR || user.role === UserRole.ADMIN
@@ -137,7 +139,7 @@ export default function Layout() {
                             `block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
                             }`
                           }
-                          onClick={() => isMobile && setIsSidebarOpen(false)}
+                          onClick={() => isCompact && setIsSidebarOpen(false)}
                           to={child.path}
                         >
                           {child.label}
@@ -157,7 +159,7 @@ export default function Layout() {
                   `flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
                   }`
                 }
-                onClick={() => isMobile && setIsSidebarOpen(false)}
+                onClick={() => isCompact && setIsSidebarOpen(false)}
                 to={item.path || "/"}
               >
                 <Icon fontSize="small" />
@@ -198,16 +200,16 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh bg-background">
-      {!isMobile && (
+      {!isCompact && (
         <div className="fixed inset-y-0 left-0 z-30 w-60 border-r border-black/10">{sidebar}</div>
       )}
 
-      <div className="w-full" style={{ paddingLeft: isMobile ? 0 : 240 }}>
+      <div className="w-full" style={{ paddingLeft: isCompact ? 0 : 240 }}>
         <header
           className="sticky top-0 z-20 flex h-14 items-center justify-between px-4 text-white bg-primary"
         >
           <div className="flex items-center gap-2">
-            {isMobile && (
+            {isCompact && (
               <button
                 aria-label="Open main menu"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-white/10"
@@ -240,7 +242,7 @@ export default function Layout() {
         </main>
       </div>
 
-      {isMobile && (
+      {isCompact && (
         <div
           className={[
             "fixed inset-0 z-40 transition-opacity duration-200",
@@ -265,29 +267,28 @@ export default function Layout() {
         </div>
       )}
 
-      <Dialog
+      <BaseModal
         open={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
-        aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description"
-      >
-        <DialogTitle id="logout-dialog-title">
-          ¿Cerrar sesión?
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="logout-dialog-description">
-            ¿Estás seguro de que deseas salir de tu cuenta?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsLogoutModalOpen(false)} color="inherit">
-            Cancelar
-          </Button>
-          <Button onClick={handleLogout} color="error" variant="contained" autoFocus sx={{ backgroundColor: '#dc2626', '&:hover': { backgroundColor: '#b91c1c' } }}>
-            Cerrar sesión
-          </Button>
-        </DialogActions>
-      </Dialog>
+        title="¿Cerrar sesión?"
+        description="¿Estás seguro de que deseas salir de tu cuenta?"
+        actions={(
+          <>
+            <Button onClick={() => setIsLogoutModalOpen(false)} color="inherit">
+              Cancelar
+            </Button>
+            <Button
+              autoFocus
+              onClick={handleLogout}
+              color="error"
+              variant="contained"
+              sx={{ backgroundColor: '#dc2626', '&:hover': { backgroundColor: '#b91c1c' } }}
+            >
+              Cerrar sesión
+            </Button>
+          </>
+        )}
+      />
     </div>
   );
 }

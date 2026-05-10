@@ -5,6 +5,7 @@ import { Alert, IconButton, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { BaseTable, type BaseTableColumn } from '@/components/BaseTable'
+import BaseModal from '@/components/BaseModal'
 import type { ActiveFilters, FilterGroup } from '@/components/FilterDropdown'
 import { UtilityBar } from '@/components/UtilityBar'
 import useDeleteSubjectMutation from '@/hooks/useDeleteSubjectMutation'
@@ -34,6 +35,7 @@ export default function SubjectsPage() {
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({})
+  const [subjectToDelete, setSubjectToDelete] = useState<Subject | null>(null)
 
   const filterGroups = useMemo<FilterGroup[]>(
     () => [
@@ -110,22 +112,7 @@ export default function SubjectsPage() {
           <IconButton
             aria-label='Eliminar catedra'
             disabled={deleteSubjectMutation.isPending}
-            onClick={async () => {
-              const shouldDelete = window.confirm('Esta seguro de eliminar esta catedra?')
-
-              if (!shouldDelete) {
-                return
-              }
-
-              try {
-                await deleteSubjectMutation.mutateAsync(row.id)
-                toast.success('Catedra eliminada correctamente.')
-              } catch (error) {
-                const message =
-                  error instanceof Error ? error.message : 'No se pudo eliminar la catedra.'
-                toast.error(message)
-              }
-            }}
+            onClick={() => setSubjectToDelete(row)}
             size='small'
           >
             <Delete fontSize='small' />
@@ -175,6 +162,50 @@ export default function SubjectsPage() {
         }}
         rowKey={(row) => String(row.id)}
         rows={pagedRows}
+      />
+
+      <BaseModal
+        open={subjectToDelete !== null}
+        onClose={() => setSubjectToDelete(null)}
+        title='Eliminar catedra'
+        description={
+          subjectToDelete
+            ? `¿Estás seguro de eliminar la catedra "${subjectToDelete.name}"?`
+            : '¿Estás seguro de eliminar esta catedra?'
+        }
+        actions={(
+          <>
+            <button
+              className='rounded-[10px] border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100'
+              onClick={() => setSubjectToDelete(null)}
+              type='button'
+            >
+              Cancelar
+            </button>
+            <button
+              className='rounded-[10px] bg-[#974F43] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#7E4137] disabled:cursor-not-allowed disabled:opacity-60'
+              disabled={deleteSubjectMutation.isPending}
+              onClick={async () => {
+                if (!subjectToDelete) {
+                  return
+                }
+
+                try {
+                  await deleteSubjectMutation.mutateAsync(subjectToDelete.id)
+                  toast.success('Catedra eliminada correctamente.')
+                  setSubjectToDelete(null)
+                } catch (error) {
+                  const message =
+                    error instanceof Error ? error.message : 'No se pudo eliminar la catedra.'
+                  toast.error(message)
+                }
+              }}
+              type='button'
+            >
+              Eliminar
+            </button>
+          </>
+        )}
       />
     </main>
   )

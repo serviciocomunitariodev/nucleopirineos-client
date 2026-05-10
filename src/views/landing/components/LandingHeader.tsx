@@ -17,8 +17,9 @@ type LandingHeaderProps = {
 }
 
 export default function LandingHeader({ variant = 'default' }: LandingHeaderProps) {
-  const { isMobile } = useIsMobile()
+  const { isMobile, isTablet } = useIsMobile({ tabletMaxWidth: 1200 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const isCompact = isMobile || isTablet
 
   const closeSidebar = () => setIsSidebarOpen(false)
   const scrollToSection = (sectionId: string) => {
@@ -55,7 +56,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
           <div className='h-9 w-28 rounded-xl bg-white shadow-[0px_2px_5px_rgba(0,0,0,0.35)]' />
         </div>
 
-        {isMobile ? (
+        {isCompact ? (
           <button
             aria-label='Abrir menu'
             className='ml-auto inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-white/70 text-white transition-colors hover:bg-white/10'
@@ -66,37 +67,38 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
           </button>
         ) : null}
 
-        <div className='ml-auto hidden items-center gap-8 md:flex'>
-          <nav aria-label='Navegacion principal' className='hidden items-center gap-8 md:flex'>
-            {menuItems.map((item) => (
-              <button
-                key={item.label}
-                className='cursor-pointer text-xl font-semibold text-white transition-opacity hover:opacity-85'
-                onClick={() => scrollToSection(item.sectionId)}
-                type='button'
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+        {!isCompact ? (
+          <div className='ml-auto flex items-center gap-8'>
+            <nav aria-label='Navegacion principal' className='flex items-center gap-8'>
+              {menuItems.map((item) => (
+                <button
+                  key={item.label}
+                  className='cursor-pointer text-xl font-semibold text-white transition-opacity hover:opacity-85'
+                  onClick={() => scrollToSection(item.sectionId)}
+                  type='button'
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+            <Link
+              className='cursor-pointer rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
+              to='/events'
+            >
+              Ver calendario
+            </Link>
 
-          <Link
-            className='cursor-pointer rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
-            to='/events'
-          >
-            Ver calendario
-          </Link>
-
-          <Link
-            className='cursor-pointer rounded-2xl bg-white px-6 py-3 text-xl font-semibold text-ink shadow-[0px_3px_8px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5'
-            to='/auth/login'
-          >
-            Iniciar sesion
-          </Link>
-        </div>
+            <Link
+              className='cursor-pointer rounded-2xl bg-white px-6 py-3 text-xl font-semibold text-ink shadow-[0px_3px_8px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5'
+              to='/auth/login'
+            >
+              Iniciar sesion
+            </Link>
+          </div>
+        ) : null}
       </div>
 
-      {isMobile ? (
+      {isCompact ? (
         <div
           className={[
             'fixed inset-0 z-50 transition-opacity duration-200',
