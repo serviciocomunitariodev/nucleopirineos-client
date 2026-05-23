@@ -23,9 +23,15 @@ export default function LandingPage() {
   const missionVisionQuery = useMultimediaQuery({ section: 'MISSION_VISION' })
   const galleryQuery = useMultimediaQuery({ section: 'GALLERY' })
 
-  const heroImageUrl = heroQuery.data?.[0]?.imageUrl
-  const missionImages = (missionVisionQuery.data ?? []).slice(0, 2).map((item) => item.imageUrl)
-  const galleryImages = (galleryQuery.data ?? []).slice(0, 6).map((item) => item.imageUrl)
+  const heroImageUrl = heroQuery.data?.slice().sort((a, b) => a.sortOrder - b.sortOrder)[0]?.imageUrl
+  const missionVisionItems = (missionVisionQuery.data ?? []).slice()
+  const missionImageUrl = missionVisionItems.find((item) => item.sortOrder === 1)?.imageUrl
+  const visionImageUrl = missionVisionItems.find((item) => item.sortOrder === 2)?.imageUrl
+  const galleryImages = (galleryQuery.data ?? [])
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .slice(0, 6)
+    .map((item) => item.imageUrl)
 
   usePageTitle(`${activeSectionTitle}`)
 
@@ -74,7 +80,7 @@ export default function LandingPage() {
   return (
     <LandingLayout>
       <HeroSection imageUrl={heroImageUrl} />
-      <MVSection missionImageUrl={missionImages[0]} visionImageUrl={missionImages[1]} />
+      <MVSection missionImageUrl={missionImageUrl} visionImageUrl={visionImageUrl} />
       <ImagesSection images={galleryImages} />
       <SocialMedia />
       <PhrasesSection />

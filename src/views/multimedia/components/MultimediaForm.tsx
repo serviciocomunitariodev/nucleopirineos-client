@@ -19,6 +19,15 @@ type MultimediaFormValues = {
 type MultimediaFormProps = {
   isSubmitting?: boolean;
   onSubmit: (values: MultimediaPayload) => void | Promise<void>;
+  mode?: "create" | "edit";
+  initialValues?: Partial<{
+    title: string;
+    section: MultimediaSection;
+    sortOrder: number;
+    isActive: boolean;
+    imageUrl: string;
+  }>;
+  onCancel?: () => void;
 };
 
 const multimediaSchema = z.object({
@@ -39,7 +48,19 @@ const sectionOptions: Array<{ label: string; value: MultimediaSection }> = [
   { label: "Galeria", value: "GALLERY" },
 ];
 
-export default function MultimediaForm({ isSubmitting = false, onSubmit }: MultimediaFormProps) {
+const sectionLimits: Record<MultimediaSection, number> = {
+  HERO: 1,
+  MISSION_VISION: 2,
+  GALLERY: 6,
+};
+
+export default function MultimediaForm({
+  mode = "create",
+  initialValues,
+  isSubmitting = false,
+  onSubmit,
+  onCancel,
+}: MultimediaFormProps) {
   const { isMobile } = useIsMobile();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -92,10 +113,10 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
     <BaseForm<MultimediaFormValues>
       className="space-y-3"
       defaultValues={{
-        title: "",
-        section: "",
-        sortOrder: "",
-        isActive: "true",
+        title: initialValues?.title ?? "",
+        section: initialValues?.section ?? "",
+        sortOrder: initialValues?.sortOrder !== undefined ? String(initialValues.sortOrder) : "",
+        isActive: initialValues?.isActive === false ? "false" : "true",
       }}
       fields={fields}
       onSubmit={async (values, methods) => {
@@ -114,7 +135,18 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
           return;
         }
 
-        if (!file) {
+        const limit = sectionLimits[parsed.data.section];
+
+        if (parsed.data.sortOrder !== undefined && parsed.data.sortOrder > limit) {
+          const errorMessage = `El orden maximo para esta seccion es ${limit}.`;
+          methods.setError("sortOrder", {
+            message: errorMessage,
+          });
+          toast.error(errorMessage);
+          return;
+        }
+
+        if (mode === "create" && !file) {
           toast.error("Debes adjuntar una imagen.");
           return;
         }
@@ -124,12 +156,12 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
           section: parsed.data.section,
           sortOrder: parsed.data.sortOrder,
           isActive: parsed.data.isActive ? parsed.data.isActive === "true" : undefined,
-          file,
+          file: file || undefined,
         });
       }}
       width={isMobile ? "100%" : 680}
     >
-      {() => (
+      {({ methods }) => (
         <div className="space-y-3 pt-2">
           <section className="rounded-[10px] border border-slate-400 p-4">
             <div className="flex flex-col items-center gap-3">
@@ -138,7 +170,9 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
               </div>
 
               <Typography className="text-ownText text-center text-base">
-                {file ? file.name : "Selecciona una imagen"}
+                {file
+                  ? file.name
+                  : (mode === "edit" && initialValues?.imageUrl ? "Imagen actual" : "Selecciona una imagen")}
               </Typography>
               <Typography className="text-gray-500 text-center text-sm mt-[-4px] mb-2">
                 (Max. 5MB)
@@ -170,7 +204,9 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
                   onClick={() => fileInputRef.current?.click()}
                   type="button"
                 >
-                  {file ? "Reemplazar imagen" : "Subir imagen"}
+                  {file || (mode === "edit" && initialValues?.imageUrl)
+                    ? "Reemplazar imagen"
+                    : "Subir imagen"}
                 </button>
 
                 {file ? (
@@ -182,16 +218,43 @@ export default function MultimediaForm({ isSubmitting = false, onSubmit }: Multi
                     Quitar seleccion
                   </button>
                 ) : null}
+                {mode === "edit" && !file && initialValues?.imageUrl ? (
+                  <a
+                    className="flex h-11 w-full items-center justify-center rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-white"
+                    href={initialValues.imageUrl}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Ver imagen actual
+                  </a>
+                ) : null}
               </div>
             </div>
           </section>
 
+          {typeof methods.formState.errors.sortOrder?.message === "string" ? (
+            <Typography className="text-base font-semibold text-red-600">
+              {methods.formState.errors.sortOrder?.message}
+            </Typography>
+          ) : null}
+
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
+            {onCancel ? (
+              <div className="w-full sm:w-[180px]">
+                <BaseButton
+                  fullWidth
+                  onClick={onCancel}
+                  text="Cancelar"
+                  tone="secondary"
+                  type="button"
+                />
+              </div>
+            ) : null}
             <div className="w-full sm:w-[220px]">
               <BaseButton
                 fullWidth
                 loading={isSubmitting}
-                text="Guardar"
+                text={mode === "edit" ? "Guardar cambios" : "Guardar"}
                 type="submit"
               />
             </div>

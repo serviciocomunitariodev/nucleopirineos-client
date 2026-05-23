@@ -26,7 +26,18 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    let errorMessage = `API error: ${response.status}`;
+
+    try {
+      const data = (await response.json()) as { message?: string } | null;
+      if (data?.message) {
+        errorMessage = data.message;
+      }
+    } catch {
+      // ignore parse errors
+    }
+
+    throw new Error(errorMessage);
   }
 
   if (response.status === 204) {

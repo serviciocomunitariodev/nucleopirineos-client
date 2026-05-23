@@ -1,21 +1,25 @@
 import { useMemo, useState, useEffect } from "react";
-import { Alert, Typography } from "@mui/material";
-import { Navigate } from "react-router-dom";
+import { Alert, IconButton, Typography } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
 import { BaseTable, type BaseTableColumn } from "@/components/BaseTable";
-import useCreateMultimediaMutation from "@/hooks/useCreateMultimediaMutation";
+import BaseModal from "@/components/BaseModal";
+import { BaseButton } from "@/components/BaseButton";
+import { UtilityBar } from "@/components/UtilityBar";
+import useDeleteMultimediaMutation from "@/hooks/useDeleteMultimediaMutation";
 import useMultimediaQuery from "@/hooks/useMultimediaQuery";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useAppStore } from "@/store/useAppStore";
 import type { MultimediaItem } from "@/types/multimedia";
 import { UserRole } from "@/types/user";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import MultimediaForm from "./components/MultimediaForm";
 
 const PAGE_SIZE = 6;
 
 const sectionLabels: Record<MultimediaItem["section"], string> = {
-    HERO: "Hero",
+    HERO: "Principal",
     MISSION_VISION: "Mision y Vision",
     GALLERY: "Galeria",
 };
@@ -25,15 +29,28 @@ export default function MultimediaPage() {
 
     const userRole = useAppStore((state) => state.user.role);
     const multimediaQuery = useMultimediaQuery({ onlyActive: false });
-    const createMultimediaMutation = useCreateMultimediaMutation();
+    const deleteMultimediaMutation = useDeleteMultimediaMutation();
+    const navigate = useNavigate();
     const { isMobile, isTablet } = useIsMobile();
     const isCompact = isMobile || isTablet;
     const isUnauthorized = userRole === UserRole.STUDENT;
 
     const [currentPage, setCurrentPage] = useState(1);
+    const [itemToDelete, setItemToDelete] = useState<MultimediaItem | null>(null);
+    const [searchValue, setSearchValue] = useState("");
 
     const rows = multimediaQuery.data ?? [];
-    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    const filteredRows = useMemo(() => {
+        const normalizedSearch = searchValue.trim().toLowerCase();
+
+        if (!normalizedSearch) {
+            return rows;
+        }
+
+        return rows.filter((row) => row.title.toLowerCase().includes(normalizedSearch));
+    }, [rows, searchValue]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -41,10 +58,14 @@ export default function MultimediaPage() {
         }
     }, [currentPage, totalPages]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchValue]);
+
     const pagedRows = useMemo(() => {
         const start = (currentPage - 1) * PAGE_SIZE;
-        return rows.slice(start, start + PAGE_SIZE);
-    }, [currentPage, rows]);
+        return filteredRows.slice(start, start + PAGE_SIZE);
+    }, [currentPage, filteredRows]);
 
     const columns = useMemo<BaseTableColumn<MultimediaItem>[]>(
         () => [
@@ -87,8 +108,33 @@ export default function MultimediaPage() {
                     </div>
                 ),
             },
+            {
+                key: "actions",
+                header: "Acciones",
+                align: "center",
+                width: isCompact ? "86px" : "110px",
+                render: (row) => (
+                    <div className="flex justify-center gap-1">
+                        <IconButton
+                            aria-label="Editar multimedia"
+                            onClick={() => navigate(`/multimedia/edit?id=${row.id}`)}
+                            size="small"
+                        >
+                            <Edit fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                            aria-label="Eliminar multimedia"
+                            disabled={deleteMultimediaMutation.isPending}
+                            onClick={() => setItemToDelete(row)}
+                            size="small"
+                        >
+                            <Delete fontSize="small" />
+                        </IconButton>
+                    </div>
+                ),
+            },
         ],
-        [isCompact],
+        [deleteMultimediaMutation.isPending, isCompact],
     );
 
     if (isUnauthorized) {
@@ -104,18 +150,14 @@ export default function MultimediaPage() {
                 </Typography>
             </div>
 
-            <div className="flex flex-col gap-12">
-                <MultimediaForm
-                    isSubmitting={createMultimediaMutation.isPending}
-                    onSubmit={async (values) => {
-                        try {
-                            await createMultimediaMutation.mutateAsync(values);
-                            toast.success("Imagen guardada correctamente.");
-                        } catch (error) {
-                            const message = error instanceof Error ? error.message : "No se pudo guardar la imagen.";
-                            toast.error(message);
-                        }
-                    }}
+            <div className="flex flex-col gap-6">
+                <UtilityBar
+                    createLabel={isCompact ? "Nueva" : "Nueva Multimedia"}
+                    onCreateClick={() => navigate("/multimedia/new")}
+                    onSearchChange={setSearchValue}
+                    searchPlaceholder="Buscar por nombre"
+                    searchValue={searchValue}
+                    showFilter={false}
                 />
 
                 {multimediaQuery.isError && rows.length > 0 ? (
@@ -141,6 +183,43 @@ export default function MultimediaPage() {
                     rows={pagedRows}
                 />
             </div>
+
+            <BaseModal
+                open={itemToDelete !== null}
+                onClose={() => setItemToDelete(null)}
+                title="Eliminar multimedia"
+                description={
+                    itemToDelete
+                        ? `¿Estás seguro de eliminar "${itemToDelete.title}"?`
+                        : "¿Estás seguro de eliminar este registro?"
+                }
+                actions={(
+                    <>
+                        <BaseButton
+                            fullWidth={false}
+                            onClick={() => setItemToDelete(null)}
+                            text="Cancelar"
+                            tone="secondary"
+                        />
+                        <BaseButton
+                            fullWidth={false}
+                            loading={deleteMultimediaMutation.isPending}
+                            onClick={async () => {
+                                if (!itemToDelete) return;
+                                try {
+                                    await deleteMultimediaMutation.mutateAsync(itemToDelete.id);
+                                    toast.success("Multimedia eliminada correctamente.");
+                                    setItemToDelete(null);
+                                } catch (error) {
+                                    const message = error instanceof Error ? error.message : "No se pudo eliminar la multimedia.";
+                                    toast.error(message);
+                                }
+                            }}
+                            text="Eliminar"
+                        />
+                    </>
+                )}
+            />
         </main>
     );
 }

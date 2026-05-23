@@ -42,6 +42,12 @@ export const MultimediaApi = {
     return multimediaListSchema.parse(response);
   },
 
+  async getById(id: number): Promise<MultimediaItem> {
+    const response = await apiClient<unknown>(`/multimedia/${id}`);
+
+    return multimediaSchema.parse(response);
+  },
+
   async create(payload: MultimediaPayload): Promise<MultimediaItem> {
     const formData = new FormData();
     formData.append("title", payload.title);
@@ -65,5 +71,36 @@ export const MultimediaApi = {
     });
 
     return multimediaSchema.parse(response);
+  },
+
+  async update(id: number, payload: MultimediaPayload): Promise<MultimediaItem> {
+    const formData = new FormData();
+    formData.append("title", payload.title);
+    formData.append("section", payload.section);
+
+    if (payload.sortOrder !== undefined) {
+      formData.append("sortOrder", payload.sortOrder.toString());
+    }
+
+    if (payload.isActive !== undefined) {
+      formData.append("isActive", String(payload.isActive));
+    }
+
+    if (payload.file) {
+      formData.append("file", payload.file);
+    }
+
+    const response = await apiClient<unknown>(`/multimedia/${id}`, {
+      method: "PUT",
+      body: formData,
+    });
+
+    return multimediaSchema.parse(response);
+  },
+
+  async remove(id: number): Promise<void> {
+    await apiClient<unknown>(`/multimedia/${id}`, {
+      method: "DELETE",
+    });
   },
 };
