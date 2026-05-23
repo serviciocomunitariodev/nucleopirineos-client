@@ -25,7 +25,7 @@ type NavItem = {
   label: string;
   icon: SvgIconComponent;
   path?: string;
-  children?: Array<{ key: string; label: string; path: string }>;
+  children?: Array<{ key: string; label: string; path: string; icon?: SvgIconComponent }>;
 };
 
 // Colors moved to Tailwind config: use classes `bg-primary`, `bg-primaryHover`, `bg-primaryActive`, `bg-background`.
@@ -52,6 +52,7 @@ const adminNavigation: NavItem[] = [
       { key: "categories", label: "Categorias", path: "/song-categories" },
       { key: "subjects", label: "Catedras", path: "/subjects" },
       { key: "levels", label: "Nivel", path: "/academic-levels" },
+      { key: "multimedia", label: "Multimedia", path: "/multimedia" },
     ],
   },
 ];
@@ -132,7 +133,10 @@ export default function Layout() {
 
                 {isExpanded && (
                   <ul className="mt-1 space-y-1 pl-4">
-                    {item.children?.map((child) => (
+                    {item.children?.map((child) => {
+                      const ChildIcon = child.icon;
+
+                      return (
                       <li key={child.key}>
                         <NavLink
                           className={({ isActive }) =>
@@ -142,10 +146,13 @@ export default function Layout() {
                           onClick={() => isCompact && setIsSidebarOpen(false)}
                           to={child.path}
                         >
-                          {child.label}
+                          <span className="flex items-center gap-2">
+                            {ChildIcon ? <ChildIcon fontSize="small" /> : null}
+                            <span>{child.label}</span>
+                          </span>
                         </NavLink>
                       </li>
-                    ))}
+                    )})}
                   </ul>
                 )}
               </li>

@@ -4,9 +4,12 @@ type MVBlockProps = {
   title: string
   description: string
   imageLeft?: boolean
+  imageUrl?: string
 }
 
-function MVBlock({ title, description, imageLeft = false }: MVBlockProps) {
+function MVBlock({ title, description, imageLeft = false, imageUrl }: MVBlockProps) {
+  const resolvedImage = imageUrl || missionImagePath
+
   return (
     <article
       className={[
@@ -15,7 +18,7 @@ function MVBlock({ title, description, imageLeft = false }: MVBlockProps) {
       ].join(' ')}
     >
       <div className='h-[270px] w-full overflow-hidden rounded-[16px] bg-white shadow-[0px_6px_16px_rgba(0,0,0,0.16)] md:h-[320px] lg:h-[360px]'>
-        <img alt={title} className='h-full w-full object-cover' src={missionImagePath} />
+        <img alt={title} className='h-full w-full object-cover' src={resolvedImage} />
       </div>
 
       <div className='mx-auto max-w-[460px] text-center '>
@@ -26,7 +29,12 @@ function MVBlock({ title, description, imageLeft = false }: MVBlockProps) {
   )
 }
 
-export default function MVSection() {
+type MVSectionProps = {
+  missionImageUrl?: string
+  visionImageUrl?: string
+}
+
+export default function MVSection({ missionImageUrl, visionImageUrl }: MVSectionProps) {
   const description =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget justo congue, placerat urna et, facilisis odio. Mauris dapibus odio otenti. Nunc blandit iaculis velit, id aliquam nisl cursus ac.'
 
@@ -36,11 +44,13 @@ export default function MVSection() {
         <MVBlock
           description={description}
           imageLeft
+          imageUrl={missionImageUrl}
           title='Misión'
         />
 
         <MVBlock
           description={description}
+          imageUrl={visionImageUrl}
           title='Visión'
         />
       </div>

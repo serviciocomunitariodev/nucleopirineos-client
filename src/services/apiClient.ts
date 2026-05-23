@@ -10,7 +10,13 @@ export async function apiClient<T>(
     ...(options.headers || {}),
   };
 
-  if (!isFormData && !('Content-Type' in headers)) {
+  const token = typeof window === "undefined" ? null : window.localStorage.getItem("auth-token");
+
+  if (token && !("Authorization" in headers)) {
+    (headers as Record<string, string>).Authorization = `Bearer ${token}`;
+  }
+
+  if (!isFormData && !("Content-Type" in headers)) {
     (headers as Record<string, string>)["Content-Type"] = "application/json";
   }
 

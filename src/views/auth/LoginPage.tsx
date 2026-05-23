@@ -152,16 +152,6 @@ export default function LoginPage() {
           </div>
 
           <div className='flex flex-col items-center justify-center gap-5 w-full'>
-            <p className='text-[15px] text-gray-600 font-medium'>
-              ¿No tienes cuenta?{' '}
-              <Link
-                to='/auth/register'
-                className='text-[#065F46] font-bold hover:underline transition-colors duration-300'
-              >
-                Regístrate aquí
-              </Link>
-            </p>
-
             <Link
               to='/'
               className='text-[#065F46] font-bold hover:underline transition-colors duration-300'

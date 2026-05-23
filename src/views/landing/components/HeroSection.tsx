@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const heroImagePath = '/landing/hero-orchestra.jpg'
+type HeroSectionProps = {
+  imageUrl?: string
+}
 
-export default function HeroSection() {
+export default function HeroSection({ imageUrl }: HeroSectionProps) {
   const [imageFailed, setImageFailed] = useState(false)
 
   return (
@@ -40,7 +42,7 @@ export default function HeroSection() {
               className='h-full w-full object-cover'
               loading='eager'
               onError={() => setImageFailed(true)}
-              src={heroImagePath}
+              src={imageUrl}
             />
           )}
         </div>

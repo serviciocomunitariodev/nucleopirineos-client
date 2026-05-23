@@ -1,18 +1,34 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CircleArrowLeft, CircleArrowRight } from 'lucide-react'
 
 const defaultImage = '/landing/hero-orchestra.jpg'
 
-export default function ImagesSection() {
-  const images = useMemo(() => [defaultImage, defaultImage, defaultImage], [])
+type ImagesSectionProps = {
+  images?: string[]
+}
+
+export default function ImagesSection({ images }: ImagesSectionProps) {
+  const resolvedImages = useMemo(() => {
+    if (images && images.length > 0) {
+      return images
+    }
+
+    return [defaultImage, defaultImage, defaultImage]
+  }, [images])
   const [currentIndex, setCurrentIndex] = useState(0)
 
+  useEffect(() => {
+    if (currentIndex >= resolvedImages.length) {
+      setCurrentIndex(0)
+    }
+  }, [currentIndex, resolvedImages.length])
+
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length)
+    setCurrentIndex((prev) => (prev + 1) % resolvedImages.length)
   }
 
   const previousImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    setCurrentIndex((prev) => (prev - 1 + resolvedImages.length) % resolvedImages.length)
   }
 
   return (
@@ -31,7 +47,7 @@ export default function ImagesSection() {
           <img
             alt='Galeria nucleo pirineos'
             className='h-full w-full object-cover'
-            src={images[currentIndex]}
+            src={resolvedImages[currentIndex]}
           />
         </div>
 

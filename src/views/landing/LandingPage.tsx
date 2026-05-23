@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import useMultimediaQuery from '@/hooks/useMultimediaQuery'
 import HeroSection from '@/views/landing/components/HeroSection'
 import ImagesSection from '@/views/landing/components/ImagesSection'
 import MVSection from '@/views/landing/components/MVSection'
@@ -17,6 +18,14 @@ const landingSections = [
 
 export default function LandingPage() {
   const [activeSectionTitle, setActiveSectionTitle] = useState('Inicio')
+
+  const heroQuery = useMultimediaQuery({ section: 'HERO' })
+  const missionVisionQuery = useMultimediaQuery({ section: 'MISSION_VISION' })
+  const galleryQuery = useMultimediaQuery({ section: 'GALLERY' })
+
+  const heroImageUrl = heroQuery.data?.[0]?.imageUrl
+  const missionImages = (missionVisionQuery.data ?? []).slice(0, 2).map((item) => item.imageUrl)
+  const galleryImages = (galleryQuery.data ?? []).slice(0, 6).map((item) => item.imageUrl)
 
   usePageTitle(`${activeSectionTitle}`)
 
@@ -64,9 +73,9 @@ export default function LandingPage() {
 
   return (
     <LandingLayout>
-      <HeroSection />
-      <MVSection />
-      <ImagesSection />
+      <HeroSection imageUrl={heroImageUrl} />
+      <MVSection missionImageUrl={missionImages[0]} visionImageUrl={missionImages[1]} />
+      <ImagesSection images={galleryImages} />
       <SocialMedia />
       <PhrasesSection />
     </LandingLayout>
