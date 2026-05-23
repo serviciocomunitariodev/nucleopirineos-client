@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { AuthApi } from '@/api/AuthApi'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
+import Logo from '@/components/Logo'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { useAppStore } from '@/store/useAppStore'
@@ -88,7 +89,9 @@ export default function LoginPage() {
       >
         <header className='flex items-center justify-center'>
           <div className='flex h-[100px] w-[100px] items-center justify-center rounded-[12px] bg-white shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)]'>
-            <span className='text-sm font-semibold text-[#065F46]'>LOGO</span>
+            <div className='h-[72px] w-[72px]'>
+              <Logo />
+            </div>
           </div>
         </header>
 

@@ -5,21 +5,15 @@ import type { SvgIconComponent } from '@mui/icons-material'
 
 const socialItems = [
   {
-    key: 'facebook',
-    label: 'facebook',
-    href: '#',
-    Icon: Facebook,
-  },
-  {
     key: 'mail',
-    label: 'pirineos@gmail.com',
-    href: 'mailto:pirineos@gmail.com',
+    label: 'Correo del núcleo',
+    href: 'mailto:núcleo.incespirienos@elsistema.org.ve',
     Icon: Mail,
   },
   {
     key: 'instagram',
     label: 'Instagram',
-    href: '#',
+    href: 'https://www.instagram.com/nucleopirineos?igsh=bHE2Z3ppd3BiZnJh',
     Icon: Instagram,
   },
 ] satisfies Array<{
@@ -35,7 +29,7 @@ export default function SocialMedia() {
       <div className='mx-auto w-full max-w-[1400px] px-4 text-center lg:px-5'>
         <h2 className='text-[28px] lg:text-[56px] font-bold leading-tight text-ink'>Redes sociales y contacto</h2>
 
-        <div className='mt-10 grid gap-8 md:grid-cols-3 md:gap-10'>
+        <div className='mt-10 grid gap-8 md:grid-cols-2 md:gap-10'>
           {socialItems.map(({ key, label, href, Icon }) => (
             <a
               key={key}

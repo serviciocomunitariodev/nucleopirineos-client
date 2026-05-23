@@ -15,6 +15,7 @@ import {
 } from "@mui/icons-material";
 import BaseModal from "@/components/BaseModal";
 import { BaseButton } from "@/components/BaseButton";
+import Logo from "@/components/Logo";
 import { getUserAvatarStyleFromName } from "@/utils/avatar";
 import { useAppStore } from "@/store/useAppStore";
 import { UserRole } from "@/types/user";
@@ -184,8 +185,8 @@ export default function Layout() {
       className="flex h-full flex-col px-4 py-4 text-white bg-primary"
     >
       <div className="mb-6 flex justify-center">
-        <div className="flex h-16.5 w-16.5 items-center justify-center rounded-[12px] bg-white text-xs font-bold text-[#556B2F]">
-          LOGO
+        <div className="flex h-16.5 w-16.5 items-center justify-center rounded-[12px] bg-white p-2">
+          <Logo />
         </div>
       </div>
 

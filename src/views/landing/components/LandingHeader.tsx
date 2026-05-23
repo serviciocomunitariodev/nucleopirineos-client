@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CalendarRange, CircleUserRound, Contact, Images, Menu, Rocket, TextQuote, Undo2, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { School } from '@mui/icons-material'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import type { LandingHeaderVariant } from '@/views/landing/layout/LandingLayout'
 
@@ -52,9 +53,9 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
   return (
     <header className='sticky top-0 z-40 bg-primary'>
       <div className='mx-auto flex h-19 w-full items-center gap-4 px-4 lg:px-5'>
-        <div>
-          <div className='h-9 w-28 rounded-xl bg-white shadow-[0px_2px_5px_rgba(0,0,0,0.35)]' />
-        </div>
+        <span className='inline-flex items-center gap-3 text-lg font-semibold text-white'>
+          <School fontSize='large' /> Nucleo Pirineos
+        </span>
 
         {isCompact ? (
           <button
