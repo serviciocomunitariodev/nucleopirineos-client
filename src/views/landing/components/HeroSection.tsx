@@ -14,9 +14,7 @@ export default function HeroSection({ imageUrl }: HeroSectionProps) {
         <div className='max-w-[600px] max-lg:justify-self-center text-center lg:justify-self-start'>
           <h1 className='text-[40px] lg:text-[56px] font-bold leading-tight text-ink'>Nucleo Pirineos</h1>
           <p className='mt-4 text-[28px] leading-[1.34] text-[#3f4042]'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget justo congue,
-            placerat urna et, facilisis odio. Mauris dapibus odio otenti. Nunc blandit iaculis
-            velit, id aliquam nisl cursus ac.
+            Bienvenidos al Núcleo Pirineos del Sistema Nacional de Orquestas y Coros. Somos el hogar de cientos de niños y jóvenes que encuentran en la disciplina, el arte y la constancia un instrumento para el futuro.
           </p>
 
           <div className='mt-7'>
