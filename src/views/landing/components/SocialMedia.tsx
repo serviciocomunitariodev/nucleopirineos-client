@@ -1,4 +1,3 @@
-import Facebook from '@mui/icons-material/Facebook'
 import Instagram from '@mui/icons-material/Instagram'
 import Mail from '@mui/icons-material/Mail'
 import type { SvgIconComponent } from '@mui/icons-material'

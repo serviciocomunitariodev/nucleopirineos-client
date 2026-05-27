@@ -162,7 +162,7 @@ export default function StudentForm({
     const levels = academicLevelsQuery.data ?? []
 
     return levels
-      .filter((level) => age >= level.minAge && (level.maxAge === null || age < level.maxAge))
+      .filter((level) => age >= level.minAge && (level.maxAge === null || age <= level.maxAge))
       .sort((a, b) => b.minAge - a.minAge)[0]
   }
 
