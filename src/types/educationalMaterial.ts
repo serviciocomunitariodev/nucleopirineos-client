@@ -4,6 +4,7 @@ export type EducationalMaterial = {
   fileUrl: string;
   professorId: number;
   subjectId: number;
+  academicLevelId?: number | null;
   uploadDate: string;
   professor?: {
     id: number;
@@ -19,5 +20,6 @@ export type EducationalMaterialPayload = {
   title: string;
   professorId: number;
   subjectId: number;
+  academicLevelId?: number;
   file?: File;
 };

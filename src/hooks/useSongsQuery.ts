@@ -5,7 +5,7 @@ export const SONGS_QUERY_KEY = ['songs'] as const
 
 export default function useSongsQuery() {
   return useQuery({
-    queryKey: SONGS_QUERY_KEY,
-    queryFn: SongApi.getAll,
+    queryKey: [...SONGS_QUERY_KEY, 'visible'],
+    queryFn: SongApi.getVisible,
   })
 }

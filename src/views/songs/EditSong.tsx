@@ -50,6 +50,8 @@ export default function EditSong() {
         initialValues={{
           title: song.title,
           categoryId: song.categoryId,
+          subjectId: song.subjectId ?? undefined,
+          academicLevelId: song.academicLevelId ?? undefined,
           url: song.url,
           isExternalUrl: !song.fileId,
         }}

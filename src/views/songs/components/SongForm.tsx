@@ -5,8 +5,10 @@ import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
+import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
+import useSubjectsQuery from '@/hooks/useSubjectsQuery'
 import { validateFileSize } from '@/utils/sizeLimitUtil'
 
 export type SongFormMode = 'creation' | 'edit'
@@ -14,6 +16,8 @@ export type SongFormMode = 'creation' | 'edit'
 export type SongFormSubmitValues = {
   title: string
   categoryId: number
+  subjectId?: number
+  academicLevelId?: number
   file?: File
   url?: string
 }
@@ -21,6 +25,8 @@ export type SongFormSubmitValues = {
 type SongFormValues = {
   title: string
   categoryId: string | ''
+  subjectId: string | ''
+  academicLevelId: string | ''
 }
 
 type SongFormProps = {
@@ -29,6 +35,8 @@ type SongFormProps = {
     title: string
     url: string
     categoryId: number | string
+    subjectId: number | string
+    academicLevelId: number | string
     isExternalUrl: boolean
   }>
   isSubmitting?: boolean
@@ -39,6 +47,8 @@ type SongFormProps = {
 const songSchema = z.object({
   title: z.string().min(2, 'Titulo requerido.'),
   categoryId: z.coerce.number().int().positive('Categoria requerida.'),
+  subjectId: z.preprocess((value) => (value === '' ? undefined : value), z.coerce.number().int().positive().optional()),
+  academicLevelId: z.preprocess((value) => (value === '' ? undefined : value), z.coerce.number().int().positive().optional()),
 })
 
 export default function SongForm({
@@ -51,6 +61,8 @@ export default function SongForm({
   const { isMobile } = useIsMobile()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { data: categories = [], isLoading: isLoadingCategories } = useSongCategoriesQuery()
+  const { data: subjects = [], isLoading: isLoadingSubjects } = useSubjectsQuery()
+  const { data: academicLevels = [], isLoading: isLoadingAcademicLevels } = useAcademicLevelsQuery()
   const [file, setFile] = useState<File | null>(null)
   const [url, setUrl] = useState<string>(initialValues?.isExternalUrl && initialValues?.url ? initialValues.url : '')
   const [activeTab, setActiveTab] = useState<'file' | 'url'>(initialValues?.isExternalUrl ? 'url' : 'file')
@@ -77,6 +89,16 @@ export default function SongForm({
     value: String(cat.id),
   }))
 
+  const subjectOptions = subjects.map((subject) => ({
+    label: subject.name,
+    value: String(subject.id),
+  }))
+
+  const academicLevelOptions = academicLevels.map((level) => ({
+    label: level.name,
+    value: String(level.id),
+  }))
+
   const fields: BaseFormField<SongFormValues>[] = [
     {
       name: 'title',
@@ -93,6 +115,22 @@ export default function SongForm({
       rules: { required: 'Categoria requerida.' },
       disabled: isLoadingCategories,
     },
+    {
+      name: 'subjectId',
+      label: 'Catedra (opcional)',
+      placeholder: isLoadingSubjects ? 'Cargando catedras...' : 'Selecciona una catedra',
+      select: true,
+      options: subjectOptions,
+      disabled: isLoadingSubjects,
+    },
+    {
+      name: 'academicLevelId',
+      label: 'Nivel academico (opcional)',
+      placeholder: isLoadingAcademicLevels ? 'Cargando niveles...' : 'Selecciona un nivel',
+      select: true,
+      options: academicLevelOptions,
+      disabled: isLoadingAcademicLevels,
+    },
   ]
 
   return (
@@ -101,6 +139,8 @@ export default function SongForm({
       defaultValues={{
         title: initialValues?.title ?? '',
         categoryId: initialValues?.categoryId ? String(initialValues.categoryId) : '',
+        subjectId: initialValues?.subjectId ? String(initialValues.subjectId) : '',
+        academicLevelId: initialValues?.academicLevelId ? String(initialValues.academicLevelId) : '',
       }}
       fields={fields}
       onSubmit={async (values, methods) => {

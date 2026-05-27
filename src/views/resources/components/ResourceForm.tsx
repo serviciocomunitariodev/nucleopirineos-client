@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { BaseButton } from '@/components/BaseButton'
 import { BaseForm, type BaseFormField } from '@/components/BaseForm'
+import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useProfessorsQuery from '@/hooks/useProfessorsQuery'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
@@ -16,6 +17,7 @@ export type ResourceFormSubmitValues = {
   title: string
   professorId: number
   subjectId: number
+  academicLevelId?: number
   file?: File
 }
 
@@ -23,6 +25,7 @@ type ResourceFormValues = {
   title: string
   professorId: string | ''
   subjectId: string | ''
+  academicLevelId: string | ''
 }
 
 type ResourceFormProps = {
@@ -31,6 +34,7 @@ type ResourceFormProps = {
     title: string
     professorId: number | string
     subjectId: number | string
+    academicLevelId: number | string
     fileUrl: string
   }>
   isSubmitting?: boolean
@@ -42,6 +46,7 @@ const resourceSchema = z.object({
   title: z.string().min(2, 'Nombre requerido.'),
   professorId: z.coerce.number().int().positive('Profesor requerido.'),
   subjectId: z.coerce.number().int().positive('Catedra requerida.'),
+  academicLevelId: z.preprocess((value) => (value === '' ? undefined : value), z.coerce.number().int().positive().optional()),
 })
 
 export default function ResourceForm({
@@ -65,6 +70,7 @@ export default function ResourceForm({
 
   const professorsQuery = useProfessorsQuery()
   const subjectsQuery = useSubjectsQuery()
+  const academicLevelsQuery = useAcademicLevelsQuery()
 
   const professorOptions = useMemo(
     () =>
@@ -82,6 +88,15 @@ export default function ResourceForm({
         value: String(subject.id),
       })),
     [subjectsQuery.data],
+  )
+
+  const academicLevelOptions = useMemo(
+    () =>
+      (academicLevelsQuery.data ?? []).map((level) => ({
+        label: level.name,
+        value: String(level.id),
+      })),
+    [academicLevelsQuery.data],
   )
 
   const fields: BaseFormField<ResourceFormValues>[] = [
@@ -109,6 +124,14 @@ export default function ResourceForm({
       rules: { required: 'Catedra requerida.' },
       disabled: subjectsQuery.isLoading,
     },
+    {
+      name: 'academicLevelId',
+      label: 'Nivel academico (opcional)',
+      placeholder: academicLevelsQuery.isLoading ? 'Cargando niveles...' : 'Seleccionar nivel academico',
+      select: true,
+      options: academicLevelOptions,
+      disabled: academicLevelsQuery.isLoading,
+    },
   ]
 
   return (
@@ -118,6 +141,7 @@ export default function ResourceForm({
         title: initialValues?.title ?? '',
         professorId: initialValues?.professorId ? String(initialValues.professorId) : '',
         subjectId: initialValues?.subjectId ? String(initialValues.subjectId) : '',
+        academicLevelId: initialValues?.academicLevelId ? String(initialValues.academicLevelId) : '',
       }}
       fields={fields}
       onSubmit={async (values, methods) => {
@@ -220,7 +244,7 @@ export default function ResourceForm({
               </div>
             </section>
 
-            {professorsQuery.isError || subjectsQuery.isError ? (
+            {professorsQuery.isError || subjectsQuery.isError || academicLevelsQuery.isError ? (
               <Typography color='error' variant='body2'>
                 No se pudieron cargar los catalogos del formulario.
               </Typography>

@@ -6,5 +6,7 @@ export type Song = {
   url: string;
   fileId?: string | null;
   categoryId: number;
+  subjectId?: number | null;
+  academicLevelId?: number | null;
   category?: SongCategory;
 };

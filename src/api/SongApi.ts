@@ -8,6 +8,8 @@ const songSchema = z.object({
   url: z.string(),
   fileId: z.string().nullable().optional(),
   categoryId: z.number(),
+  subjectId: z.number().nullable().optional(),
+  academicLevelId: z.number().nullable().optional(),
   category: z.object({
     id: z.number(),
     name: z.string(),
@@ -19,6 +21,8 @@ const songsSchema = z.array(songSchema);
 export type CreateSongPayload = {
   title: string;
   categoryId: number;
+  subjectId?: number;
+  academicLevelId?: number;
   file?: File;
   url?: string;
 };
@@ -28,6 +32,14 @@ export type UpdateSongPayload = CreateSongPayload;
 export const SongApi = {
   async getAll(): Promise<Song[]> {
     const response = await apiClient<unknown>("/songs", {
+      method: "GET",
+    });
+
+    return songsSchema.parse(response);
+  },
+
+  async getVisible(): Promise<Song[]> {
+    const response = await apiClient<unknown>("/songs/visible", {
       method: "GET",
     });
 
@@ -46,6 +58,12 @@ export const SongApi = {
     const formData = new FormData();
     formData.append("title", payload.title);
     formData.append("categoryId", payload.categoryId.toString());
+    if (payload.subjectId !== undefined) {
+      formData.append("subjectId", payload.subjectId.toString());
+    }
+    if (payload.academicLevelId !== undefined) {
+      formData.append("academicLevelId", payload.academicLevelId.toString());
+    }
     if (payload.file) {
       formData.append("file", payload.file);
     }
@@ -65,6 +83,12 @@ export const SongApi = {
     const formData = new FormData();
     formData.append("title", payload.title);
     formData.append("categoryId", payload.categoryId.toString());
+    if (payload.subjectId !== undefined) {
+      formData.append("subjectId", payload.subjectId.toString());
+    }
+    if (payload.academicLevelId !== undefined) {
+      formData.append("academicLevelId", payload.academicLevelId.toString());
+    }
     if (payload.file) {
       formData.append("file", payload.file);
     }

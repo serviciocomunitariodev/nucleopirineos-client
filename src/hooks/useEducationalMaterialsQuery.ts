@@ -5,7 +5,7 @@ export const EDUCATIONAL_MATERIALS_QUERY_KEY = ['educational-materials'] as cons
 
 export default function useEducationalMaterialsQuery() {
   return useQuery({
-    queryKey: EDUCATIONAL_MATERIALS_QUERY_KEY,
-    queryFn: EducationalMaterialApi.getAll,
+    queryKey: [...EDUCATIONAL_MATERIALS_QUERY_KEY, 'visible'],
+    queryFn: EducationalMaterialApi.getVisible,
   })
 }

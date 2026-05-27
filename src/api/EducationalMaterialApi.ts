@@ -8,6 +8,7 @@ const educationalMaterialSchema = z.object({
   fileUrl: z.string(),
   professorId: z.number(),
   subjectId: z.number(),
+  academicLevelId: z.number().nullable().optional(),
   uploadDate: z.string(),
   professor: z
     .object({
@@ -34,6 +35,7 @@ const mapEducationalMaterial = (material: z.infer<typeof educationalMaterialSche
   fileUrl: material.fileUrl,
   professorId: material.professorId,
   subjectId: material.subjectId,
+  academicLevelId: material.academicLevelId,
   uploadDate: material.uploadDate,
   professor: material.professor
     ? {
@@ -58,6 +60,14 @@ export const EducationalMaterialApi = {
     return educationalMaterialsSchema.parse(response).map(mapEducationalMaterial);
   },
 
+  async getVisible(): Promise<EducationalMaterial[]> {
+    const response = await apiClient<unknown>("/educational-materials/visible", {
+      method: "GET",
+    });
+
+    return educationalMaterialsSchema.parse(response).map(mapEducationalMaterial);
+  },
+
   async getById(id: number): Promise<EducationalMaterial> {
     const response = await apiClient<unknown>(`/educational-materials/${id}`, {
       method: "GET",
@@ -71,6 +81,9 @@ export const EducationalMaterialApi = {
     formData.append("title", payload.title);
     formData.append("professorId", payload.professorId.toString());
     formData.append("subjectId", payload.subjectId.toString());
+    if (payload.academicLevelId !== undefined) {
+      formData.append("academicLevelId", payload.academicLevelId.toString());
+    }
     if (payload.file) {
       formData.append("file", payload.file);
     }
@@ -88,6 +101,9 @@ export const EducationalMaterialApi = {
     formData.append("title", payload.title);
     formData.append("professorId", payload.professorId.toString());
     formData.append("subjectId", payload.subjectId.toString());
+    if (payload.academicLevelId !== undefined) {
+      formData.append("academicLevelId", payload.academicLevelId.toString());
+    }
     if (payload.file) {
       formData.append("file", payload.file);
     }

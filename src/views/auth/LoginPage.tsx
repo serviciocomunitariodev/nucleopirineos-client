@@ -168,17 +168,17 @@ export default function LoginPage() {
       {!isMobile && (
         <div className='fixed bottom-6 right-6 z-50 transition-all duration-300'>
 
-          <div className='group h-16 w-16 bg-[#F1F5F9] rounded-lg shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)] hover:bg-sidebar hover:scale-110 transition-all duration-300 flex items-center justify-center md:h-20 md:w-20'>
+          {/* <div className='group h-16 w-16 bg-[#F1F5F9] rounded-lg shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)] hover:bg-sidebar hover:scale-110 transition-all duration-300 flex items-center justify-center md:h-20 md:w-20'> */}
 
-            <img
+            {/* <img
               src='/UNET_LOGO.png'
               alt='University Logo'
               className='h-12 w-12 transition-all duration-300 md:h-16 md:w-16 group-hover:brightness-0 group-hover:invert'
               decoding='async'
               loading='eager'
-            />
+            /> */}
 
-          </div>
+          {/* </div> */}
         </div>
       )}
     </main>

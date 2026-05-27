@@ -54,6 +54,7 @@ export default function EditResource() {
           title: educationalMaterialQuery.data.title,
           professorId: educationalMaterialQuery.data.professorId,
           subjectId: educationalMaterialQuery.data.subjectId,
+          academicLevelId: educationalMaterialQuery.data.academicLevelId ?? undefined,
           fileUrl: educationalMaterialQuery.data.fileUrl,
         }}
         isSubmitting={updateEducationalMaterialMutation.isPending}

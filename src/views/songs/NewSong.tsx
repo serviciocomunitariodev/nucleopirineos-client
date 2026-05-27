@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Typography } from '@mui/material'
 import useCreateSongMutation from '@/hooks/useCreateSongMutation'
-import SongForm from './components/SongForm'
+import SongForm, { type SongFormSubmitValues } from './components/SongForm'
 
 export default function NewSong() {
   const navigate = useNavigate()
   const createSongMutation = useCreateSongMutation()
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: SongFormSubmitValues) => {
     try {
       await createSongMutation.mutateAsync(values)
       toast.success('Cancion creada correctamente.')
