@@ -132,11 +132,15 @@ export default function StudentsPage() {
       header: isMobile ? 'Nombre' : 'Nombre completo',
       render: (row) => `${row.user.firstName} ${row.user.lastName}`,
     },
-    {
-      key: 'email',
-      header: 'Correo',
-      render: (row) => row.user.email,
-    },
+    ...(!isCompact
+      ? [
+        {
+          key: 'email',
+          header: 'Correo',
+          render: (row: StudentRecord) => row.user.email,
+        },
+      ]
+      : []),
     {
       key: 'age',
       header: 'Edad',
@@ -144,16 +148,20 @@ export default function StudentsPage() {
       width: '90px',
       render: (row) => row.age,
     },
-    {
-      key: 'academicLevel',
-      header: isMobile ? 'Nivel' : 'Nivel academico',
-      render: (row) => row.academicLevel.name,
-    },
-    {
-      key: 'principalSubject',
-      header: isMobile ? 'Catedra' : 'Catedra principal',
-      render: (row) => row.principalSubject?.name ?? 'No asignada',
-    },
+    ...(!isCompact
+      ? [
+        {
+          key: 'academicLevel',
+          header: isMobile ? 'Nivel' : 'Nivel academico',
+          render: (row: StudentRecord) => row.academicLevel.name,
+        },
+        {
+          key: 'principalSubject',
+          header: isMobile ? 'Catedra' : 'Catedra principal',
+          render: (row: StudentRecord) => row.principalSubject?.name ?? 'No asignada',
+        },
+      ]
+      : []),
     {
       key: 'actions',
       header: 'Acciones',
@@ -211,7 +219,7 @@ export default function StudentsPage() {
       <BaseTable
         columns={columns}
         emptyMessage={studentsQuery.isLoading ? 'Cargando estudiantes...' : 'No hay estudiantes para mostrar.'}
-        marqueeCols={['fullName', 'email', 'academicLevel', 'principalSubject']}
+        marqueeCols={isCompact ? ['fullName'] : ['fullName', 'email', 'academicLevel', 'principalSubject']}
         marqueeDirection='rtl'
         marqueeEffect={isCompact}
         marqueeSpeed={8}

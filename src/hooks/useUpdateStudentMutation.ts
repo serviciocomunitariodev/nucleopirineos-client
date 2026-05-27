@@ -10,7 +10,7 @@ type UpdateStudentInput = {
   student: {
     age: number;
     principalSubjectId: number | null;
-    complementarySubjectIds: number[];
+    complementarySubjectIds?: number[];
   };
 };
 
@@ -24,7 +24,9 @@ export default function useUpdateStudentMutation() {
       const updatedStudent = await UsersApi.updateStudent(input.studentId, {
         age: input.student.age,
         principalSubjectId: input.student.principalSubjectId,
-        complementarySubjectIds: input.student.complementarySubjectIds,
+        ...(input.student.complementarySubjectIds !== undefined
+          ? { complementarySubjectIds: input.student.complementarySubjectIds }
+          : {}),
       });
 
       return updatedStudent;

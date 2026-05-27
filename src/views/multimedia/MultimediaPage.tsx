@@ -79,35 +79,39 @@ export default function MultimediaPage() {
                 header: "Seccion",
                 render: (row) => sectionLabels[row.section] ?? row.section,
             },
-            {
-                key: "sortOrder",
-                header: "Orden",
-                align: "center",
-                width: isCompact ? "80px" : "110px",
-                render: (row) => row.sortOrder,
-            },
-            {
-                key: "isActive",
-                header: "Estado",
-                align: "center",
-                width: isCompact ? "96px" : "120px",
-                render: (row) => (row.isActive ? "Activa" : "Inactiva"),
-            },
-            {
-                key: "preview",
-                header: "Vista",
-                align: "center",
-                width: isCompact ? "92px" : "140px",
-                render: (row) => (
-                    <div className="flex justify-center">
-                        <img
-                            alt={row.title}
-                            className="h-12 w-16 rounded-md object-cover shadow"
-                            src={row.imageUrl}
-                        />
-                    </div>
-                ),
-            },
+            ...(!isCompact
+                ? [
+                    {
+                        key: "sortOrder",
+                        header: "Orden",
+                        align: "center" as const,
+                        width: "110px",
+                        render: (row: MultimediaItem) => row.sortOrder,
+                    },
+                    {
+                        key: "isActive",
+                        header: "Estado",
+                        align: "center" as const,
+                        width: "120px",
+                        render: (row: MultimediaItem) => (row.isActive ? "Activa" : "Inactiva"),
+                    },
+                    {
+                        key: "preview",
+                        header: "Vista",
+                        align: "center" as const,
+                        width: "140px",
+                        render: (row: MultimediaItem) => (
+                            <div className="flex justify-center">
+                                <img
+                                    alt={row.title}
+                                    className="h-12 w-16 rounded-md object-cover shadow"
+                                    src={row.imageUrl}
+                                />
+                            </div>
+                        ),
+                    },
+                ]
+                : []),
             {
                 key: "actions",
                 header: "Acciones",

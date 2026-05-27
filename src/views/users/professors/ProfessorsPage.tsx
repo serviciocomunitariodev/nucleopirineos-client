@@ -123,22 +123,26 @@ export default function ProfessorsPage() {
       header: 'Correo',
       render: (row) => row.user.email,
     },
-    {
-      key: 'academicLevels',
-      header: 'Niveles',
-      render: (row) =>
-        row.academicLevels.length > 0
-          ? row.academicLevels.map((level) => level.name).join(', ')
-          : 'Sin asignar',
-    },
-    {
-      key: 'subjects',
-      header: 'Catedras',
-      render: (row) =>
-        row.subjects.length > 0
-          ? row.subjects.map((subject) => subject.name).join(', ')
-          : 'Sin asignar',
-    },
+    ...(!isCompact
+      ? [
+        {
+          key: 'academicLevels',
+          header: 'Niveles',
+          render: (row: ProfessorRecord) =>
+            row.academicLevels.length > 0
+              ? row.academicLevels.map((level) => level.name).join(', ')
+              : 'Sin asignar',
+        },
+        {
+          key: 'subjects',
+          header: 'Catedras',
+          render: (row: ProfessorRecord) =>
+            row.subjects.length > 0
+              ? row.subjects.map((subject) => subject.name).join(', ')
+              : 'Sin asignar',
+        },
+      ]
+      : []),
     {
       key: 'actions',
       header: 'Acciones',
@@ -196,7 +200,7 @@ export default function ProfessorsPage() {
       <BaseTable
         columns={columns}
         emptyMessage={professorsQuery.isLoading ? 'Cargando profesores...' : 'No hay profesores para mostrar.'}
-        marqueeCols={['fullName', 'email', 'academicLevels', 'subjects']}
+        marqueeCols={isCompact ? ['fullName', 'email'] : ['fullName', 'email', 'academicLevels', 'subjects']}
         marqueeDirection='rtl'
         marqueeEffect={isCompact}
         marqueeSpeed={8}

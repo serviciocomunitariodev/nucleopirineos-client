@@ -5,6 +5,7 @@ import StudentForm from '@/views/users/students/components/StudentForm'
 import useStudentByUserIdQuery from '@/hooks/useStudentByUserIdQuery'
 import useUpdateStudentMutation from '@/hooks/useUpdateStudentMutation'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import type { StudentFormSubmitValues } from '@/views/users/students/components/StudentForm'
 
 export default function EditStudent() {
   usePageTitle('Editar estudiante')
@@ -35,15 +36,7 @@ export default function EditStudent() {
     return <Typography color='error'>No se pudo cargar la informacion del estudiante.</Typography>
   }
 
-  const handleSubmit = async (values: {
-    firstName: string
-    lastName: string
-    email: string
-    age: number
-    principalSubjectId: number | null
-    complementarySubjectIds: number[]
-    password?: string
-  }) => {
+  const handleSubmit = async (values: StudentFormSubmitValues) => {
     try {
       await updateStudentMutation.mutateAsync({
         userId,
@@ -57,7 +50,6 @@ export default function EditStudent() {
         student: {
           age: values.age,
           principalSubjectId: values.principalSubjectId,
-          complementarySubjectIds: values.complementarySubjectIds,
         },
       })
 
@@ -86,7 +78,6 @@ export default function EditStudent() {
           email: student.user.email,
           age: student.age,
           principalSubjectId: student.principalSubjectId ?? '',
-          complementarySubjectIds: student.complementarySubjects.map((subject) => subject.id),
         }}
         isSubmitting={updateStudentMutation.isPending}
         onCancel={() => navigate('/users/students')}

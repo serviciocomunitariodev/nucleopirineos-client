@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, MenuItem, TextField, Typography } from '@mui/material'
+import { MenuItem, TextField, Typography } from '@mui/material'
 import { toast } from 'react-toastify'
 import { z } from 'zod'
 import { BaseButton } from '@/components/BaseButton'
@@ -16,7 +16,6 @@ export type StudentFormSubmitValues = {
   email: string
   age: number
   principalSubjectId: number | null
-  complementarySubjectIds: number[]
   password?: string
 }
 
@@ -26,7 +25,6 @@ type StudentFormValues = {
   email: string
   age: number | ''
   principalSubjectId: number | ''
-  complementarySubjectIds: number[]
   password: string
   confirmPassword: string
 }
@@ -48,7 +46,6 @@ const baseSchema = z.object({
     (value) => (value === '' ? null : value),
     z.coerce.number().int().positive().nullable(),
   ),
-  complementarySubjectIds: z.array(z.number().int().positive()).optional(),
 })
 
 const creationSchema = baseSchema
@@ -120,7 +117,6 @@ export default function StudentForm({
   const { isMobile } = useIsMobile()
   const academicLevelsQuery = useAcademicLevelsQuery()
   const principalSubjectsQuery = useSubjectsQuery({ type: SubjectType.PRINCIPAL })
-  const complementarySubjectsQuery = useSubjectsQuery({ type: SubjectType.COMPLEMENTARY })
 
   const fields: BaseFormField<StudentFormValues>[] = [
     {
@@ -153,7 +149,6 @@ export default function StudentForm({
     email: initialValues?.email ?? '',
     age: initialValues?.age ?? '',
     principalSubjectId: initialValues?.principalSubjectId ?? '',
-    complementarySubjectIds: initialValues?.complementarySubjectIds ?? [],
     password: '',
     confirmPassword: '',
   }
@@ -194,7 +189,6 @@ export default function StudentForm({
           email: parsed.data.email,
           age: parsed.data.age,
           principalSubjectId: parsed.data.principalSubjectId,
-          complementarySubjectIds: parsed.data.complementarySubjectIds ?? [],
           password: parsed.data.password?.trim() || undefined,
         })
       }}
@@ -205,21 +199,6 @@ export default function StudentForm({
         const normalizedAge = typeof ageValue === 'number' ? ageValue : Number(ageValue)
         const ageIsValid = Number.isFinite(normalizedAge) && normalizedAge >= 0
         const detectedAcademicLevel = ageIsValid ? resolveAcademicLevelByAge(normalizedAge) : undefined
-        const complementarySubjectIds = methods.watch('complementarySubjectIds') ?? []
-
-        const toggleComplementary = (subjectId: number, checked: boolean) => {
-          const currentValues = methods.getValues('complementarySubjectIds') ?? []
-
-          if (checked) {
-            methods.setValue('complementarySubjectIds', [...currentValues, subjectId])
-            return
-          }
-
-          methods.setValue(
-            'complementarySubjectIds',
-            currentValues.filter((currentValue) => currentValue !== subjectId),
-          )
-        }
 
         return (
           <div className={isMobile ? 'space-y-3' : 'col-span-2 space-y-3'}>
@@ -279,29 +258,11 @@ export default function StudentForm({
               ) : null}
             </div>
 
-            <div>
-              <Typography variant='subtitle2'>Catedras complementarias</Typography>
-              <FormGroup>
-                {(complementarySubjectsQuery.data ?? []).map((subject) => (
-                  <FormControlLabel
-                    key={subject.id}
-                    control={
-                      <Checkbox
-                        checked={complementarySubjectIds.includes(subject.id)}
-                        onChange={(event) => toggleComplementary(subject.id, event.target.checked)}
-                      />
-                    }
-                    label={subject.name}
-                  />
-                ))}
-              </FormGroup>
-            </div>
-
-            {academicLevelsQuery.isLoading || principalSubjectsQuery.isLoading || complementarySubjectsQuery.isLoading ? (
+            {academicLevelsQuery.isLoading || principalSubjectsQuery.isLoading ? (
               <Typography variant='body2'>Cargando catalogos...</Typography>
             ) : null}
 
-            {academicLevelsQuery.isError || principalSubjectsQuery.isError || complementarySubjectsQuery.isError ? (
+            {academicLevelsQuery.isError || principalSubjectsQuery.isError ? (
               <Typography color='error' variant='body2'>
                 No se pudieron cargar los catalogos del formulario.
               </Typography>

@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import StudentForm from '@/views/users/students/components/StudentForm'
 import useCreateStudentMutation from '@/hooks/useCreateStudentMutation'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import type { StudentFormSubmitValues } from '@/views/users/students/components/StudentForm'
 
 export default function NewStudent() {
   usePageTitle('Nuevo estudiante')
@@ -11,15 +12,7 @@ export default function NewStudent() {
   const navigate = useNavigate()
   const createStudentMutation = useCreateStudentMutation()
 
-  const handleSubmit = async (values: {
-    firstName: string
-    lastName: string
-    email: string
-    age: number
-    principalSubjectId: number | null
-    complementarySubjectIds: number[]
-    password?: string
-  }) => {
+  const handleSubmit = async (values: StudentFormSubmitValues) => {
     if (!values.password) {
       toast.error('La contrasena es obligatoria para crear el usuario.')
       return
@@ -36,7 +29,6 @@ export default function NewStudent() {
         student: {
           age: values.age,
           principalSubjectId: values.principalSubjectId ?? undefined,
-          complementarySubjectIds: values.complementarySubjectIds,
         },
       })
 
