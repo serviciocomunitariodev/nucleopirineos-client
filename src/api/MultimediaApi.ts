@@ -9,7 +9,7 @@ import type {
 const multimediaSchema = z.object({
   id: z.number(),
   title: z.string(),
-  section: z.enum(["HERO", "MISSION_VISION", "GALLERY"]),
+  section: z.enum(["HERO", "MISSION_VISION", "GALLERY", "LOGO"]),
   imageUrl: z.string(),
   imageFileId: z.string().nullable().optional(),
   sortOrder: z.number(),

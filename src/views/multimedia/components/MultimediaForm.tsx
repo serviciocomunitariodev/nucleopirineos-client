@@ -32,7 +32,7 @@ type MultimediaFormProps = {
 
 const multimediaSchema = z.object({
   title: z.string().min(2, "Titulo requerido."),
-  section: z.enum(["HERO", "MISSION_VISION", "GALLERY"]),
+  section: z.enum(["HERO", "MISSION_VISION", "GALLERY", "LOGO"]),
   sortOrder: z
     .preprocess(
       (value) => (value === "" || value === undefined ? undefined : value),
@@ -46,12 +46,14 @@ const sectionOptions: Array<{ label: string; value: MultimediaSection }> = [
   { label: "Principal", value: "HERO" },
   { label: "Mision y Vision", value: "MISSION_VISION" },
   { label: "Galeria", value: "GALLERY" },
+  { label: "Logo", value: "LOGO" },
 ];
 
 const sectionLimits: Record<MultimediaSection, number> = {
   HERO: 1,
   MISSION_VISION: 2,
   GALLERY: 6,
+  LOGO: 1,
 };
 
 export default function MultimediaForm({

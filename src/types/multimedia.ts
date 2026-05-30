@@ -1,4 +1,4 @@
-export type MultimediaSection = "HERO" | "MISSION_VISION" | "GALLERY";
+export type MultimediaSection = "HERO" | "MISSION_VISION" | "GALLERY" | "LOGO";
 
 export type MultimediaItem = {
   id: number;

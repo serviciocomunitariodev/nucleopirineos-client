@@ -22,6 +22,7 @@ const sectionLabels: Record<MultimediaItem["section"], string> = {
     HERO: "Principal",
     MISSION_VISION: "Mision y Vision",
     GALLERY: "Galeria",
+    LOGO: "Logo",
 };
 
 export default function MultimediaPage() {
