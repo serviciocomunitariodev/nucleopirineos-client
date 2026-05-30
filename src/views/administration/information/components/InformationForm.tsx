@@ -23,8 +23,10 @@ const informationSchema = z.object({
   value: z.string().trim().min(1, 'Contenido requerido.'),
 })
 
+const informationEditSchema = informationSchema.omit({ key: true, section: true })
+
 const sectionOptions = [
-  { label: 'Hero', value: 'HERO' },
+  { label: 'Principal', value: 'HERO' },
   { label: 'Mision y Vision', value: 'MISSION_VISION' },
 ]
 
@@ -36,27 +38,14 @@ export default function InformationForm({
   onCancel,
 }: InformationFormProps) {
   const { isMobile } = useIsMobile()
+  const isEditMode = mode === 'edit'
 
   const fields: BaseFormField<InformationPayload>[] = [
     {
-      name: 'key',
-      label: 'Clave',
-      placeholder: 'hero_title',
-      rules: { required: 'Clave requerida.' },
-    },
-    {
       name: 'title',
       label: 'Titulo',
-      placeholder: 'Titulo Hero',
+      placeholder: 'Titulo Principal',
       rules: { required: 'Titulo requerido.' },
-    },
-    {
-      name: 'section',
-      label: 'Seccion',
-      placeholder: 'Seleccionar seccion',
-      select: true,
-      options: sectionOptions,
-      rules: { required: 'Seccion requerida.' },
     },
     {
       name: 'value',
@@ -67,6 +56,24 @@ export default function InformationForm({
       rules: { required: 'Contenido requerido.' },
     },
   ]
+
+  if (!isEditMode) {
+    fields.unshift({
+      name: 'key',
+      label: 'Clave',
+      placeholder: 'hero_title',
+      rules: { required: 'Clave requerida.' },
+    })
+
+    fields.splice(2, 0, {
+      name: 'section',
+      label: 'Seccion',
+      placeholder: 'Seleccionar seccion',
+      select: true,
+      options: sectionOptions,
+      rules: { required: 'Seccion requerida.' },
+    })
+  }
 
   return (
     <BaseForm<InformationPayload>
@@ -79,6 +86,45 @@ export default function InformationForm({
       }}
       fields={fields}
       onSubmit={async (values, methods) => {
+        if (isEditMode) {
+          const parsed = informationEditSchema.safeParse(values)
+
+          if (!parsed.success) {
+            const firstIssue = parsed.error.issues[0]
+
+            if (firstIssue?.path?.[0]) {
+              methods.setError(firstIssue.path[0] as keyof InformationPayload, {
+                message: firstIssue.message,
+              })
+            }
+
+            toast.error(firstIssue?.message ?? 'Datos invalidos.')
+            return
+          }
+
+          const originalKey = initialValues?.key?.trim()
+
+          if (!originalKey) {
+            toast.error('No se pudo determinar la clave del registro.')
+            return
+          }
+
+          const originalSection = initialValues?.section
+
+          if (!originalSection) {
+            toast.error('No se pudo determinar la seccion del registro.')
+            return
+          }
+
+          await onSubmit({
+            key: originalKey,
+            title: parsed.data.title,
+            section: originalSection,
+            value: parsed.data.value,
+          })
+          return
+        }
+
         const parsed = informationSchema.safeParse(values)
 
         if (!parsed.success) {

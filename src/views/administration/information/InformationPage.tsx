@@ -11,8 +11,26 @@ import type { InformationItem } from '@/types/information'
 
 const PAGE_SIZE = 6
 
+const replaceHeroLabel = (value: string) => value.replace(/hero/gi, 'Principal')
+
+const truncateByWords = (value: string, words: number) => {
+  const normalized = value.trim().replace(/\s+/g, ' ')
+
+  if (normalized.length === 0) {
+    return ''
+  }
+
+  const tokens = normalized.split(' ')
+
+  if (tokens.length <= words) {
+    return normalized
+  }
+
+  return `${tokens.slice(0, words).join(' ')}...`
+}
+
 const sectionLabels: Record<InformationItem['section'], string> = {
-  HERO: 'Hero',
+  HERO: 'Principal',
   MISSION_VISION: 'Mision y Vision',
 }
 
@@ -36,8 +54,7 @@ export default function InformationPage() {
       }
 
       return (
-        row.title.toLowerCase().includes(normalizedSearch) ||
-        row.key.toLowerCase().includes(normalizedSearch) ||
+        replaceHeroLabel(row.title).toLowerCase().includes(normalizedSearch) ||
         row.value.toLowerCase().includes(normalizedSearch)
       )
     })
@@ -65,12 +82,7 @@ export default function InformationPage() {
       {
         key: 'title',
         header: 'Titulo',
-        render: (row) => row.title,
-      },
-      {
-        key: 'key',
-        header: 'Clave',
-        render: (row) => row.key,
+        render: (row) => replaceHeroLabel(row.title),
       },
       {
         key: 'section',
@@ -80,7 +92,7 @@ export default function InformationPage() {
       {
         key: 'value',
         header: 'Contenido',
-        render: (row) => row.value,
+        render: (row) => truncateByWords(row.value, 5),
       },
       {
         key: 'actions',
@@ -113,10 +125,9 @@ export default function InformationPage() {
       </div>
 
       <UtilityBar
-        createLabel='Nueva'
-        onCreateClick={() => navigate('/information/new')}
+        showCreate={false}
         onSearchChange={setSearchValue}
-        searchPlaceholder='Buscar por titulo, clave o contenido'
+        searchPlaceholder='Buscar por titulo o contenido'
         searchValue={searchValue}
         showFilter={false}
       />
@@ -132,7 +143,7 @@ export default function InformationPage() {
             ? 'Cargando informacion...'
             : 'No hay informacion para mostrar.'
         }
-        marqueeCols={['title', 'key', 'value']}
+        marqueeCols={['title']}
         marqueeDirection='rtl'
         marqueeEffect={isCompact}
         marqueeSpeed={8}
