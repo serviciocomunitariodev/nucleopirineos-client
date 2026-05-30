@@ -9,6 +9,7 @@ import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useProfessorsQuery from '@/hooks/useProfessorsQuery'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
+import { getSubjectTypeLabel } from '@/types/subject'
 import { validateFileSize } from '@/utils/sizeLimitUtil'
 
 export type ResourceFormMode = 'creation' | 'edit'
@@ -84,7 +85,7 @@ export default function ResourceForm({
   const subjectOptions = useMemo(
     () =>
       (subjectsQuery.data ?? []).map((subject) => ({
-        label: subject.name,
+        label: `${subject.name} (${getSubjectTypeLabel(subject.type)})`,
         value: String(subject.id),
       })),
     [subjectsQuery.data],

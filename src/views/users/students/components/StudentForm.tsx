@@ -6,7 +6,7 @@ import { BaseForm, type BaseFormField } from '@/components/BaseForm'
 import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
-import { SubjectType } from '@/types/subject'
+import { getSubjectTypeLabel, SubjectType } from '@/types/subject'
 
 export type StudentFormMode = 'creation' | 'edit'
 
@@ -241,7 +241,7 @@ export default function StudentForm({
                   <MenuItem value=''>Seleccionar catedra principal</MenuItem>
                   {(principalSubjectsQuery.data ?? []).map((subject) => (
                     <MenuItem key={subject.id} value={subject.id}>
-                      {subject.name}
+                      {`${subject.name} (${getSubjectTypeLabel(subject.type)})`}
                     </MenuItem>
                   ))}
                 </TextField>

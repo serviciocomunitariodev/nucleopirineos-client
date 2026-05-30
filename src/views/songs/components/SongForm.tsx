@@ -9,6 +9,7 @@ import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useSongCategoriesQuery from '@/hooks/useSongCategoriesQuery'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
+import { getSubjectTypeLabel } from '@/types/subject'
 import { validateFileSize } from '@/utils/sizeLimitUtil'
 
 export type SongFormMode = 'creation' | 'edit'
@@ -90,7 +91,7 @@ export default function SongForm({
   }))
 
   const subjectOptions = subjects.map((subject) => ({
-    label: subject.name,
+    label: `${subject.name} (${getSubjectTypeLabel(subject.type)})`,
     value: String(subject.id),
   }))
 

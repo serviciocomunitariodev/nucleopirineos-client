@@ -12,7 +12,7 @@ import { useIsMobile } from '@/hooks/useIsMobile'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import useRegisterMutation from '@/hooks/useRegisterMutation'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
-import { SubjectType } from '@/types/subject'
+import { getSubjectTypeLabel, SubjectType } from '@/types/subject'
 
 const baseRegisterSchema = z.object({
   firstName: z.string().min(2, 'Nombres requerido.'),
@@ -331,7 +331,7 @@ export default function RegisterPage() {
                         <MenuItem value=''>Seleccionar catedra principal</MenuItem>
                         {(principalSubjectsQuery.data ?? []).map((subject) => (
                           <MenuItem key={subject.id} value={subject.id}>
-                            {subject.name}
+                            {`${subject.name} (${getSubjectTypeLabel(subject.type)})`}
                           </MenuItem>
                         ))}
                       </TextField>
@@ -375,7 +375,7 @@ export default function RegisterPage() {
                                 }
                               />
                             }
-                            label={`${subject.name} (${subject.type})`}
+                            label={`${subject.name} (${getSubjectTypeLabel(subject.type)})`}
                           />
                         ))}
                       </FormGroup>

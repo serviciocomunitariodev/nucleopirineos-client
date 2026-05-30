@@ -6,6 +6,7 @@ import { BaseForm, type BaseFormField } from '@/components/BaseForm'
 import useAcademicLevelsQuery from '@/hooks/useAcademicLevelsQuery'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import useSubjectsQuery from '@/hooks/useSubjectsQuery'
+import { getSubjectTypeLabel } from '@/types/subject'
 
 export type ProfessorFormMode = 'creation' | 'edit'
 
@@ -224,7 +225,7 @@ export default function ProfessorForm({
                         }
                       />
                     }
-                    label={`${subject.name} (${subject.type})`}
+                    label={`${subject.name} (${getSubjectTypeLabel(subject.type)})`}
                   />
                 ))}
               </FormGroup>
