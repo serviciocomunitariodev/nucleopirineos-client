@@ -49,6 +49,7 @@ export default function EditStudent() {
         },
         student: {
           age: values.age,
+          academicLevelId: values.academicLevelId,
           principalSubjectId: values.principalSubjectId,
         },
       })
@@ -77,6 +78,7 @@ export default function EditStudent() {
           lastName: student.user.lastName,
           email: student.user.email,
           age: student.age,
+          academicLevelId: student.academicLevelId,
           principalSubjectId: student.principalSubjectId ?? '',
         }}
         isSubmitting={updateStudentMutation.isPending}

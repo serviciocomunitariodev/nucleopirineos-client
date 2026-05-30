@@ -66,6 +66,7 @@ export type RegisterPayload = {
     | {
         role: "STUDENT";
         age: number;
+        academicLevelId: number;
         principalSubjectId?: number;
       }
     | {

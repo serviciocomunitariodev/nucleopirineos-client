@@ -15,6 +15,7 @@ export type StudentFormSubmitValues = {
   lastName: string
   email: string
   age: number
+  academicLevelId: number
   principalSubjectId: number | null
   password?: string
 }
@@ -24,6 +25,7 @@ type StudentFormValues = {
   lastName: string
   email: string
   age: number | ''
+  academicLevelId: number | ''
   principalSubjectId: number | ''
   password: string
   confirmPassword: string
@@ -42,6 +44,10 @@ const baseSchema = z.object({
   lastName: z.string().min(2, 'Apellidos requeridos.'),
   email: z.string().email('Correo invalido.'),
   age: z.preprocess((value) => (value === '' ? undefined : value), z.coerce.number().int().min(0, 'Edad invalida.')),
+  academicLevelId: z.preprocess(
+    (value) => (value === '' ? undefined : value),
+    z.coerce.number().int().positive('Nivel academico requerido.'),
+  ),
   principalSubjectId: z.preprocess(
     (value) => (value === '' ? null : value),
     z.coerce.number().int().positive().nullable(),
@@ -59,14 +65,6 @@ const creationSchema = baseSchema
         code: z.ZodIssueCode.custom,
         path: ['confirmPassword'],
         message: 'Las contrasenas no coinciden.',
-      })
-    }
-
-    if (data.age >= 8 && !data.principalSubjectId) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['principalSubjectId'],
-        message: 'Para estudiantes de 8 anos o mas, la catedra principal es obligatoria.',
       })
     }
   })
@@ -96,14 +94,6 @@ const editSchema = baseSchema
           message: 'Las contrasenas no coinciden.',
         })
       }
-    }
-
-    if (data.age >= 8 && !data.principalSubjectId) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['principalSubjectId'],
-        message: 'Para estudiantes de 8 anos o mas, la catedra principal es obligatoria.',
-      })
     }
   })
 
@@ -148,17 +138,10 @@ export default function StudentForm({
     lastName: initialValues?.lastName ?? '',
     email: initialValues?.email ?? '',
     age: initialValues?.age ?? '',
+    academicLevelId: initialValues?.academicLevelId ?? '',
     principalSubjectId: initialValues?.principalSubjectId ?? '',
     password: '',
     confirmPassword: '',
-  }
-
-  const resolveAcademicLevelByAge = (age: number) => {
-    const levels = academicLevelsQuery.data ?? []
-
-    return levels
-      .filter((level) => age >= level.minAge && (level.maxAge === null || age <= level.maxAge))
-      .sort((a, b) => b.minAge - a.minAge)[0]
   }
 
   return (
@@ -188,6 +171,7 @@ export default function StudentForm({
           lastName: parsed.data.lastName,
           email: parsed.data.email,
           age: parsed.data.age,
+          academicLevelId: parsed.data.academicLevelId,
           principalSubjectId: parsed.data.principalSubjectId,
           password: parsed.data.password?.trim() || undefined,
         })
@@ -196,9 +180,6 @@ export default function StudentForm({
     >
       {({ methods }) => {
         const ageValue = methods.watch('age')
-        const normalizedAge = typeof ageValue === 'number' ? ageValue : Number(ageValue)
-        const ageIsValid = Number.isFinite(normalizedAge) && normalizedAge >= 0
-        const detectedAcademicLevel = ageIsValid ? resolveAcademicLevelByAge(normalizedAge) : undefined
 
         return (
           <div className={isMobile ? 'space-y-3' : 'col-span-2 space-y-3'}>
@@ -222,40 +203,49 @@ export default function StudentForm({
 
               <div>
                 <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
-                  Nivel academico asignado
+                  Nivel academico
                 </Typography>
                 <TextField
                   fullWidth
+                  select
                   size='small'
-                  value={detectedAcademicLevel ? detectedAcademicLevel.name : 'Sin nivel asignado'}
-                  disabled
-                />
+                  value={methods.watch('academicLevelId') ?? ''}
+                  onChange={(event) => {
+                    const rawValue = event.target.value
+                    methods.setValue('academicLevelId', rawValue === '' ? '' : Number(rawValue))
+                  }}
+                >
+                  <MenuItem value=''>Seleccionar nivel academico</MenuItem>
+                  {(academicLevelsQuery.data ?? []).map((level) => (
+                    <MenuItem key={level.id} value={level.id}>
+                      {level.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </div>
 
-              {ageIsValid && normalizedAge >= 8 ? (
-                <div>
-                  <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
-                    Catedra principal
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    select
-                    size='small'
-                    value={methods.watch('principalSubjectId') ?? ''}
-                    onChange={(event) => {
-                      const rawValue = event.target.value
-                      methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
-                    }}
-                  >
-                    <MenuItem value=''>Seleccionar catedra principal</MenuItem>
-                    {(principalSubjectsQuery.data ?? []).map((subject) => (
-                      <MenuItem key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </div>
-              ) : null}
+              <div>
+                <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                  Catedra principal (opcional)
+                </Typography>
+                <TextField
+                  fullWidth
+                  select
+                  size='small'
+                  value={methods.watch('principalSubjectId') ?? ''}
+                  onChange={(event) => {
+                    const rawValue = event.target.value
+                    methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
+                  }}
+                >
+                  <MenuItem value=''>Seleccionar catedra principal</MenuItem>
+                  {(principalSubjectsQuery.data ?? []).map((subject) => (
+                    <MenuItem key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
             </div>
 
             {academicLevelsQuery.isLoading || principalSubjectsQuery.isLoading ? (

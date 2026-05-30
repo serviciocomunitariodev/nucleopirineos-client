@@ -162,12 +162,14 @@ export type UpdateProfessorPayload = {
 export type CreateStudentPayload = {
   userId: number;
   age: number;
+  academicLevelId: number;
   principalSubjectId?: number;
   complementarySubjectIds?: number[];
 };
 
 export type UpdateStudentPayload = {
   age?: number;
+  academicLevelId?: number;
   principalSubjectId?: number | null;
   complementarySubjectIds?: number[];
 };

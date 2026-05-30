@@ -9,6 +9,7 @@ type UpdateStudentInput = {
   user: UpdateUserPayload;
   student: {
     age: number;
+    academicLevelId: number;
     principalSubjectId: number | null;
     complementarySubjectIds?: number[];
   };
@@ -23,6 +24,7 @@ export default function useUpdateStudentMutation() {
 
       const updatedStudent = await UsersApi.updateStudent(input.studentId, {
         age: input.student.age,
+        academicLevelId: input.student.academicLevelId,
         principalSubjectId: input.student.principalSubjectId,
         ...(input.student.complementarySubjectIds !== undefined
           ? { complementarySubjectIds: input.student.complementarySubjectIds }

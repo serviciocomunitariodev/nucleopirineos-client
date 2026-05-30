@@ -28,6 +28,7 @@ export default function NewStudent() {
         },
         student: {
           age: values.age,
+          academicLevelId: values.academicLevelId,
           principalSubjectId: values.principalSubjectId ?? undefined,
         },
       })

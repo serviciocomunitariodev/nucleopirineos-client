@@ -29,19 +29,14 @@ const studentRegisterSchema = baseRegisterSchema
       (value) => (value === '' ? undefined : value),
       z.coerce.number().int().min(0, 'Edad invalida.'),
     ),
+    academicLevelId: z.preprocess(
+      (value) => (value === '' ? undefined : value),
+      z.coerce.number().int().positive('Nivel academico requerido.'),
+    ),
     principalSubjectId: z.preprocess(
       (value) => (value === '' ? undefined : value),
       z.coerce.number().int().positive().optional(),
     ),
-  })
-  .superRefine((data, context) => {
-    if (data.age >= 8 && !data.principalSubjectId) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['principalSubjectId'],
-        message: 'Para estudiantes de 8 anos o mas, la catedra principal es obligatoria.',
-      })
-    }
   })
 
 const professorRegisterSchema = baseRegisterSchema.extend({
@@ -68,6 +63,7 @@ type RegisterFormValues = {
   confirmPassword: string
   role: AuthRole | ''
   age?: number | ''
+  academicLevelId?: number | ''
   principalSubjectId?: number | ''
   academicLevelIds?: number[]
   subjectIds?: number[]
@@ -127,14 +123,6 @@ export default function RegisterPage() {
   const principalSubjectsQuery = useSubjectsQuery({ type: SubjectType.PRINCIPAL })
   const allSubjectsQuery = useSubjectsQuery()
 
-  const resolveAcademicLevelByAge = (age: number) => {
-    const levels = academicLevelsQuery.data ?? []
-
-    return levels
-      .filter((level) => age >= level.minAge && (level.maxAge === null || age <= level.maxAge))
-      .sort((a, b) => b.minAge - a.minAge)[0]
-  }
-
   const onSubmit = async (values: RegisterFormValues, methods?: { setError: (name: keyof RegisterFormValues, error: { message: string }) => void }) => {
     const parsed = registerSchema.safeParse(values)
 
@@ -151,13 +139,6 @@ export default function RegisterPage() {
 
     try {
       if (parsed.data.role === 'STUDENT') {
-        const level = resolveAcademicLevelByAge(parsed.data.age)
-
-        if (!level) {
-          toast.error('No existe un nivel academico para la edad indicada.')
-          return
-        }
-
         await registerMutation.mutateAsync({
           firstName: parsed.data.firstName,
           lastName: parsed.data.lastName,
@@ -165,6 +146,7 @@ export default function RegisterPage() {
           password: parsed.data.password,
           role: parsed.data.role,
           age: parsed.data.age,
+          academicLevelId: parsed.data.academicLevelId,
           principalSubjectId: parsed.data.principalSubjectId,
         })
       }
@@ -251,6 +233,7 @@ export default function RegisterPage() {
             confirmPassword: '',
             role: '',
             age: '',
+            academicLevelId: '',
             principalSubjectId: '',
             academicLevelIds: [],
             subjectIds: [],
@@ -268,9 +251,6 @@ export default function RegisterPage() {
             const password = methods.watch('password')
             const confirmPassword = methods.watch('confirmPassword')
             const passwordsMatch = password && confirmPassword && password === confirmPassword
-            const normalizedAge = typeof ageValue === 'number' ? ageValue : Number(ageValue)
-            const ageIsValid = Number.isFinite(normalizedAge) && normalizedAge >= 0
-            const detectedAcademicLevel = ageIsValid ? resolveAcademicLevelByAge(normalizedAge) : undefined
 
             const toggleSelection = (
               fieldName: 'academicLevelIds' | 'subjectIds',
@@ -313,42 +293,49 @@ export default function RegisterPage() {
 
                     <div>
                       <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
-                        Nivel academico asignado
+                        Nivel academico
                       </Typography>
                       <TextField
                         fullWidth
+                        select
                         size='small'
-                        value={detectedAcademicLevel ? detectedAcademicLevel.name : 'Sin nivel asignado'}
-                        disabled
-                      />
+                        value={methods.watch('academicLevelId') ?? ''}
+                        onChange={(event) => {
+                          const rawValue = event.target.value
+                          methods.setValue('academicLevelId', rawValue === '' ? '' : Number(rawValue))
+                        }}
+                      >
+                        <MenuItem value=''>Seleccionar nivel academico</MenuItem>
+                        {(academicLevelsQuery.data ?? []).map((level) => (
+                          <MenuItem key={level.id} value={level.id}>
+                            {level.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </div>
 
-
-                    {ageIsValid && normalizedAge >= 8 ? (
-                      <div>
-                        <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
-                          Catedra principal
-                        </Typography>
-                        <TextField
-                          fullWidth
-                          select
-                          size='small'
-                          value={methods.watch('principalSubjectId') ?? ''}
-                          onChange={(event) => {
-                            const rawValue = event.target.value
-                            methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
-                          }}
-                        >
-                          <MenuItem value=''>Seleccionar catedra principal</MenuItem>
-                          {(principalSubjectsQuery.data ?? []).map((subject) => (
-                            <MenuItem key={subject.id} value={subject.id}>
-                              {subject.name}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </div>
-
-                    ) : null}
+                    <div>
+                      <Typography sx={{ fontSize: '20px', fontWeight: 500, mb: 0.8, color: '#000' }}>
+                        Catedra principal (opcional)
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        select
+                        size='small'
+                        value={methods.watch('principalSubjectId') ?? ''}
+                        onChange={(event) => {
+                          const rawValue = event.target.value
+                          methods.setValue('principalSubjectId', rawValue === '' ? '' : Number(rawValue))
+                        }}
+                      >
+                        <MenuItem value=''>Seleccionar catedra principal</MenuItem>
+                        {(principalSubjectsQuery.data ?? []).map((subject) => (
+                          <MenuItem key={subject.id} value={subject.id}>
+                            {subject.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
                   </div>
                 ) : null}
 

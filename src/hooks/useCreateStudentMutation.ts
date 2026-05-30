@@ -6,6 +6,7 @@ type CreateStudentInput = {
   user: Omit<CreateUserPayload, "role">;
   student: {
     age: number;
+    academicLevelId: number;
     principalSubjectId?: number;
     complementarySubjectIds?: number[];
   };
@@ -24,6 +25,7 @@ export default function useCreateStudentMutation() {
       return UsersApi.createStudent({
         userId: createdUser.id,
         age: input.student.age,
+        academicLevelId: input.student.academicLevelId,
         principalSubjectId: input.student.principalSubjectId,
         complementarySubjectIds: input.student.complementarySubjectIds,
       });
