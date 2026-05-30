@@ -1,7 +1,7 @@
 
 type MVBlockProps = {
   title: string
-  description: React.ReactNode
+  description: string
   imageLeft?: boolean
   imageUrl?: string
 }
@@ -21,7 +21,7 @@ function MVBlock({ title, description, imageLeft = false, imageUrl }: MVBlockPro
 
       <div className='mx-auto max-w-[640px] text-center '>
         <h2 className='text-[40px] lg:text-[56px] my-6 font-bold leading-[1.05] text-ink'>{title}</h2>
-        <p className='mt-5 text-[20px] lg:text-[28px] leading-[1.3] text-[#4a4b4f]'>{description}</p>
+        <p className='mt-5 whitespace-pre-line text-[20px] lg:text-[28px] leading-[1.3] text-[#4a4b4f]'>{description}</p>
       </div>
     </article>
   )
@@ -30,32 +30,23 @@ function MVBlock({ title, description, imageLeft = false, imageUrl }: MVBlockPro
 type MVSectionProps = {
   missionImageUrl?: string
   visionImageUrl?: string
+  missionText: string
+  visionText: string
 }
 
-export default function MVSection({ missionImageUrl, visionImageUrl }: MVSectionProps) {
-  const mision = 'El Sistema Nacional de Orquestas y Coros Juveniles e Infantiles de Venezuela constituye una obra social del Estado Venezolano consagrada al rescate pedagógico, ocupacional y ético de la infancia y la juventud, mediante la instrucción y la práctica colectiva de la música, dedicada a la capacitación, prevención y recuperación de los grupos más vulnerables del país, tanto por sus características etárias como por su situación socioeconómica.'
-
-  const vision = (
-    <>
-      El Sistema Nacional de Orquestas y Coros Juveniles e Infantiles de Venezuela es una institución abierta a toda la sociedad, con un alto concepto de excelencia musical, que contribuye al desarrollo integral del ser humano. Se vincula con la comunidad a través del intercambio, la cooperación y el cultivo de valores transcendentales que inciden en la transformación del niño, el joven y el entorno familiar. Se cuenta con un recurso humano dirigido al logro de una meta común, con mística y gozo, formando equipos multidisciplinarios altamente motivados e identificados con la Institución.
-      <br />
-      <br />
-      Se reconoce al movimiento orquestal como una oportunidad para el desarrollo personal en lo intelectual, en lo espiritual, en lo social y en lo profesional, rescatando al niño y al joven de una juventud vacía, desorientada y desviada.
-    </>
-  )
-  
+export default function MVSection({ missionImageUrl, visionImageUrl, missionText, visionText }: MVSectionProps) {
   return (
     <section className='bg-white pb-18 pt-8' id='mision-vision'>
       <div className='mx-auto w-full max-w-[1400px] space-y-16 px-4 lg:px-5'>
         <MVBlock
-          description={mision}
+          description={missionText}
           imageLeft
           imageUrl={missionImageUrl}
           title='Misión'
         />
 
         <MVBlock
-          description={vision}
+          description={visionText}
           imageUrl={visionImageUrl}
           title='Visión'
         />

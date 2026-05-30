@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import useInformationsQuery from '@/hooks/useInformationsQuery'
+import { informationDefaults } from '@/types/information'
 import useMultimediaQuery from '@/hooks/useMultimediaQuery'
 import HeroSection from '@/views/landing/components/HeroSection'
 import ImagesSection from '@/views/landing/components/ImagesSection'
@@ -22,6 +24,7 @@ export default function LandingPage() {
   const heroQuery = useMultimediaQuery({ section: 'HERO' })
   const missionVisionQuery = useMultimediaQuery({ section: 'MISSION_VISION' })
   const galleryQuery = useMultimediaQuery({ section: 'GALLERY' })
+  const informationQuery = useInformationsQuery()
 
   const heroImageUrl = heroQuery.data?.slice().sort((a, b) => a.sortOrder - b.sortOrder)[0]?.imageUrl
   const missionVisionItems = (missionVisionQuery.data ?? []).slice()
@@ -32,6 +35,18 @@ export default function LandingPage() {
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .slice(0, 6)
     .map((item) => item.imageUrl)
+
+  const informationItems = informationQuery.data ?? []
+
+  const getInformationValue = (key: string, fallback: string) => {
+    return informationItems.find((item) => item.key === key)?.value ?? fallback
+  }
+
+  const heroTitle = getInformationValue('hero_title', informationDefaults.heroTitle)
+  const heroDescription = getInformationValue('hero_description', informationDefaults.heroDescription)
+  const heroButtonText = getInformationValue('hero_button_text', informationDefaults.heroButtonText)
+  const missionText = getInformationValue('mission_text', informationDefaults.missionText)
+  const visionText = getInformationValue('vision_text', informationDefaults.visionText)
 
   usePageTitle(`${activeSectionTitle}`)
 
@@ -79,8 +94,18 @@ export default function LandingPage() {
 
   return (
     <LandingLayout>
-      <HeroSection imageUrl={heroImageUrl} />
-      <MVSection missionImageUrl={missionImageUrl} visionImageUrl={visionImageUrl} />
+      <HeroSection
+        imageUrl={heroImageUrl}
+        title={heroTitle}
+        description={heroDescription}
+        buttonText={heroButtonText}
+      />
+      <MVSection
+        missionImageUrl={missionImageUrl}
+        visionImageUrl={visionImageUrl}
+        missionText={missionText}
+        visionText={visionText}
+      />
       <ImagesSection images={galleryImages} />
       <SocialMedia />
       <PhrasesSection />

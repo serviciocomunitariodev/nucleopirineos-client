@@ -3,26 +3,27 @@ import { Link } from 'react-router-dom'
 
 type HeroSectionProps = {
   imageUrl?: string
+  title: string
+  description: string
+  buttonText: string
 }
 
-export default function HeroSection({ imageUrl }: HeroSectionProps) {
+export default function HeroSection({ imageUrl, title, description, buttonText }: HeroSectionProps) {
   const [imageFailed, setImageFailed] = useState(false)
 
   return (
     <section className='bg-superficies landing-section' id='hero'>
       <div className='mx-auto grid min-h-[calc(100dvh-76px)] w-full max-w-[1400px] items-center gap-10 px-4 py-12 lg:grid-cols-[1fr_1.1fr] lg:gap-24 lg:px-5'>
         <div className='max-w-[600px] max-lg:justify-self-center text-center lg:justify-self-start'>
-          <h1 className='text-[40px] lg:text-[56px] font-bold leading-tight text-ink'>Nucleo Pirineos</h1>
-          <p className='mt-4 text-[20px] lg:text-[28px] leading-[1.34] text-[#3f4042]'>
-            Bienvenidos al Núcleo Pirineos del Sistema Nacional de Orquestas y Coros. Somos el hogar de cientos de niños y jóvenes que encuentran en la disciplina, el arte y la constancia un instrumento para el futuro.
-          </p>
+          <h1 className='text-[40px] lg:text-[56px] font-bold leading-tight text-ink'>{title}</h1>
+          <p className='mt-4 text-[20px] lg:text-[28px] leading-[1.34] text-[#3f4042]'>{description}</p>
 
           <div className='mt-7'>
             <Link
               className='inline-flex min-h-14 items-center justify-center rounded-[16px] bg-primary px-9 text-[20px] lg:text-[28px] font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.3)] transition-transform hover:-translate-y-0.5 hover:bg-primaryHover'
               to='/events'
             >
-              Ver calendario
+              {buttonText}
             </Link>
           </div>
         </div>

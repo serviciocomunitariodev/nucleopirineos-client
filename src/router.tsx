@@ -51,6 +51,9 @@ const EditAcademicLevel = lazy(
 const MultimediaPage = lazy(() => import("@/views/multimedia/MultimediaPage"));
 const MultimediaNewPage = lazy(() => import("@/views/multimedia/MultimediaNewPage"));
 const MultimediaEditPage = lazy(() => import("@/views/multimedia/MultimediaEditPage"));
+const InformationPage = lazy(() => import("@/views/administration/information/InformationPage"));
+const NewInformation = lazy(() => import("@/views/administration/information/NewInformation"));
+const EditInformation = lazy(() => import("@/views/administration/information/EditInformation"));
 const LandingPage = lazy(() => import("@/views/landing/LandingPage"));
 
 const routeFallback = (
@@ -118,6 +121,9 @@ export default function AppRouter() {
             <Route path="/multimedia" element={withSuspense(<MultimediaPage />)} />
             <Route path="/multimedia/new" element={withSuspense(<MultimediaNewPage />)} />
             <Route path="/multimedia/edit" element={withSuspense(<MultimediaEditPage />)} />
+            <Route path="/information" element={withSuspense(<InformationPage />)} />
+            <Route path="/information/new" element={withSuspense(<NewInformation />)} />
+            <Route path="/information/:id/edit" element={withSuspense(<EditInformation />)} />
           </Route>
         </Route>
 

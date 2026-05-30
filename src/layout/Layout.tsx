@@ -54,6 +54,7 @@ const adminNavigation: NavItem[] = [
       { key: "subjects", label: "Catedras", path: "/subjects" },
       { key: "levels", label: "Nivel", path: "/academic-levels" },
       { key: "multimedia", label: "Multimedia", path: "/multimedia" },
+      { key: "information", label: "Informacion", path: "/information" },
     ],
   },
 ];
@@ -71,7 +72,8 @@ function getInitialExpanded(pathname: string) {
   if (
     pathname.startsWith("/song-categories") ||
     pathname.startsWith("/subjects") ||
-    pathname.startsWith("/academic-levels")
+    pathname.startsWith("/academic-levels") ||
+    pathname.startsWith("/information")
   ) {
     return "administration";
   }
