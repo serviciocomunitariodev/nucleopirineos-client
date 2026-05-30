@@ -28,13 +28,14 @@ type SubjectFormProps = {
 
 const subjectSchema = z.object({
   name: z.string().min(2, 'Nombre requerido.'),
-  type: z.nativeEnum(SubjectType),
+  type: z.union([z.literal(SubjectType.PRINCIPAL), z.literal(SubjectType.COMPLEMENTARY)], {
+    error: 'Tipo invalido.',
+  }),
 })
 
 const subjectTypeOptions: Array<{ label: string; value: SubjectType }> = [
   { label: 'Principal', value: SubjectType.PRINCIPAL },
   { label: 'Complementaria', value: SubjectType.COMPLEMENTARY },
-  { label: 'Grupal', value: SubjectType.GROUP },
 ]
 
 export default function SubjectForm({
