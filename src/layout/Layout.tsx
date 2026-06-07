@@ -9,7 +9,6 @@ import {
   Menu,
   MusicNote,
   People,
-  School,
   Settings,
   Logout,
 } from "@mui/icons-material";
@@ -143,7 +142,7 @@ export default function Layout() {
                       <li key={child.key}>
                         <NavLink
                           className={({ isActive }) =>
-                            `block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
+                            `block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-white" : "text-white"
                             }`
                           }
                           onClick={() => isCompact && setIsSidebarOpen(false)}
@@ -166,7 +165,7 @@ export default function Layout() {
             <li key={item.key}>
               <NavLink
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-black" : "text-white"
+                  `flex items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-primaryHover ${isActive ? "bg-primaryActive text-white" : "text-white"
                   }`
                 }
                 onClick={() => isCompact && setIsSidebarOpen(false)}
@@ -187,7 +186,7 @@ export default function Layout() {
       className="flex h-full flex-col px-4 py-4 text-white bg-primary"
     >
       <div className="mb-6 flex justify-center">
-        <div className="flex h-16.5 w-16.5 items-center justify-center rounded-[12px] bg-white p-2">
+        <div className="flex h-20 w-20 items-center justify-center rounded-[12px] bg-white">
           <Logo />
         </div>
       </div>
@@ -230,7 +229,7 @@ export default function Layout() {
               </button>
             )}
             <span className="inline-flex items-center gap-2 text-sm font-semibold">
-              <School fontSize="small" /> Nucleo Pirineos
+              <Logo className="h-5 w-5" sortOrder={2} /> Nucleo Pirineos
             </span>
           </div>
 

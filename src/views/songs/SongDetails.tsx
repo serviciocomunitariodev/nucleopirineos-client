@@ -72,7 +72,7 @@ export default function SongDetails() {
                 href={song.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className='inline-flex items-center justify-center h-11 px-6 rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#854339]'
+                className='inline-flex items-center justify-center h-11 px-6 rounded-[10px] bg-secondary text-base font-semibold text-black shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:brightness-90'
               >
                 Escuchar
               </a>

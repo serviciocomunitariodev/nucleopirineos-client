@@ -53,7 +53,7 @@ const sectionLimits: Record<MultimediaSection, number> = {
   HERO: 1,
   MISSION_VISION: 2,
   GALLERY: 6,
-  LOGO: 1,
+  LOGO: 2,
 };
 
 export default function MultimediaForm({
@@ -202,7 +202,7 @@ export default function MultimediaForm({
 
               <div className="flex flex-col gap-2 w-full max-w-[260px]">
                 <button
-                  className="h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#994339] cursor-pointer hover:drop-shadow-md"
+                  className="h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-black shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:brightness-90 cursor-pointer hover:drop-shadow-md"
                   onClick={() => fileInputRef.current?.click()}
                   type="button"
                 >
@@ -222,7 +222,7 @@ export default function MultimediaForm({
                 ) : null}
                 {mode === "edit" && !file && initialValues?.imageUrl ? (
                   <a
-                    className="flex h-11 w-full items-center justify-center rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-white"
+                    className="flex h-11 w-full items-center justify-center rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-black"
                     href={initialValues.imageUrl}
                     rel="noopener noreferrer"
                     target="_blank"
@@ -233,6 +233,35 @@ export default function MultimediaForm({
               </div>
             </div>
           </section>
+
+          {(() => {
+            const section = methods.watch("section") as MultimediaSection | "";
+            const sectionInfo: Record<MultimediaSection, { desc: string; orderNote?: string[] }> = {
+              HERO: { desc: "Fondo del banner principal en la pagina de inicio." },
+              MISSION_VISION: { desc: "Seccion Mision y Vision.", orderNote: ["Orden 1 = Mision", "Orden 2 = Vision."] },
+              GALLERY: { desc: "Galeria de la pagina de inicio. Se permiten hasta 6 imagenes." },
+              LOGO: { desc: "Logo del sitio.", orderNote: ["Orden 1 = logo completo (con letras, se muestra en login y barra lateral).", "Orden 2 = icono del logo (sin letras, se muestra en los encabezados del sitio)."] },
+            };
+
+            if (!section) return null;
+
+            const info = sectionInfo[section];
+            const sectionLabel = sectionOptions.find((o) => o.value === section)?.label ?? section;
+
+            return (
+              <section className="rounded-[10px] border border-sky-300 bg-sky-50 p-3 text-sm text-sky-800">
+                <p className="mb-1 font-semibold">Has seleccionado: {sectionLabel}</p>
+                <p>{info.desc}</p>
+                {info.orderNote ? (
+                  <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                    {info.orderNote.map((note, i) => (
+                      <li key={i}>{note}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            );
+          })()}
 
           {typeof methods.formState.errors.sortOrder?.message === "string" ? (
             <Typography className="text-base font-semibold text-red-600">

@@ -176,8 +176,8 @@ export default function EventCalendarCore({
                 minHeight: 44,
                 px: 3,
                 fontSize: '16px',
-                backgroundColor: '#556B2F',
-                '&:hover': { backgroundColor: '#78A034' },
+                backgroundColor: 'primary.main',
+                '&:hover': { backgroundColor: 'primary.dark' },
               }}
               text='Nuevo evento'
               type='button'

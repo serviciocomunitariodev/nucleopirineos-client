@@ -5,18 +5,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Tu antiguo azul-celeste pasa a ser el Turquesa PNIS para transicionar suavemente
         brand: {
-          50: "#eef7ff",
-          100: "#d9ecff",
-          500: "#2b6cb0",
-          700: "#1e4e8c",
+          50: "#e6f7fa",   // Un tono sutil basado en el nuevo turquesa para fondos ligeros
+          100: "#b3ebf2",  // Tono claro de turquesa para bordes o decoraciones sutiles
+          500: "#00addc",  // Turquesa PNIS Original (Para mantener un azul/turquesa de marca vivo)
+          700: "#00c4b3",  // Turqueza PFA Original (El otro enfoque solicitado)
         },
-        primary: "#556B2F",
-        secondary: "#974F43",
-        background: "#FDFDF9",
-        primaryActive: "#BBDF7C",
-        primaryHover: "#78A034",
-        superficies: "#F1F1E6",
+        
+        // El color principal de ellos ahora es el Azul PAP (#022169)
+        primary: "#022169", 
+        
+        // El color secundario pasa a ser el Turqueza PFA para contrastar como acento
+        secondary: "#00c4b3", 
+        
+        // Mantenemos el fondo limpio y claro que ya tenían configurado
+        background: "#FDFDF9", 
+        
+        // Variantes interactivas del nuevo primary (Azul PAP):
+        primaryActive: "#011749", // Un tono más oscuro del Azul PAP para el estado activo
+        primaryHover: "#011c59",  // Un tono intermedio del Azul PAP para el estado hover
+        
+        // Superficies se mantiene con un tono neutro/grisáceo para no saturar la interfaz
+        superficies: "#F1F1E6", 
       },
       borderRadius: {
         xl: "0.9rem",

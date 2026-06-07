@@ -47,7 +47,7 @@ export function BaseButton({
       aria-busy={loading}
       variant='contained'
       sx={{
-        backgroundColor: isSecondary ? '#ffffff' : '#065F46',
+        backgroundColor: isSecondary ? '#ffffff' : '#022169',
         color: isSecondary ? '#111827' : '#ffffff',
         border: isSecondary ? '1px solid #111827' : 'none',
         borderRadius,
@@ -59,7 +59,7 @@ export function BaseButton({
         py: 1.5,
         textTransform: 'none',
         '&:hover': {
-          backgroundColor: isSecondary ? '#f8fafc' : '#064E3B',
+          backgroundColor: isSecondary ? '#f8fafc' : '#011c59',
         },
         ...sx
       }}

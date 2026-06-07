@@ -70,11 +70,11 @@ export default function EventListModal({
                 sx={{
                   borderRadius: '10px',
                   '&.Mui-selected': {
-                    backgroundColor: '#BBDF7C',
-                    color: '#1f2937',
+                    backgroundColor: 'primary.main',
+                    color: '#fff',
                   },
                   '&.Mui-selected:hover': {
-                    backgroundColor: '#A9D76A',
+                    backgroundColor: 'primary.dark',
                   },
                 }}
               >
@@ -85,12 +85,12 @@ export default function EventListModal({
                     primary: {
                       sx: {
                         fontWeight: event.id === selectedEventId ? 700 : 500,
-                        color: event.id === selectedEventId ? '#1f2937' : '#111827',
+                        color: event.id === selectedEventId ? '#fff' : '#111827',
                       },
                     },
                     secondary: {
                       sx: {
-                        color: event.id === selectedEventId ? '#1f2937' : '#4b5563',
+                        color: event.id === selectedEventId ? '#fff' : '#4b5563',
                       },
                     },
                   }}
@@ -115,9 +115,9 @@ export default function EventListModal({
         <Button
           onClick={onClose}
           sx={{
-            color: '#556B2F',
+            color: 'primary.main',
             '&:hover': {
-              backgroundColor: 'rgba(85,107,47,0.1)',
+              backgroundColor: 'rgba(2,33,105,0.08)',
             },
           }}
         >
@@ -129,10 +129,10 @@ export default function EventListModal({
             <Button
               onClick={() => onEditEvent(selectedEvent.id)}
               sx={{
-                backgroundColor: '#556B2F',
+                backgroundColor: 'primary.main',
                 color: '#fff',
                 '&:hover': {
-                  backgroundColor: '#78A034',
+                  backgroundColor: 'primary.dark',
                 },
               }}
               variant='contained'
@@ -142,10 +142,10 @@ export default function EventListModal({
             <Button
               onClick={() => setIsDeleteDialogOpen(true)}
               sx={{
-                backgroundColor: '#974F43',
+                backgroundColor: 'secondary.main',
                 color: '#fff',
                 '&:hover': {
-                  backgroundColor: '#7E4137',
+                  backgroundColor: 'secondary.dark',
                 },
               }}
               variant='contained'
@@ -167,7 +167,7 @@ export default function EventListModal({
           <Button
             onClick={() => setIsDeleteDialogOpen(false)}
             sx={{
-              color: '#556B2F',
+              color: 'primary.main',
             }}
           >
             Cancelar
@@ -183,10 +183,10 @@ export default function EventListModal({
               setIsDeleteDialogOpen(false)
             }}
             sx={{
-              backgroundColor: '#974F43',
+              backgroundColor: 'secondary.main',
               color: '#fff',
               '&:hover': {
-                backgroundColor: '#7E4137',
+                backgroundColor: 'secondary.dark',
               },
             }}
             variant='contained'

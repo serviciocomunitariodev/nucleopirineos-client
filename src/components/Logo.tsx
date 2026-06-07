@@ -1,25 +1,30 @@
 import useMultimediaQuery from "@/hooks/useMultimediaQuery";
 
-export default function Logo() {
+type LogoProps = {
+  sortOrder?: number;
+  className?: string;
+};
+
+const DEFAULT_CLASS = "h-full w-full object-contain";
+
+export default function Logo({ sortOrder = 1, className }: LogoProps) {
   const logoQuery = useMultimediaQuery({ section: "LOGO" });
 
-  const logoUrl = logoQuery.data
-    ?.slice()
-    .sort((a, b) => a.sortOrder - b.sortOrder)[0]
-    ?.imageUrl;
+  const logos = (logoQuery.data ?? []).slice().sort((a, b) => a.sortOrder - b.sortOrder);
+  const logoItem = sortOrder === 1 ? logos[0] : logos.find((l) => l.sortOrder === sortOrder);
+  const logoUrl = logoItem?.imageUrl;
+
+  const fallback = sortOrder === 1 ? "/logo-nucleo.jpeg" : undefined;
 
   return (
     <img
-      src={logoUrl ?? "/logo-nucleo.jpeg"}
+      src={logoUrl ?? fallback ?? ""}
       alt="Logo Nucleo Pirineos"
-      className="h-full w-full object-contain"
+      className={className ?? DEFAULT_CLASS}
       onError={(event) => {
         const image = event.currentTarget;
-        if (image.src.includes("/logo-nucleo.jpeg")) {
-          return;
-        }
-
-        image.src = "/logo-nucleo.jpeg";
+        if (!fallback || image.src === fallback) return;
+        image.src = fallback;
       }}
     />
   );

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CalendarRange, CircleUserRound, Contact, Images, Menu, Rocket, TextQuote, Undo2, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { School } from '@mui/icons-material'
+import Logo from '@/components/Logo'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import type { LandingHeaderVariant } from '@/views/landing/layout/LandingLayout'
 
@@ -54,7 +55,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
     <header className='sticky top-0 z-40 bg-primary'>
       <div className='mx-auto flex h-19 w-full items-center gap-4 px-4 lg:px-5'>
         <span className='inline-flex items-center gap-3 text-lg font-semibold text-white'>
-          <School fontSize='large' /> Nucleo Pirineos
+          <Logo className='h-8 w-8' sortOrder={2} /> Nucleo Pirineos
         </span>
 
         {isCompact ? (
@@ -82,8 +83,16 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
                 </button>
               ))}
             </nav>
+
             <Link
-              className='cursor-pointer rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-white shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
+              className='cursor-pointer rounded-2xl border border-white/70 px-6 py-3 text-xl font-semibold text-white transition-transform hover:-translate-y-0.5 hover:bg-white/10'
+              to='/professors'
+            >
+              Profesores
+            </Link>
+            
+            <Link
+              className='cursor-pointer rounded-2xl bg-secondary px-6 py-3 text-xl font-semibold text-black shadow-[0px_4px_8px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 hover:brightness-95'
               to='/events'
             >
               Ver calendario
@@ -95,6 +104,7 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
             >
               Iniciar sesion
             </Link>
+
           </div>
         ) : null}
       </div>
@@ -139,6 +149,14 @@ export default function LandingHeader({ variant = 'default' }: LandingHeaderProp
               >
                 <CircleUserRound size={25} />
                 Iniciar Sesion
+              </Link>
+              <Link
+                className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'
+                onClick={closeSidebar}
+                to='/professors'
+              >
+                <School fontSize='small' />
+                Profesores
               </Link>
               <Link
                 className='flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-primaryHover'

@@ -89,9 +89,7 @@ export default function LoginPage() {
       >
         <header className='flex items-center justify-center'>
           <div className='flex h-[100px] w-[100px] items-center justify-center rounded-[12px] bg-white shadow-[0px_4px_6px_4px_rgba(0,0,0,0.25)]'>
-            <div className='h-[72px] w-[72px]'>
-              <Logo />
-            </div>
+            <Logo />
           </div>
         </header>
 
@@ -118,23 +116,12 @@ export default function LoginPage() {
               type='submit'
               tone='primary'
               sx={{
-                backgroundColor: '#065F46',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '10px',
                 boxShadow: '0px 4px 6px 4px rgba(0,0,0,0.25)',
-                fontWeight: 700,
-                letterSpacing: '0.2px',
-                fontSize: '20px',
-                minHeight: 50,
-                py: 1.5,
-                textTransform: 'none',
                 transition: 'all 0.3s ease',
                 position: 'relative',
                 overflow: 'hidden',
                 '&:hover': {
-                  backgroundColor: '#064E3B',
-                  boxShadow: '0 0 10px rgba(6, 95, 70, 0.6), 0 0 20px rgba(6, 95, 70, 0.4), 0 0 30px rgba(6, 95, 70, 0.2)',
+                  boxShadow: '0 0 10px rgba(2,33,105,0.6), 0 0 20px rgba(2,33,105,0.4), 0 0 30px rgba(2,33,105,0.2)',
                   transform: 'translateY(-2px)',
                 },
                 '&::before': {
@@ -157,7 +144,7 @@ export default function LoginPage() {
           <div className='flex flex-col items-center justify-center gap-5 w-full'>
             <Link
               to='/'
-              className='text-[#065F46] font-bold hover:underline transition-colors duration-300'
+              className='text-primary font-bold hover:underline transition-colors duration-300'
             >
               Volver a la página principal
             </Link>

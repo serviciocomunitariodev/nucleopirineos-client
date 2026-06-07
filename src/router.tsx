@@ -55,6 +55,7 @@ const InformationPage = lazy(() => import("@/views/administration/information/In
 const NewInformation = lazy(() => import("@/views/administration/information/NewInformation"));
 const EditInformation = lazy(() => import("@/views/administration/information/EditInformation"));
 const LandingPage = lazy(() => import("@/views/landing/LandingPage"));
+const PublicProfessorsPage = lazy(() => import("@/views/professors/PublicProfessorsPage"));
 
 const routeFallback = (
   <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", py: 6 }}>
@@ -74,6 +75,7 @@ export default function AppRouter() {
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/calendario" element={<Navigate to="/events" replace />} />
         <Route path="/events" element={withSuspense(<PublicEventsPage />)} />
+        <Route path="/professors" element={withSuspense(<PublicProfessorsPage />)} />
 
         <Route element={<AuthLayout />}>
           <Route path="/auth/login" element={withSuspense(<LoginPage />)} />

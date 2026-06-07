@@ -38,7 +38,7 @@ html {
 
 body {
   margin: 0;
-  background: #f4f7fb;
+  background: #FDFDF9;
   color: #172b4d;
 }
 
@@ -113,7 +113,7 @@ body {
 .event-calendar-shell .fc-theme-standard td,
 .event-calendar-shell .fc-theme-standard th,
 .event-calendar-shell .fc-theme-standard .fc-scrollgrid {
-  border-color: rgba(85, 107, 47, 0.14);
+  border-color: rgba(2, 33, 105, 0.14);
 }
 
 .event-calendar-shell .fc .fc-toolbar {
@@ -122,45 +122,45 @@ body {
 }
 
 .event-calendar-shell .fc .fc-toolbar-title {
-  color: #556b2f;
+  color: #022169;
   font-size: 1.45rem;
   font-weight: 700;
   text-transform: capitalize;
 }
 
 .event-calendar-shell .fc .fc-button {
-  background: #556b2f;
-  border-color: #556b2f;
+  background: #022169;
+  border-color: #022169;
   box-shadow: none;
   text-transform: capitalize;
 }
 
 .event-calendar-shell .fc .fc-button:hover,
 .event-calendar-shell .fc .fc-button:focus {
-  background: #78a034;
-  border-color: #78a034;
+  background: #011c59;
+  border-color: #011c59;
 }
 
 .event-calendar-shell .fc .fc-button-primary:not(:disabled).fc-button-active,
 .event-calendar-shell .fc .fc-button-primary:not(:disabled):active {
-  background: #bbdf7c;
-  border-color: #bbdf7c;
-  color: #1f2937;
+  background: #011749;
+  border-color: #011749;
+  color: #fff;
 }
 
 .event-calendar-shell .fc .fc-col-header-cell {
-  background: #f1f1e6;
+  background: #F1F1E6;
 }
 
 .event-calendar-shell .fc .fc-col-header-cell-cushion {
-  color: #556b2f;
+  color: #022169;
   font-weight: 700;
   padding: 0.85rem 0.25rem;
   text-transform: capitalize;
 }
 
 .event-calendar-shell .fc .fc-daygrid-day-number {
-  color: #556b2f;
+  color: #022169;
   font-weight: 600;
 }
 
@@ -169,19 +169,19 @@ body {
 }
 
 .event-calendar-shell .fc .fc-day-today {
-  background: rgba(187, 223, 124, 0.18) !important;
+  background: rgba(2, 33, 105, 0.10) !important;
 }
 
 .event-calendar-shell .fc .fc-event {
-  background: #974f43;
-  border-color: #974f43;
+  background: #00c4b3;
+  border-color: #00c4b3;
   border-radius: 10px;
   padding: 2px 4px;
 }
 
 .event-calendar-shell .fc .fc-event:hover {
-  background: #7e4137;
-  border-color: #7e4137;
+  background: #009e90;
+  border-color: #009e90;
 }
 
 .event-calendar-shell .fc .fc-event-title {
@@ -274,7 +274,7 @@ body {
     width: 1.3rem;
     height: 1.3rem;
     border-radius: 9999px;
-    background: #974f43;
+    background: #00c4b3;
     color: #ffffff;
     font-size: 0.72rem;
     font-weight: 700;

@@ -213,7 +213,7 @@ export default function ResourceForm({
 
                 <div className="flex flex-col gap-2 w-full max-w-[260px]">
                   <button
-                    className='h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-white shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#994339] cursor-pointer hover:drop-shadow-md'
+                    className='h-11 w-full rounded-[10px] bg-secondary text-base font-semibold text-black shadow-[0px_2px_4px_rgba(0,0,0,0.25)] transition-colors hover:brightness-90 cursor-pointer hover:drop-shadow-md'
                     onClick={() => fileInputRef.current?.click()}
                     type='button'
                   >
@@ -235,7 +235,7 @@ export default function ResourceForm({
                       href={initialValues.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className='flex items-center justify-center h-11 w-full rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-white'
+                      className='flex items-center justify-center h-11 w-full rounded-[10px] border border-secondary text-secondary text-base font-semibold shadow-[0px_2px_4px_rgba(0,0,0,0.05)] transition-colors hover:bg-secondary hover:text-black'
                     >
                       Ver archivo actual
                     </a>
