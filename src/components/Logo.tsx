@@ -7,6 +7,11 @@ type LogoProps = {
 
 const DEFAULT_CLASS = "h-full w-full object-contain";
 
+const FALLBACKS: Record<number, string> = {
+  1: "/logo-nucleo.png",
+  2: "/icon-nucleo.png",
+};
+
 export default function Logo({ sortOrder = 1, className }: LogoProps) {
   const logoQuery = useMultimediaQuery({ section: "LOGO" });
 
@@ -14,7 +19,7 @@ export default function Logo({ sortOrder = 1, className }: LogoProps) {
   const logoItem = sortOrder === 1 ? logos[0] : logos.find((l) => l.sortOrder === sortOrder);
   const logoUrl = logoItem?.imageUrl;
 
-  const fallback = sortOrder === 1 ? "/logo-nucleo.jpeg" : undefined;
+  const fallback = FALLBACKS[sortOrder];
 
   return (
     <img

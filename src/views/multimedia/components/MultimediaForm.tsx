@@ -236,11 +236,11 @@ export default function MultimediaForm({
 
           {(() => {
             const section = methods.watch("section") as MultimediaSection | "";
-            const sectionInfo: Record<MultimediaSection, { desc: string; orderNote?: string[] }> = {
-              HERO: { desc: "Fondo del banner principal en la pagina de inicio." },
-              MISSION_VISION: { desc: "Seccion Mision y Vision.", orderNote: ["Orden 1 = Mision", "Orden 2 = Vision."] },
-              GALLERY: { desc: "Galeria de la pagina de inicio. Se permiten hasta 6 imagenes." },
-              LOGO: { desc: "Logo del sitio.", orderNote: ["Orden 1 = logo completo (con letras, se muestra en login y barra lateral).", "Orden 2 = icono del logo (sin letras, se muestra en los encabezados del sitio)."] },
+            const sectionInfo: Record<MultimediaSection, { desc: string; orderNote?: string[]; sizeNote: string }> = {
+              HERO: { desc: "Fondo del banner principal en la pagina de inicio.", sizeNote: "Tamaño recomendado: 1920x1080px (horizontal, 16:9)." },
+              MISSION_VISION: { desc: "Seccion Mision y Vision.", orderNote: ["Orden 1 = Mision", "Orden 2 = Vision."], sizeNote: "Tamaño recomendado: 800x450px (horizontal, 16:9)." },
+              GALLERY: { desc: "Galeria de la pagina de inicio. Se permiten hasta 6 imagenes.", sizeNote: "Tamaño recomendado: 1280x720px (horizontal, 16:9)." },
+              LOGO: { desc: "Logo del sitio.", orderNote: ["Orden 1 = logo completo (con letras, se muestra en login y barra lateral).", "Orden 2 = icono del logo (sin letras, se muestra en los encabezados del sitio)."], sizeNote: "Tamaño recomendado: 300x300px minimo (cuadrado)." },
             };
 
             if (!section) return null;
@@ -259,6 +259,7 @@ export default function MultimediaForm({
                     ))}
                   </ul>
                 ) : null}
+                <p className="mt-1">{info.sizeNote}</p>
               </section>
             );
           })()}

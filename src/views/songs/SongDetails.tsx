@@ -9,6 +9,8 @@ import BaseModal from '@/components/BaseModal'
 import useSongQuery from '@/hooks/useSongQuery'
 import useDeleteSongMutation from '@/hooks/useDeleteSongMutation'
 import { useState } from 'react'
+import { useAppStore } from '@/store/useAppStore'
+import { UserRole } from '@/types/user'
 
 export default function SongDetails() {
   const { id } = useParams()
@@ -18,6 +20,9 @@ export default function SongDetails() {
 
   const { data: song, isLoading, isError } = useSongQuery(songId)
   const deleteSongMutation = useDeleteSongMutation()
+
+  const userRole = useAppStore((state) => state.user.role)
+  const canEditOrDelete = userRole === UserRole.PROFESSOR || userRole === UserRole.ADMIN
 
   const handleDelete = async () => {
     if (!song) {
@@ -92,25 +97,27 @@ export default function SongDetails() {
               startIcon={<ArrowBackIcon />}
             />
           </div>
-          <div className='flex gap-2 max-[816px]:flex-col'>
-            <div className='w-full min-[816px]:w-[150px]'>
-              <BaseButton
-                fullWidth
-                onClick={() => navigate(`/songs/${song.id}/edit`)}
-                text='Editar'
-                startIcon={<EditIcon />}
-              />
+          {canEditOrDelete && (
+            <div className='flex gap-2 max-[816px]:flex-col'>
+              <div className='w-full min-[816px]:w-[150px]'>
+                <BaseButton
+                  fullWidth
+                  onClick={() => navigate(`/songs/${song.id}/edit`)}
+                  text='Editar'
+                  startIcon={<EditIcon />}
+                />
+              </div>
+              <div className='w-full min-[816px]:w-[150px]'>
+                <BaseButton
+                  fullWidth
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  text='Eliminar'
+                  loading={deleteSongMutation.isPending}
+                  startIcon={<DeleteIcon />}
+                />
+              </div>
             </div>
-            <div className='w-full min-[816px]:w-[150px]'>
-              <BaseButton
-                fullWidth
-                onClick={() => setIsDeleteModalOpen(true)}
-                text='Eliminar'
-                loading={deleteSongMutation.isPending}
-                startIcon={<DeleteIcon />}
-              />
-            </div>
-          </div>
+          )}
 
         </div>
       </Paper>
