@@ -37,7 +37,7 @@ export function FilterDropdown({
   fullWidthTrigger = false,
 }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(filterGroups.map(g => g.id)))
   const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set())
   const [selectedFilters, setSelectedFilters] = useState<ActiveFilters>(activeFilters)
   const dropdownRef = useRef<HTMLDivElement>(null)
