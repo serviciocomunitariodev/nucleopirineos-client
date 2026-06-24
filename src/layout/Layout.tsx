@@ -15,6 +15,7 @@ import {
 import BaseModal from "@/components/BaseModal";
 import { BaseButton } from "@/components/BaseButton";
 import Logo from "@/components/Logo";
+import HelpFab from "@/components/HelpFab";
 import { getUserAvatarStyleFromName } from "@/utils/avatar";
 import { useAppStore } from "@/store/useAppStore";
 import { UserRole } from "@/types/user";
@@ -297,6 +298,8 @@ export default function Layout() {
           </>
         )}
       />
+
+      <HelpFab />
     </div>
   );
 }
